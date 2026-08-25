@@ -1,0 +1,39 @@
+import { useEffect, useState } from 'react';
+import api from '../../api/client';
+import AdminCrud from '../../components/AdminCrud';
+
+export default function AdminVideos() {
+  const [lessons, setLessons] = useState([]);
+  const [lessonId, setLessonId] = useState('');
+
+  useEffect(() => { api.get('/lessons').then((res) => setLessons(res.data)); }, []);
+
+  const lessonOptions = lessons.map((l) => ({ value: l.id, label: l.title }));
+
+  const fields = [
+    { name: 'lessonId', label: 'Thuộc bài học', type: 'select', options: lessonOptions, required: true },
+    { name: 'title', label: 'Tiêu đề video', required: true },
+    { name: 'url', label: 'Link video (YouTube hoặc URL công khai)', required: true },
+    { name: 'description', label: 'Mô tả', type: 'textarea' }
+  ];
+
+  const columns = [
+    { key: 'title', label: 'Tiêu đề' },
+    { key: 'url', label: 'Link' }
+  ];
+
+  if (lessons.length === 0) return <p className="empty-state">Đang tải danh sách bài học...</p>;
+
+  return (
+    <AdminCrud
+      title="Quản lý video tình huống"
+      endpoint="/videos"
+      fields={fields}
+      filterKey="lessonId"
+      filterOptions={lessonOptions}
+      filterValue={lessonId}
+      onFilterChange={setLessonId}
+      listColumns={columns}
+    />
+  );
+}

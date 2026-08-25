@@ -1,0 +1,8 @@
+node_modules/
+data/db.json
+uploads/media/*
+!uploads/media/.gitkeep
+uploads/slides/*
+!uploads/slides/.gitkeep
+.env
+*.log
