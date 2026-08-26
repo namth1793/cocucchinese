@@ -26,7 +26,8 @@ app.use('/api/auth/login', rateLimit({ windowMs: 15 * 60 * 1000, max: 20 }));
 // từ CDN qua URL công khai lưu sẵn trong DB - route này không còn cần thiết,
 // giúp giảm tải hoàn toàn khỏi server Node.
 if (storage.mode === 'local') {
-  app.use('/uploads/media', requireAuth, express.static(path.join(__dirname, '..', 'uploads', 'media'), {
+  const uploadRoot = process.env.UPLOAD_DIR || path.join(__dirname, '..', 'uploads');
+  app.use('/uploads/media', requireAuth, express.static(path.join(uploadRoot, 'media'), {
     setHeaders: (res) => res.set('Cache-Control', 'no-store')
   }));
 }

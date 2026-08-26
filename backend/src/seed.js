@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const db = require('./db');
 const storage = require('./storage');
 
-const UPLOAD_ROOT = path.join(__dirname, '..', 'uploads');
+const UPLOAD_ROOT = process.env.UPLOAD_DIR || path.join(__dirname, '..', 'uploads');
 
 function ensureDir(dir) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
