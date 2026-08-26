@@ -1,4 +1,4 @@
-# Cô Cúc Chinese — Website Học Tiếng Trung
+# HSK 360 — Website Học Tiếng Trung
 
 Triển khai theo tài liệu đặc tả "Yêu cầu chức năng website học tiếng Trung" (mobile-first, song ngữ Trung–Việt, HSK/YCT, hệ thống dạng bài dùng chung).
 
@@ -29,9 +29,9 @@ Mở `http://localhost:5173`.
 ### Tài khoản demo (được tạo tự động khi seed)
 | Vai trò | Email | Mật khẩu |
 |---|---|---|
-| Quản trị | admin@cocucchinese.vn | admin123 |
-| Giáo viên | teacher@cocucchinese.vn | teacher123 |
-| Học sinh | student@cocucchinese.vn | student123 |
+| Quản trị | admin@hsk360.vn | admin123 |
+| Giáo viên | teacher@hsk360.vn | teacher123 |
+| Học sinh | student@hsk360.vn | student123 |
 
 Dữ liệu mẫu gồm 1 bài học đầy đủ (HSK1 – Bài 1: 你好) để test toàn bộ các module.
 

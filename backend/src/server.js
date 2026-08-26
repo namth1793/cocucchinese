@@ -42,6 +42,7 @@ app.use('/api/sentences', require('./routes/sentences'));
 app.use('/api/exercises', require('./routes/exercises'));
 app.use('/api/flashcards', require('./routes/flashcards'));
 app.use('/api/progress', require('./routes/progress'));
+app.use('/api/stats', require('./routes/stats'));
 app.use('/api/images', require('./routes/images'));
 app.use('/api/slides', require('./routes/slides'));
 app.use('/api/songs', require('./routes/songs'));

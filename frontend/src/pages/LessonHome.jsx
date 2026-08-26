@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   Presentation, BookOpen, Layers, GraduationCap, Gamepad2, Headphones,
-  BookText, Mic2, Repeat, Clapperboard, Music4, ChevronRight, Trophy
+  BookText, Mic2, Repeat, Clapperboard, ChevronRight, Trophy
 } from 'lucide-react';
 import api from '../api/client';
 import ProgressBar from '../components/ProgressBar';
@@ -17,8 +17,7 @@ const MODULES = [
   { key: 'reading', icon: BookText, label: 'Luyện đọc', path: 'reading', color: '#0D9488' },
   { key: 'shadowing', icon: Mic2, label: 'Shadowing', path: 'shadowing', color: '#EA580C' },
   { key: 'translate', icon: Repeat, label: 'Luyện dịch', path: 'translate', color: '#DB2777' },
-  { key: 'video', icon: Clapperboard, label: 'Video tình huống', path: 'video', color: '#B91C1C' },
-  { key: 'song', icon: Music4, label: 'Học qua bài hát', path: 'song', color: '#D97706' }
+  { key: 'video', icon: Clapperboard, label: 'Học qua video', path: 'video', color: '#B91C1C' }
 ];
 
 export default function LessonHome() {

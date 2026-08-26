@@ -25,9 +25,9 @@ function seedIfEmpty() {
   if (db.all('users').length > 0) return;
   console.log('Đang khởi tạo dữ liệu mẫu...');
 
-  db.insert('users', { name: 'Quản trị viên', email: 'admin@cocucchinese.vn', passwordHash: bcrypt.hashSync('admin123', 10), role: 'admin', status: 'active', activeSessions: [] });
-  db.insert('users', { name: 'Cô Lan', email: 'teacher@cocucchinese.vn', passwordHash: bcrypt.hashSync('teacher123', 10), role: 'teacher', status: 'active', activeSessions: [] });
-  db.insert('users', { name: 'Học sinh Demo', email: 'student@cocucchinese.vn', passwordHash: bcrypt.hashSync('student123', 10), role: 'student', status: 'active', activeSessions: [] });
+  db.insert('users', { name: 'Quản trị viên', email: 'admin@hsk360.vn', passwordHash: bcrypt.hashSync('admin123', 10), role: 'admin', status: 'active', activeSessions: [] });
+  db.insert('users', { name: 'Cô Lan', email: 'teacher@hsk360.vn', passwordHash: bcrypt.hashSync('teacher123', 10), role: 'teacher', status: 'active', activeSessions: [] });
+  db.insert('users', { name: 'Học sinh Demo', email: 'student@hsk360.vn', passwordHash: bcrypt.hashSync('student123', 10), role: 'student', status: 'active', activeSessions: [] });
 
   const hsk1 = db.insert('levels', { code: 'HSK1', name: 'HSK 1', type: 'HSK', order: 1 });
   db.insert('levels', { code: 'HSK2', name: 'HSK 2', type: 'HSK', order: 2 });
@@ -40,28 +40,22 @@ function seedIfEmpty() {
   const topic1 = db.insert('topics', { lessonId: lesson1.id, name: 'Chào hỏi' });
 
   const wordData = [
-    ['你好', 'nǐ hǎo', 'Xin chào', '👋', 'DC2626'],
-    ['谢谢', 'xièxiè', 'Cảm ơn', '🙏', 'D97706'],
-    ['再见', 'zàijiàn', 'Tạm biệt', '👋', '059669'],
-    ['老师', 'lǎoshī', 'Giáo viên', '🧑‍🏫', '2563EB'],
-    ['学生', 'xuéshēng', 'Học sinh', '🎒', '7C3AED'],
-    ['我', 'wǒ', 'Tôi', '🙋', 'DB2777'],
-    ['是', 'shì', 'Là', '🔗', '0D9488'],
-    ['苹果', 'píngguǒ', 'Quả táo', '🍎', 'EA580C']
+    ['你好', 'nǐ hǎo', 'Xin chào'],
+    ['谢谢', 'xièxiè', 'Cảm ơn'],
+    ['再见', 'zàijiàn', 'Tạm biệt'],
+    ['老师', 'lǎoshī', 'Giáo viên'],
+    ['学生', 'xuéshēng', 'Học sinh'],
+    ['我', 'wǒ', 'Tôi'],
+    ['是', 'shì', 'Là'],
+    ['苹果', 'píngguǒ', 'Quả táo']
   ];
 
-  wordData.forEach(([hanzi, pinyin, vi, emoji, color], idx) => {
-    let imageUrl = null;
-    if (storage.mode === 'local') {
-      const fileName = `seed_word_${idx}.svg`;
-      writeSvg(`media/${fileName}`, { bg: `#${color}`, text: emoji, sub: hanzi });
-      imageUrl = `/uploads/media/${fileName}`;
-    }
+  wordData.forEach(([hanzi, pinyin, vi]) => {
     db.insert('words', {
       lessonId: lesson1.id, topicId: topic1.id, hanzi, pinyin, meaningVi: vi,
       type: 'Danh từ/Đại từ',
       example: { hanzi: `${hanzi}！`, pinyin: `${pinyin}!`, vi },
-      imageUrl,
+      imageUrl: null,
       audioUrl: null, strokeOrderUrl: null
     });
   });
@@ -116,9 +110,9 @@ function seedIfEmpty() {
   });
 
   console.log('Đã tạo dữ liệu mẫu. Đăng nhập demo:');
-  console.log('  Admin:   admin@cocucchinese.vn   / admin123');
-  console.log('  Giáo viên: teacher@cocucchinese.vn / teacher123');
-  console.log('  Học sinh:  student@cocucchinese.vn / student123');
+  console.log('  Admin:   admin@hsk360.vn   / admin123');
+  console.log('  Giáo viên: teacher@hsk360.vn / teacher123');
+  console.log('  Học sinh:  student@hsk360.vn / student123');
   if (storage.mode !== 'local') {
     console.log('  (Chế độ R2: bỏ qua tạo ảnh/PPT mẫu - hãy upload qua trang Quản trị.)');
   }

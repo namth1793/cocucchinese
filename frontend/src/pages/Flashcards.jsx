@@ -13,8 +13,10 @@ export default function Flashcards() {
   const [cards, setCards] = useState([]);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
-  const [tally, setTally] = useState({ known: 0, half: 0, unknown: 0 });
+  const [tally, setTally] = useState({ known: 0, unknown: 0 });
   const [done, setDone] = useState(false);
+  const [fly, setFly] = useState(null); // null | 'right' | 'left'
+  const [noAnim, setNoAnim] = useState(false);
 
   useEffect(() => {
     api.get(`/flashcards/${lessonId}`).then((res) => setCards(res.data));
@@ -36,12 +38,12 @@ export default function Flashcards() {
         <div className="card" style={{ textAlign: 'center' }}>
           <h3><PlumBlossom size={20} color="var(--primary)" style={{ verticalAlign: -4, marginRight: 6 }} />Hoàn thành Flashcard!</h3>
           <p style={{ color: 'var(--ink-soft)', margin: '8px 0 16px' }}>
-            🟢 Đã nhớ: {tally.known} · 🟡 Hơi nhớ: {tally.half} · 🔴 Chưa nhớ: {tally.unknown}
+            🟢 Đã nhớ: {tally.known} · 🔴 Chưa nhớ: {tally.unknown}
           </p>
           <button
             type="button"
             className="btn-primary"
-            onClick={() => { setIndex(0); setFlipped(false); setDone(false); setTally({ known: 0, half: 0, unknown: 0 }); }}
+            onClick={() => { setIndex(0); setFlipped(false); setDone(false); setTally({ known: 0, unknown: 0 }); }}
           >
             Học lại
           </button>
@@ -52,15 +54,22 @@ export default function Flashcards() {
 
   const card = cards[index];
 
-  const choose = async (status) => {
-    await api.post(`/flashcards/${card.id}/status`, { status });
-    setTally((t) => ({ ...t, [status]: t[status] + 1 }));
-    if (index + 1 >= cards.length) {
-      setDone(true);
-    } else {
-      setIndex((i) => i + 1);
-      setFlipped(false);
-    }
+  const choose = (status) => {
+    if (fly) return;
+    setFly(status === 'known' ? 'right' : 'left');
+    setTimeout(async () => {
+      await api.post(`/flashcards/${card.id}/status`, { status });
+      setTally((t) => ({ ...t, [status]: t[status] + 1 }));
+      setNoAnim(true);
+      if (index + 1 >= cards.length) {
+        setDone(true);
+      } else {
+        setIndex((i) => i + 1);
+        setFlipped(false);
+      }
+      setFly(null);
+      requestAnimationFrame(() => requestAnimationFrame(() => setNoAnim(false)));
+    }, 320);
   };
 
   return (
@@ -80,8 +89,8 @@ export default function Flashcards() {
       </div>
 
       <div className="flashcard-wrap">
-        <div className="flashcard-scene">
-          <div className={`flashcard ${flipped ? 'flipped' : ''}`} onClick={() => setFlipped((f) => !f)} role="button" tabIndex={0}>
+        <div className={`flashcard-scene ${fly === 'right' ? 'fly-right' : fly === 'left' ? 'fly-left' : ''} ${noAnim ? 'no-anim' : ''}`}>
+          <div className={`flashcard ${flipped ? 'flipped' : ''}`} onClick={() => !fly && setFlipped((f) => !f)} role="button" tabIndex={0}>
             <div className="flashcard-face flashcard-front">
               <div className="flashcard-hanzi">{card.hanzi}</div>
               <button type="button" className="speak-btn" onClick={(e) => { e.stopPropagation(); speak(card.hanzi); }}>🔊</button>
@@ -97,9 +106,8 @@ export default function Flashcards() {
         </div>
 
         <div className="flashcard-actions">
-          <button type="button" className="fc-btn fc-unknown" onClick={() => choose('unknown')}>🔴 Chưa nhớ</button>
-          <button type="button" className="fc-btn fc-half" onClick={() => choose('half')}>🟡 Hơi nhớ</button>
-          <button type="button" className="fc-btn fc-known" onClick={() => choose('known')}>🟢 Đã nhớ</button>
+          <button type="button" className="fc-btn fc-unknown" disabled={!!fly} onClick={() => choose('unknown')}>🔴 Chưa nhớ</button>
+          <button type="button" className="fc-btn fc-known" disabled={!!fly} onClick={() => choose('known')}>🟢 Đã nhớ</button>
         </div>
       </div>
     </div>

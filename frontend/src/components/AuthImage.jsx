@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { API_ORIGIN } from '../api/client';
 
 /**
  * Ảnh minh hoạ có 2 kiểu URL tuỳ chế độ lưu trữ của backend:
@@ -18,7 +19,7 @@ export default function AuthImage({ src, alt = '', className, style }) {
     let objectUrl;
     let cancelled = false;
     const token = localStorage.getItem('cocuc_token');
-    fetch(src, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+    fetch(`${API_ORIGIN}${src}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
       .then((res) => (res.ok ? res.blob() : Promise.reject(res)))
       .then((blob) => {
         if (cancelled) return;

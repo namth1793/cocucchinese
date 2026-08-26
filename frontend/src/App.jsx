@@ -22,8 +22,7 @@ import Reading from './pages/Reading';
 import Listening from './pages/Listening';
 import Shadowing from './pages/Shadowing';
 import Translate from './pages/Translate';
-import VideoPage from './pages/VideoPage';
-import SongPage from './pages/SongPage';
+import VideoLearning from './pages/VideoLearning';
 import LessonResult from './pages/LessonResult';
 import Review from './pages/Review';
 
@@ -65,8 +64,8 @@ export default function App() {
           <Route path="/lessons/:lessonId/listening" element={<Listening />} />
           <Route path="/lessons/:lessonId/shadowing" element={<Shadowing />} />
           <Route path="/lessons/:lessonId/translate" element={<Translate />} />
-          <Route path="/lessons/:lessonId/video" element={<VideoPage />} />
-          <Route path="/lessons/:lessonId/song" element={<SongPage />} />
+          <Route path="/lessons/:lessonId/video" element={<VideoLearning />} />
+          <Route path="/lessons/:lessonId/song" element={<Navigate to="video" replace />} />
           <Route path="/lessons/:lessonId/result" element={<LessonResult />} />
         </Route>
 

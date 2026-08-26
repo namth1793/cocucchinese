@@ -11,6 +11,37 @@ function moduleScore(m) {
   return Math.round((m.correct / m.attempts) * 100);
 }
 
+function dateKey(d) {
+  return d.toISOString().slice(0, 10);
+}
+
+// Chuỗi ngày học liên tiếp + các ngày đã học trong tuần này (T2-CN), tính từ
+// nhật ký hoạt động thật (đăng nhập, làm bài...) - không phải số giả lập.
+router.get('/streak', requireAuth, (req, res) => {
+  const logs = db.findWhere('activityLogs', (l) => l.userId === req.user.id);
+  const activeDates = new Set(logs.map((l) => dateKey(new Date(l.createdAt))));
+
+  let currentStreak = 0;
+  const cursor = new Date();
+  while (activeDates.has(dateKey(cursor))) {
+    currentStreak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  const now = new Date();
+  const mondayOffset = (now.getDay() + 6) % 7; // Thứ 2 = 0 ... Chủ nhật = 6
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - mondayOffset);
+  const activeDays = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    activeDays.push(activeDates.has(dateKey(d)));
+  }
+
+  res.json({ currentStreak, activeDays });
+});
+
 router.get('/review/all', requireAuth, (req, res) => {
   const progs = db.findWhere('progress', (p) => p.userId === req.user.id);
   const words = [];

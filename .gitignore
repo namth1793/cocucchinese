@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+.env.local
+
+backend/data/db.json
+backend/uploads/media/*
+backend/uploads/slides/*
+!backend/uploads/media/.gitkeep
+!backend/uploads/slides/.gitkeep
+
+.DS_Store
+Thumbs.db

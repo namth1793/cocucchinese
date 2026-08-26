@@ -14,7 +14,12 @@ export default function AdminVideos() {
     { name: 'lessonId', label: 'Thuộc bài học', type: 'select', options: lessonOptions, required: true },
     { name: 'title', label: 'Tiêu đề video', required: true },
     { name: 'url', label: 'Link video (YouTube hoặc URL công khai)', required: true },
-    { name: 'description', label: 'Mô tả', type: 'textarea' }
+    { name: 'description', label: 'Mô tả', type: 'textarea' },
+    {
+      name: 'lines', label: 'Bản chép theo câu (JSON mảng, không bắt buộc)', type: 'json',
+      default: [],
+      hint: 'VD: [{"start":0,"end":3,"hanzi":"你好","pinyin":"nǐ hǎo","vi":"Xin chào"}] (start/end tính bằng giây). Chỉ đồng bộ khi video là URL trực tiếp (mp4...), không áp dụng cho YouTube.'
+    }
   ];
 
   const columns = [
