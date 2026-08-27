@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/client';
 
-export default function AdminSlides() {
+export default function AdminSlides({ lessonId: lockedLessonId }) {
   const [lessons, setLessons] = useState([]);
-  const [lessonId, setLessonId] = useState('');
+  const [lessonId, setLessonId] = useState(lockedLessonId || '');
   const [decks, setDecks] = useState([]);
   const [newTitle, setNewTitle] = useState('');
   const [uploadingId, setUploadingId] = useState(null);
 
-  useEffect(() => { api.get('/lessons').then((res) => setLessons(res.data)); }, []);
+  useEffect(() => { if (!lockedLessonId) api.get('/lessons').then((res) => setLessons(res.data)); }, [lockedLessonId]);
 
   const loadDecks = () => {
     if (!lessonId) { setDecks([]); return; }
@@ -35,7 +35,7 @@ export default function AdminSlides() {
     loadDecks();
   };
 
-  if (lessons.length === 0) return <p className="empty-state">Đang tải danh sách bài học...</p>;
+  if (!lockedLessonId && lessons.length === 0) return <p className="empty-state">Đang tải danh sách bài học...</p>;
 
   return (
     <div>
@@ -44,13 +44,15 @@ export default function AdminSlides() {
         Ảnh trang bài giảng được lưu ở khu vực bảo mật, học sinh chỉ xem qua trình xem có kiểm soát (không tải xuống được).
       </p>
 
-      <div className="form-field">
-        <label>Chọn bài học</label>
-        <select value={lessonId} onChange={(e) => setLessonId(e.target.value)}>
-          <option value="">-- Chọn bài học --</option>
-          {lessons.map((l) => <option key={l.id} value={l.id}>{l.title}</option>)}
-        </select>
-      </div>
+      {!lockedLessonId && (
+        <div className="form-field">
+          <label>Chọn bài học</label>
+          <select value={lessonId} onChange={(e) => setLessonId(e.target.value)}>
+            <option value="">-- Chọn bài học --</option>
+            {lessons.map((l) => <option key={l.id} value={l.id}>{l.title}</option>)}
+          </select>
+        </div>
+      )}
 
       {lessonId && (
         <>

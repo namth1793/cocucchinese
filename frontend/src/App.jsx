@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import { RequireAuth, RequireStaff } from './components/RequireAuth';
+import { useAuth } from './context/AuthContext';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -28,16 +29,19 @@ import Review from './pages/Review';
 import Instructors from './pages/Instructors';
 
 import AdminLayout from './pages/admin/AdminLayout';
+import AdminHome from './pages/admin/AdminHome';
 import AdminLevels from './pages/admin/AdminLevels';
-import AdminLessons from './pages/admin/AdminLessons';
-import AdminWords from './pages/admin/AdminWords';
-import AdminGrammar from './pages/admin/AdminGrammar';
-import AdminSentences from './pages/admin/AdminSentences';
-import AdminSlides from './pages/admin/AdminSlides';
-import AdminSongs from './pages/admin/AdminSongs';
-import AdminVideos from './pages/admin/AdminVideos';
+import AdminLevelDetail from './pages/admin/AdminLevelDetail';
+import AdminLessonEditor from './pages/admin/AdminLessonEditor';
 import AdminInstructors from './pages/admin/AdminInstructors';
 import AdminUsers from './pages/admin/AdminUsers';
+
+/** Admin/giáo viên đăng nhập vào thẳng trang quản trị, không thấy dashboard học sinh. */
+function RoleHome() {
+  const { user } = useAuth();
+  if (user.role === 'admin' || user.role === 'teacher') return <Navigate to="/admin" replace />;
+  return <Dashboard />;
+}
 
 export default function App() {
   return (
@@ -47,7 +51,7 @@ export default function App() {
 
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<RoleHome />} />
           <Route path="/review" element={<Review />} />
           <Route path="/instructors" element={<Instructors />} />
           <Route path="/levels/:levelId" element={<LevelLessons />} />
@@ -74,15 +78,10 @@ export default function App() {
 
         <Route element={<RequireStaff />}>
           <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Navigate to="lessons" replace />} />
+            <Route index element={<AdminHome />} />
             <Route path="levels" element={<AdminLevels />} />
-            <Route path="lessons" element={<AdminLessons />} />
-            <Route path="words" element={<AdminWords />} />
-            <Route path="grammar" element={<AdminGrammar />} />
-            <Route path="sentences" element={<AdminSentences />} />
-            <Route path="slides" element={<AdminSlides />} />
-            <Route path="songs" element={<AdminSongs />} />
-            <Route path="videos" element={<AdminVideos />} />
+            <Route path="levels/:levelId" element={<AdminLevelDetail />} />
+            <Route path="levels/:levelId/lessons/:lessonId" element={<AdminLessonEditor />} />
             <Route path="instructors" element={<AdminInstructors />} />
             <Route path="users" element={<AdminUsers />} />
           </Route>

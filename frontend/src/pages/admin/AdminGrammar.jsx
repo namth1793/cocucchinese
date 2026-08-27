@@ -2,16 +2,16 @@ import { useEffect, useState } from 'react';
 import api from '../../api/client';
 import AdminCrud from '../../components/AdminCrud';
 
-export default function AdminGrammar() {
+export default function AdminGrammar({ lessonId: lockedLessonId }) {
   const [lessons, setLessons] = useState([]);
   const [lessonId, setLessonId] = useState('');
 
-  useEffect(() => { api.get('/lessons').then((res) => setLessons(res.data)); }, []);
+  useEffect(() => { if (!lockedLessonId) api.get('/lessons').then((res) => setLessons(res.data)); }, [lockedLessonId]);
 
   const lessonOptions = lessons.map((l) => ({ value: l.id, label: l.title }));
 
   const fields = [
-    { name: 'lessonId', label: 'Thuộc bài học', type: 'select', options: lessonOptions, required: true },
+    ...(lockedLessonId ? [] : [{ name: 'lessonId', label: 'Thuộc bài học', type: 'select', options: lessonOptions, required: true }]),
     { name: 'structure', label: 'Cấu trúc (VD: A + 是 + B)', required: true },
     { name: 'usageVi', label: 'Cách dùng (giải thích tiếng Việt)', type: 'textarea', required: true },
     {
@@ -32,17 +32,18 @@ export default function AdminGrammar() {
     { key: 'usageVi', label: 'Cách dùng' }
   ];
 
-  if (lessons.length === 0) return <p className="empty-state">Đang tải danh sách bài học...</p>;
+  if (!lockedLessonId && lessons.length === 0) return <p className="empty-state">Đang tải danh sách bài học...</p>;
 
   return (
     <AdminCrud
       title="Quản lý ngữ pháp"
       endpoint="/grammar"
       fields={fields}
-      filterKey="lessonId"
-      filterOptions={lessonOptions}
-      filterValue={lessonId}
-      onFilterChange={setLessonId}
+      filterKey={lockedLessonId ? undefined : 'lessonId'}
+      filterOptions={lockedLessonId ? undefined : lessonOptions}
+      filterValue={lockedLessonId ? undefined : lessonId}
+      onFilterChange={lockedLessonId ? undefined : setLessonId}
+      fixedValues={lockedLessonId ? { lessonId: lockedLessonId } : undefined}
       listColumns={columns}
     />
   );

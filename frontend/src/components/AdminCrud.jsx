@@ -19,18 +19,19 @@ function toFormValue(fld, val) {
  * Form/bảng CRUD dùng chung cho toàn bộ CMS quản trị (bài học, từ vựng, ngữ pháp,
  * câu, bài hát, video...) - tránh viết trang riêng cho từng loại nội dung.
  */
-export default function AdminCrud({ title, endpoint, fields, filterKey, filterOptions, filterValue, onFilterChange, listColumns, hint }) {
+export default function AdminCrud({ title, endpoint, fields, filterKey, filterOptions, filterValue, onFilterChange, listColumns, hint, fixedValues, renderRowExtra }) {
   const [items, setItems] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({});
   const [error, setError] = useState('');
 
   const load = () => {
-    const params = filterKey && filterValue ? { [filterKey]: filterValue } : {};
+    const params = { ...(filterKey && filterValue ? { [filterKey]: filterValue } : {}), ...(fixedValues || {}) };
     api.get(endpoint, { params }).then((res) => setItems(res.data));
   };
 
-  useEffect(() => { load(); }, [filterValue]); // eslint-disable-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { load(); }, [filterValue, JSON.stringify(fixedValues || {})]);
 
   const emptyForm = () => {
     const f = {};
@@ -56,7 +57,7 @@ export default function AdminCrud({ title, endpoint, fields, filterKey, filterOp
     setError('');
     let payload;
     try {
-      payload = {};
+      payload = { ...(fixedValues || {}) };
       fields.forEach((fld) => { payload[fld.name] = parseValue(fld, form[fld.name]); });
     } catch (e2) {
       setError('Định dạng JSON không hợp lệ ở một trong các trường (kiểm tra dấu ngoặc, dấu phẩy).');
@@ -146,6 +147,7 @@ export default function AdminCrud({ title, endpoint, fields, filterKey, filterOp
               <tr key={item.id}>
                 {listColumns.map((c) => <td key={c.key}>{c.render ? c.render(item) : String(item[c.key] ?? '')}</td>)}
                 <td className="admin-actions">
+                  {renderRowExtra && renderRowExtra(item)}
                   <button type="button" className="btn-secondary" onClick={() => startEdit(item)}>Sửa</button>
                   <button type="button" className="btn-danger" onClick={() => remove(item.id)}>Xoá</button>
                 </td>

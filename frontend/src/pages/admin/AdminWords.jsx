@@ -4,17 +4,18 @@ import api from '../../api/client';
 import AdminCrud from '../../components/AdminCrud';
 import AuthImage from '../../components/AuthImage';
 
-export default function AdminWords() {
+/** lessonId: khi truyền vào, khoá bảng theo đúng bài học đó (dùng trong trang chỉnh sửa nội dung bài học), ẩn ô chọn bài học. */
+export default function AdminWords({ lessonId: lockedLessonId }) {
   const [lessons, setLessons] = useState([]);
   const [lessonId, setLessonId] = useState('');
   const [uploadedUrl, setUploadedUrl] = useState('');
 
-  useEffect(() => { api.get('/lessons').then((res) => setLessons(res.data)); }, []);
+  useEffect(() => { if (!lockedLessonId) api.get('/lessons').then((res) => setLessons(res.data)); }, [lockedLessonId]);
 
   const lessonOptions = lessons.map((l) => ({ value: l.id, label: l.title }));
 
   const fields = [
-    { name: 'lessonId', label: 'Thuộc bài học', type: 'select', options: lessonOptions, required: true },
+    ...(lockedLessonId ? [] : [{ name: 'lessonId', label: 'Thuộc bài học', type: 'select', options: lessonOptions, required: true }]),
     { name: 'hanzi', label: '汉字 (chữ Hán)', required: true },
     { name: 'pinyin', label: 'Pinyin', required: true },
     { name: 'meaningVi', label: 'Nghĩa tiếng Việt', required: true },
@@ -49,7 +50,7 @@ export default function AdminWords() {
     setUploadedUrl(res.data.url);
   };
 
-  if (lessons.length === 0) return <p className="empty-state">Đang tải danh sách bài học...</p>;
+  if (!lockedLessonId && lessons.length === 0) return <p className="empty-state">Đang tải danh sách bài học...</p>;
 
   return (
     <div>
@@ -69,10 +70,11 @@ export default function AdminWords() {
         title="Quản lý từ vựng"
         endpoint="/words"
         fields={fields}
-        filterKey="lessonId"
-        filterOptions={lessonOptions}
-        filterValue={lessonId}
-        onFilterChange={setLessonId}
+        filterKey={lockedLessonId ? undefined : 'lessonId'}
+        filterOptions={lockedLessonId ? undefined : lessonOptions}
+        filterValue={lockedLessonId ? undefined : lessonId}
+        onFilterChange={lockedLessonId ? undefined : setLessonId}
+        fixedValues={lockedLessonId ? { lessonId: lockedLessonId } : undefined}
         listColumns={columns}
       />
     </div>
