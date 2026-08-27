@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, ShieldCheck } from 'lucide-react';
+import { LogOut, ShieldCheck, UserRound } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import PinyinToggle from './PinyinToggle';
 import Logo from './Logo';
@@ -25,6 +25,10 @@ export default function NavBar() {
       <div className="navbar-actions">
         <PinyinToggle />
         <div className="navbar-mobile-only navbar-mobile-actions">
+          <Link to="/instructors" className="navbar-link">
+            <UserRound size={14} style={{ marginRight: 4, verticalAlign: -2 }} />
+            Giảng viên
+          </Link>
           {(user.role === 'admin' || user.role === 'teacher') && (
             <Link to="/admin" className="navbar-link">
               <ShieldCheck size={14} style={{ marginRight: 4, verticalAlign: -2 }} />

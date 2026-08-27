@@ -8,7 +8,7 @@ const DATA_FILE = path.join(DATA_DIR, 'db.json');
 const COLLECTIONS = [
   'users', 'levels', 'lessons', 'topics', 'words', 'grammarPoints',
   'sentences', 'images', 'slides', 'slideProgress', 'songs', 'videos',
-  'progress', 'flashcardStatus', 'activityLogs'
+  'progress', 'flashcardStatus', 'activityLogs', 'instructors'
 ];
 
 function emptyDb() {

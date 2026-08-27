@@ -25,6 +25,7 @@ import Translate from './pages/Translate';
 import VideoLearning from './pages/VideoLearning';
 import LessonResult from './pages/LessonResult';
 import Review from './pages/Review';
+import Instructors from './pages/Instructors';
 
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminLevels from './pages/admin/AdminLevels';
@@ -35,6 +36,7 @@ import AdminSentences from './pages/admin/AdminSentences';
 import AdminSlides from './pages/admin/AdminSlides';
 import AdminSongs from './pages/admin/AdminSongs';
 import AdminVideos from './pages/admin/AdminVideos';
+import AdminInstructors from './pages/admin/AdminInstructors';
 import AdminUsers from './pages/admin/AdminUsers';
 
 export default function App() {
@@ -47,6 +49,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/review" element={<Review />} />
+          <Route path="/instructors" element={<Instructors />} />
           <Route path="/levels/:levelId" element={<LevelLessons />} />
           <Route path="/lessons/:lessonId" element={<LessonHome />} />
           <Route path="/lessons/:lessonId/ppt" element={<SlideViewer />} />
@@ -80,6 +83,7 @@ export default function App() {
             <Route path="slides" element={<AdminSlides />} />
             <Route path="songs" element={<AdminSongs />} />
             <Route path="videos" element={<AdminVideos />} />
+            <Route path="instructors" element={<AdminInstructors />} />
             <Route path="users" element={<AdminUsers />} />
           </Route>
         </Route>

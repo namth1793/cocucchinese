@@ -109,6 +109,11 @@ function seedIfEmpty() {
     url: '', description: 'Giáo viên cập nhật link video thực tế qua trang Quản trị.'
   });
 
+  db.insert('instructors', {
+    name: 'Cô Lan', title: 'Giáo viên', avatarUrl: null, order: 1,
+    bio: 'Thông tin giới thiệu (kinh nghiệm, bằng cấp, ảnh...) sẽ được admin/giáo viên cập nhật qua trang Quản trị.'
+  });
+
   console.log('Đã tạo dữ liệu mẫu. Đăng nhập demo:');
   console.log('  Admin:   admin@hsk360.vn   / admin123');
   console.log('  Giáo viên: teacher@hsk360.vn / teacher123');

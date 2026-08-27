@@ -48,6 +48,7 @@ app.use('/api/images', require('./routes/images'));
 app.use('/api/slides', require('./routes/slides'));
 app.use('/api/songs', require('./routes/songs'));
 app.use('/api/videos', require('./routes/videos'));
+app.use('/api/instructors', require('./routes/instructors'));
 app.use('/api/users', require('./routes/users'));
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));

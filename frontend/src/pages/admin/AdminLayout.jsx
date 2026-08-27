@@ -12,6 +12,7 @@ const TABS = [
   { path: 'slides', label: 'PPT' },
   { path: 'songs', label: 'Bài hát' },
   { path: 'videos', label: 'Video' },
+  { path: 'instructors', label: 'Giảng viên' },
   { path: 'users', label: 'Người dùng', adminOnly: true }
 ];
 

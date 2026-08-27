@@ -1,4 +1,4 @@
-import { ChevronRight, GraduationCap, Home, LogOut, RotateCcw, ShieldCheck } from 'lucide-react';
+import { ChevronRight, GraduationCap, Home, LogOut, RotateCcw, ShieldCheck, UserRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import api from '../api/client';
@@ -68,6 +68,10 @@ export default function Sidebar() {
 
         <NavLink to="/review" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
           <RotateCcw size={18} /> Ôn tập
+        </NavLink>
+
+        <NavLink to="/instructors" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <UserRound size={18} /> Giới thiệu giảng viên
         </NavLink>
 
         {(user.role === 'admin' || user.role === 'teacher') && (
