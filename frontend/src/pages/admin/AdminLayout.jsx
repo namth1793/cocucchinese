@@ -1,27 +1,43 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { GraduationCap, LogOut, Plus, ShieldCheck, Trash2, UserRound, X } from 'lucide-react';
+import { ChevronRight, GraduationCap, LogOut, Plus, ShieldCheck, Trash2, UserRound, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/client';
+import { COURSE_CATEGORIES } from '../../constants/courseCategories';
 import Logo from '../../components/Logo';
 
 const LEVEL_DOT_COLORS = ['#DC2626', '#059669', '#D97706', '#2563EB', '#7C3AED', '#DB2777'];
 const EMPTY_LEVEL_FORM = { code: '', name: '', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 1 };
-const CATEGORY_META = [
-  { key: 'hsk_hskk', label: 'HSK & HSKK' },
-  { key: 'kids', label: 'Tiếng Trung trẻ em' },
-  { key: 'conversation', label: 'Tiếng Trung giao tiếp' }
-];
 
-function AdminLevelsNav({ user }) {
+function AdminLevelLinks({ items, onDelete }) {
+  if (items.length === 0) return <span className="sidebar-sublink" style={{ opacity: 0.5, fontSize: 12 }}>Trống</span>;
+  return items.map((lv, i) => (
+    <NavLink key={lv.id} to={`/admin/levels/${lv.id}`} className={({ isActive }) => `sidebar-sublink admin-level-link ${isActive ? 'active' : ''}`}>
+      <span className="sidebar-sublink-dot" style={{ background: LEVEL_DOT_COLORS[i % LEVEL_DOT_COLORS.length] }} />
+      <span style={{ flex: 1 }}>{lv.code} — {lv.name}</span>
+      <button type="button" className="admin-level-delete" title="Xoá cấp độ" onClick={(e) => onDelete(e, lv)}>
+        <Trash2 size={13} />
+      </button>
+    </NavLink>
+  ));
+}
+
+function AdminLevelsNav() {
   const [levels, setLevels] = useState([]);
+  const [openCats, setOpenCats] = useState(() => new Set(COURSE_CATEGORIES.map((c) => c.key)));
+  const [openGroups, setOpenGroups] = useState(() => new Set());
   const [adding, setAdding] = useState(false);
   const [form, setForm] = useState(EMPTY_LEVEL_FORM);
 
-  const load = () => {
-    api.get('/levels').then((res) => setLevels(res.data));
-  };
+  const load = () => { api.get('/levels').then((res) => setLevels(res.data)); };
   useEffect(load, []);
+
+  const toggleCat = (key) => setOpenCats((s) => { const n = new Set(s); n.has(key) ? n.delete(key) : n.add(key); return n; });
+  const toggleGroup = (key) => setOpenGroups((s) => { const n = new Set(s); n.has(key) ? n.delete(key) : n.add(key); return n; });
+
+  const itemsFor = (catKey, groupKey) => levels
+    .filter((lv) => lv.category === catKey && (groupKey === undefined || lv.group === groupKey))
+    .sort((a, b) => a.order - b.order);
 
   const createLevel = async (e) => {
     e.preventDefault();
@@ -43,23 +59,41 @@ function AdminLevelsNav({ user }) {
 
   return (
     <>
-      {CATEGORY_META.map((cat) => {
-        const items = levels
-          .filter((lv) => lv.category === cat.key)
-          .sort((a, b) => (a.group || '').localeCompare(b.group || '') || a.order - b.order);
+      {COURSE_CATEGORIES.map((cat) => {
+        const catOpen = openCats.has(cat.key);
         return (
           <div key={cat.key}>
-            <div className="admin-level-category-label">{cat.label}</div>
-            {items.map((lv, i) => (
-              <NavLink key={lv.id} to={`/admin/levels/${lv.id}`} className={({ isActive }) => `sidebar-sublink admin-level-link ${isActive ? 'active' : ''}`}>
-                <span className="sidebar-sublink-dot" style={{ background: LEVEL_DOT_COLORS[i % LEVEL_DOT_COLORS.length] }} />
-                <span style={{ flex: 1 }}>{lv.code} — {lv.name}</span>
-                <button type="button" className="admin-level-delete" title="Xoá cấp độ" onClick={(e) => deleteLevel(e, lv)}>
-                  <Trash2 size={13} />
-                </button>
-              </NavLink>
-            ))}
-            {items.length === 0 && <span className="sidebar-sublink" style={{ opacity: 0.5, fontSize: 12 }}>Trống</span>}
+            <button type="button" className={`sidebar-group-header ${catOpen ? 'open' : ''}`} onClick={() => toggleCat(cat.key)}>
+              <span aria-hidden="true">{cat.emoji}</span> {cat.label}
+              <ChevronRight size={16} className="chevron" />
+            </button>
+            {catOpen && (
+              <div className="sidebar-group-items">
+                {cat.groups ? cat.groups.map((g) => {
+                  const groupKey = `${cat.key}:${g.key}`;
+                  const groupOpen = openGroups.has(groupKey);
+                  return (
+                    <div key={g.key}>
+                      <button
+                        type="button"
+                        className={`sidebar-group-header sidebar-subgroup-header ${groupOpen ? 'open' : ''}`}
+                        onClick={() => toggleGroup(groupKey)}
+                      >
+                        <span aria-hidden="true">{g.emoji}</span> {g.label}
+                        <ChevronRight size={14} className="chevron" />
+                      </button>
+                      {groupOpen && (
+                        <div className="sidebar-group-items sidebar-group-items-nested">
+                          <AdminLevelLinks items={itemsFor(cat.key, g.key)} onDelete={deleteLevel} />
+                        </div>
+                      )}
+                    </div>
+                  );
+                }) : (
+                  <AdminLevelLinks items={itemsFor(cat.key, undefined)} onDelete={deleteLevel} />
+                )}
+              </div>
+            )}
           </div>
         );
       })}
@@ -70,7 +104,7 @@ function AdminLevelsNav({ user }) {
           <input placeholder="Tên hiển thị" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
           <input placeholder="Loại (VD: HSK, KIDS, CONVO...)" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} />
           <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
-            {CATEGORY_META.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+            {COURSE_CATEGORIES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
           </select>
           {form.category === 'hsk_hskk' && (
             <select value={form.group} onChange={(e) => setForm({ ...form, group: e.target.value })}>
@@ -106,10 +140,8 @@ export default function AdminLayout() {
         <div className="sidebar-brand"><Logo size="sm" /></div>
 
         <nav className="sidebar-nav">
-          <div className="sidebar-section-label">Cấp độ</div>
-          <div className="sidebar-group-items" style={{ padding: '2px 0 4px' }}>
-            <AdminLevelsNav user={user} />
-          </div>
+          <div className="sidebar-section-label">Khoá học</div>
+          <AdminLevelsNav />
 
           <div className="sidebar-section-label">Khác</div>
           <NavLink to="/admin/instructors" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>

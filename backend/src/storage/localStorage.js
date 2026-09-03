@@ -48,4 +48,28 @@ async function sendSlidePage(res, slideId, key) {
   return true;
 }
 
-module.exports = { mode: 'local', saveMedia, saveSlidePage, sendSlidePage };
+/**
+ * Lưu file PowerPoint/tài liệu gốc của bộ bài giảng - chỉ giáo viên/admin tải
+ * lên và tải về được (route tự kiểm tra role), KHÔNG hiển thị/convert cho học
+ * sinh. Mỗi bộ bài giảng chỉ giữ 1 file gốc - tải lên lại sẽ ghi đè bản cũ.
+ */
+async function saveSlideSource(slideId, buffer, originalname) {
+  const dir = path.join(UPLOAD_ROOT, 'slides', slideId);
+  ensureDir(dir);
+  const filename = `source${safeExt(originalname)}`;
+  fs.writeFileSync(path.join(dir, filename), buffer);
+  return { fileName: filename };
+}
+
+async function sendSlideSource(res, slideId, fileName, downloadName) {
+  const filePath = path.join(UPLOAD_ROOT, 'slides', slideId, fileName);
+  if (!fs.existsSync(filePath)) return false;
+  res.set({
+    'Cache-Control': 'no-store',
+    'Content-Disposition': `attachment; filename="${encodeURIComponent(downloadName || fileName)}"`
+  });
+  res.sendFile(filePath);
+  return true;
+}
+
+module.exports = { mode: 'local', saveMedia, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource };

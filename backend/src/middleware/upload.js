@@ -6,5 +6,6 @@ const memory = multer.memoryStorage();
 
 const mediaUpload = multer({ storage: memory, limits: { fileSize: 15 * 1024 * 1024 } });
 const slideUpload = multer({ storage: memory, limits: { fileSize: 25 * 1024 * 1024 } });
+const sourceFileUpload = multer({ storage: memory, limits: { fileSize: 80 * 1024 * 1024 } });
 
-module.exports = { mediaUpload, slideUpload };
+module.exports = { mediaUpload, slideUpload, sourceFileUpload };

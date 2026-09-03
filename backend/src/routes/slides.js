@@ -1,17 +1,23 @@
 const express = require('express');
+const path = require('path');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
 const { requireAuth, requireRole, JWT_SECRET } = require('../middleware/auth');
-const { slideUpload } = require('../middleware/upload');
+const { slideUpload, sourceFileUpload } = require('../middleware/upload');
 const storage = require('../storage');
 
 const router = express.Router();
 
-// Danh sách bài giảng của 1 bài học - CHỈ trả về metadata, không lộ đường dẫn file gốc
+// Danh sách bài giảng của 1 bài học - CHỈ trả về metadata, không lộ đường dẫn file gốc.
+// sourceFileName/sourceOriginalName cũng chỉ hiển thị cho giáo viên/admin (route staff).
 router.get('/', requireAuth, (req, res) => {
   let items = db.all('slides');
   if (req.query.lessonId) items = items.filter((s) => s.lessonId === req.query.lessonId);
-  res.json(items.map((s) => ({ id: s.id, lessonId: s.lessonId, title: s.title, pageCount: s.pages.length, version: s.version })));
+  const isStaff = req.user.role === 'admin' || req.user.role === 'teacher';
+  res.json(items.map((s) => ({
+    id: s.id, lessonId: s.lessonId, title: s.title, pageCount: s.pages.length, version: s.version,
+    ...(isStaff ? { sourceOriginalName: s.sourceOriginalName || null } : {})
+  })));
 });
 
 router.post('/', requireAuth, requireRole('admin', 'teacher'), (req, res) => {
@@ -35,6 +41,38 @@ router.post('/:id/pages', requireAuth, requireRole('admin', 'teacher'), slideUpl
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: 'Tải trang bài giảng lên thất bại' });
+  }
+});
+
+// Tải lên file PowerPoint/tài liệu gốc - chỉ giáo viên/admin, không convert,
+// không hiển thị/chia sẻ cho học sinh. Học sinh vẫn xem bài giảng qua các
+// trang ảnh (route /:id/pages ở trên) như bình thường.
+router.post('/:id/source', requireAuth, requireRole('admin', 'teacher'), sourceFileUpload.single('file'), async (req, res) => {
+  const slide = db.find('slides', req.params.id);
+  if (!slide) return res.status(404).json({ error: 'Không tìm thấy bài giảng' });
+  if (!req.file) return res.status(400).json({ error: 'Thiếu file' });
+  try {
+    await storage.saveSlideSource(slide.id, req.file.buffer, req.file.originalname, req.file.mimetype);
+    const updated = db.update('slides', slide.id, { sourceOriginalName: req.file.originalname });
+    db.logActivity(req.user.id, 'upload_slide_source', { slideId: slide.id, name: req.file.originalname });
+    res.json({ sourceOriginalName: updated.sourceOriginalName });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Tải file PowerPoint lên thất bại' });
+  }
+});
+
+// Tải file PowerPoint/tài liệu gốc về - chỉ giáo viên/admin.
+router.get('/:id/source', requireAuth, requireRole('admin', 'teacher'), async (req, res) => {
+  const slide = db.find('slides', req.params.id);
+  if (!slide || !slide.sourceOriginalName) return res.status(404).json({ error: 'Chưa có file gốc' });
+  const ext = path.extname(slide.sourceOriginalName) || '';
+  try {
+    const sent = await storage.sendSlideSource(res, slide.id, `source${ext}`, slide.sourceOriginalName);
+    if (!sent) res.status(404).json({ error: 'File không tồn tại' });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Không tải được file' });
   }
 });
 

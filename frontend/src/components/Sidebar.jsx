@@ -3,21 +3,10 @@ import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
+import { COURSE_CATEGORIES } from '../constants/courseCategories';
 import Logo from './Logo';
 
 const LEVEL_DOT_COLORS = ['#DC2626', '#059669', '#D97706', '#2563EB', '#7C3AED', '#DB2777'];
-
-const CATEGORIES = [
-  {
-    key: 'hsk_hskk', label: 'HSK & HSKK', emoji: '🎯',
-    groups: [
-      { key: 'HSK 3.0', label: 'HSK 3.0', emoji: '🌟' },
-      { key: 'HSKK', label: 'HSKK', emoji: '🗣️' }
-    ]
-  },
-  { key: 'kids', label: 'Tiếng Trung trẻ em', emoji: '👶' },
-  { key: 'conversation', label: 'Tiếng Trung giao tiếp', emoji: '🗣️' }
-];
 
 function LevelLinks({ items }) {
   if (items.length === 0) {
@@ -62,7 +51,7 @@ function CourseTree() {
     .filter((lv) => lv.category === catKey && (groupKey === undefined || lv.group === groupKey))
     .sort((a, b) => a.order - b.order);
 
-  return CATEGORIES.map((cat) => {
+  return COURSE_CATEGORIES.map((cat) => {
     const catOpen = openCats.has(cat.key);
     return (
       <div key={cat.key}>
