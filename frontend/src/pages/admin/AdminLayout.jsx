@@ -6,7 +6,12 @@ import api from '../../api/client';
 import Logo from '../../components/Logo';
 
 const LEVEL_DOT_COLORS = ['#DC2626', '#059669', '#D97706', '#2563EB', '#7C3AED', '#DB2777'];
-const EMPTY_LEVEL_FORM = { code: '', name: '', type: 'HSK', order: 1 };
+const EMPTY_LEVEL_FORM = { code: '', name: '', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 1 };
+const CATEGORY_META = [
+  { key: 'hsk_hskk', label: 'HSK & HSKK' },
+  { key: 'kids', label: 'Tiếng Trung trẻ em' },
+  { key: 'conversation', label: 'Tiếng Trung giao tiếp' }
+];
 
 function AdminLevelsNav({ user }) {
   const [levels, setLevels] = useState([]);
@@ -14,16 +19,15 @@ function AdminLevelsNav({ user }) {
   const [form, setForm] = useState(EMPTY_LEVEL_FORM);
 
   const load = () => {
-    api.get('/levels').then((res) => {
-      const sorted = [...res.data].sort((a, b) => (a.type === b.type ? a.order - b.order : a.type.localeCompare(b.type)));
-      setLevels(sorted);
-    });
+    api.get('/levels').then((res) => setLevels(res.data));
   };
   useEffect(load, []);
 
   const createLevel = async (e) => {
     e.preventDefault();
-    await api.post('/levels', { ...form, order: Number(form.order) || 1 });
+    const payload = { ...form, order: Number(form.order) || 1 };
+    if (form.category !== 'hsk_hskk') payload.group = '';
+    await api.post('/levels', payload);
     setForm(EMPTY_LEVEL_FORM);
     setAdding(false);
     load();
@@ -39,25 +43,41 @@ function AdminLevelsNav({ user }) {
 
   return (
     <>
-      {levels.map((lv, i) => (
-        <NavLink key={lv.id} to={`/admin/levels/${lv.id}`} className={({ isActive }) => `sidebar-sublink admin-level-link ${isActive ? 'active' : ''}`}>
-          <span className="sidebar-sublink-dot" style={{ background: LEVEL_DOT_COLORS[i % LEVEL_DOT_COLORS.length] }} />
-          <span style={{ flex: 1 }}>{lv.code} — {lv.name}</span>
-          <button type="button" className="admin-level-delete" title="Xoá cấp độ" onClick={(e) => deleteLevel(e, lv)}>
-            <Trash2 size={13} />
-          </button>
-        </NavLink>
-      ))}
-      {levels.length === 0 && <span className="sidebar-sublink" style={{ opacity: 0.6 }}>Chưa có cấp độ nào.</span>}
+      {CATEGORY_META.map((cat) => {
+        const items = levels
+          .filter((lv) => lv.category === cat.key)
+          .sort((a, b) => (a.group || '').localeCompare(b.group || '') || a.order - b.order);
+        return (
+          <div key={cat.key}>
+            <div className="admin-level-category-label">{cat.label}</div>
+            {items.map((lv, i) => (
+              <NavLink key={lv.id} to={`/admin/levels/${lv.id}`} className={({ isActive }) => `sidebar-sublink admin-level-link ${isActive ? 'active' : ''}`}>
+                <span className="sidebar-sublink-dot" style={{ background: LEVEL_DOT_COLORS[i % LEVEL_DOT_COLORS.length] }} />
+                <span style={{ flex: 1 }}>{lv.code} — {lv.name}</span>
+                <button type="button" className="admin-level-delete" title="Xoá cấp độ" onClick={(e) => deleteLevel(e, lv)}>
+                  <Trash2 size={13} />
+                </button>
+              </NavLink>
+            ))}
+            {items.length === 0 && <span className="sidebar-sublink" style={{ opacity: 0.5, fontSize: 12 }}>Trống</span>}
+          </div>
+        );
+      })}
 
       {adding ? (
         <form className="admin-level-add-form" onSubmit={createLevel}>
           <input placeholder="Mã (VD: HSK4)" value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} required />
           <input placeholder="Tên hiển thị" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-          <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
-            <option value="HSK">HSK</option>
-            <option value="YCT">YCT</option>
+          <input placeholder="Loại (VD: HSK, KIDS, CONVO...)" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} />
+          <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
+            {CATEGORY_META.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
           </select>
+          {form.category === 'hsk_hskk' && (
+            <select value={form.group} onChange={(e) => setForm({ ...form, group: e.target.value })}>
+              <option value="HSK 3.0">HSK 3.0</option>
+              <option value="HSKK">HSKK</option>
+            </select>
+          )}
           <input type="number" placeholder="Thứ tự" value={form.order} onChange={(e) => setForm({ ...form, order: e.target.value })} />
           <div style={{ display: 'flex', gap: 6 }}>
             <button type="submit" className="btn-primary" style={{ flex: 1, padding: '7px 0', fontSize: 12.5 }}>Tạo</button>

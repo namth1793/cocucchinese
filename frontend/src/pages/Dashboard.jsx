@@ -13,6 +13,16 @@ const SAMPLE_CARDS = [
   { hanzi: '学习', pinyin: 'xuéxí' }
 ];
 
+const CATEGORY_ORDER = { hsk_hskk: 0, kids: 1, conversation: 2 };
+const GROUP_ORDER = { 'HSK 3.0': 0, HSKK: 1 };
+function levelSubtitle(lv) {
+  if (lv.type === 'HSK') return 'Hán ngữ tiêu chuẩn';
+  if (lv.type === 'HSKK') return 'Khẩu ngữ HSK';
+  if (lv.category === 'kids') return 'Tiếng Trung trẻ em';
+  if (lv.category === 'conversation') return 'Giao tiếp thực tế';
+  return lv.type || '';
+}
+
 export default function Dashboard() {
   const { user } = useAuth();
   const [levels, setLevels] = useState([]);
@@ -23,7 +33,13 @@ export default function Dashboard() {
 
   useEffect(() => {
     api.get('/levels').then((res) => {
-      const sorted = [...res.data].sort((a, b) => (a.type === b.type ? a.order - b.order : a.type.localeCompare(b.type)));
+      const sorted = [...res.data].sort((a, b) => {
+        const catDiff = (CATEGORY_ORDER[a.category] ?? 9) - (CATEGORY_ORDER[b.category] ?? 9);
+        if (catDiff !== 0) return catDiff;
+        const groupDiff = (GROUP_ORDER[a.group] ?? 9) - (GROUP_ORDER[b.group] ?? 9);
+        if (groupDiff !== 0) return groupDiff;
+        return a.order - b.order;
+      });
       setLevels(sorted);
     }).finally(() => setLoading(false));
     api.get('/progress/streak').then((res) => setStreak(res.data));
@@ -49,7 +65,7 @@ export default function Dashboard() {
             </span>
             <span className="level-card-body">
               <span className="level-card-name">{lv.name}</span>
-              <span className="level-card-sub">{lv.type === 'HSK' ? 'Hán ngữ tiêu chuẩn' : 'Thanh thiếu niên'}</span>
+              <span className="level-card-sub">{levelSubtitle(lv)}</span>
             </span>
           </Link>
         ))}

@@ -29,10 +29,31 @@ function seedIfEmpty() {
   db.insert('users', { name: 'Cô Lan', email: 'teacher@hsk360.vn', passwordHash: bcrypt.hashSync('teacher123', 10), role: 'teacher', status: 'active', activeSessions: [] });
   db.insert('users', { name: 'Học sinh Demo', email: 'student@hsk360.vn', passwordHash: bcrypt.hashSync('student123', 10), role: 'student', status: 'active', activeSessions: [] });
 
-  const hsk1 = db.insert('levels', { code: 'HSK1', name: 'HSK 1', type: 'HSK', order: 1 });
-  db.insert('levels', { code: 'HSK2', name: 'HSK 2', type: 'HSK', order: 2 });
-  db.insert('levels', { code: 'HSK3', name: 'HSK 3', type: 'HSK', order: 3 });
-  db.insert('levels', { code: 'YCT1', name: 'YCT 1', type: 'YCT', order: 1 });
+  const hsk1 = db.insert('levels', { code: 'HSK1', name: 'HSK 1', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 1 });
+  db.insert('levels', { code: 'HSK2', name: 'HSK 2', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 2 });
+  db.insert('levels', { code: 'HSK3', name: 'HSK 3', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 3 });
+  db.insert('levels', { code: 'HSK4', name: 'HSK 4', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 4 });
+  db.insert('levels', { code: 'HSK5', name: 'HSK 5', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 5 });
+  db.insert('levels', { code: 'HSK6', name: 'HSK 6', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 6 });
+
+  db.insert('levels', { code: 'HSKK-SC', name: 'HSKK Sơ cấp', type: 'HSKK', category: 'hsk_hskk', group: 'HSKK', order: 1 });
+  db.insert('levels', { code: 'HSKK-TC', name: 'HSKK Trung cấp', type: 'HSKK', category: 'hsk_hskk', group: 'HSKK', order: 2 });
+  db.insert('levels', { code: 'HSKK-CC', name: 'HSKK Cao cấp', type: 'HSKK', category: 'hsk_hskk', group: 'HSKK', order: 3 });
+
+  db.insert('levels', { code: 'YCT1', name: 'YCT 1', type: 'YCT', category: 'kids', order: 1 });
+  db.insert('levels', { code: 'YCT2', name: 'YCT 2', type: 'YCT', category: 'kids', order: 2 });
+  db.insert('levels', { code: 'YCT3', name: 'YCT 3', type: 'YCT', category: 'kids', order: 3 });
+  db.insert('levels', { code: 'YCT4', name: 'YCT 4', type: 'YCT', category: 'kids', order: 4 });
+  db.insert('levels', { code: 'KIDS-FLASHCARD', name: 'Flashcard theo chủ đề', type: 'KIDS', category: 'kids', order: 5 });
+  db.insert('levels', { code: 'KIDS-LITTLEFOX', name: 'Little Fox Chinese', type: 'KIDS', category: 'kids', order: 6 });
+  db.insert('levels', { code: 'KIDS-STORY', name: 'Truyện tiếng Trung', type: 'KIDS', category: 'kids', order: 7 });
+  db.insert('levels', { code: 'KIDS-SONG', name: 'Bài hát tiếng Trung', type: 'KIDS', category: 'kids', order: 8 });
+
+  db.insert('levels', { code: 'CONVO-BASIC', name: 'Giao tiếp cơ bản', type: 'CONVO', category: 'conversation', order: 1 });
+  db.insert('levels', { code: 'CONVO-DAILY', name: 'Giao tiếp hằng ngày', type: 'CONVO', category: 'conversation', order: 2 });
+  db.insert('levels', { code: 'CONVO-TRAVEL', name: 'Tiếng Trung du lịch', type: 'CONVO', category: 'conversation', order: 3 });
+  db.insert('levels', { code: 'CONVO-WORK', name: 'Tiếng Trung công việc', type: 'CONVO', category: 'conversation', order: 4 });
+  db.insert('levels', { code: 'CONVO-OFFICE', name: 'Tiếng Trung công sở', type: 'CONVO', category: 'conversation', order: 5 });
 
   const lesson1 = db.insert('lessons', { levelId: hsk1.id, order: 1, title: 'Bài 1: 你好 - Xin chào', description: 'Chào hỏi cơ bản', published: true });
   db.insert('lessons', { levelId: hsk1.id, order: 2, title: 'Bài 2: 谢谢 - Cảm ơn', description: 'Cảm ơn và xin lỗi', published: true });

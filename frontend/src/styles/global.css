@@ -148,7 +148,7 @@ input, select, textarea { font-family: inherit; }
     display: flex; align-items: center; justify-content: center;
   }
 
-  .sidebar-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .sidebar-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; overflow-y: auto; min-height: 0; }
   .sidebar-link {
     display: flex; align-items: center; gap: 12px;
     padding: 11px 14px; border-radius: var(--radius-md);
@@ -184,6 +184,14 @@ input, select, textarea { font-family: inherit; }
   .sidebar-sublink.active { background: #fff; color: var(--primary-dark); border-left-color: transparent; font-weight: 700; }
   .sidebar-sublink-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 2px rgba(255,255,255,0.55); }
 
+  .sidebar-subgroup-header { font-size: 13.5px; padding: 9px 14px; }
+  .sidebar-group-items-nested { padding-left: 14px; }
+
+  .admin-level-category-label {
+    font-size: 10.5px; font-weight: 800; color: rgba(255,255,255,0.55);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 10px 14px 4px;
+  }
   .admin-level-link { position: relative; }
   .admin-level-delete {
     flex-shrink: 0; display: flex; align-items: center; justify-content: center;
