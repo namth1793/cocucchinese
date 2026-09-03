@@ -3,11 +3,11 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { ChevronRight, GraduationCap, LogOut, Plus, ShieldCheck, Trash2, UserRound, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/client';
-import { COURSE_CATEGORIES } from '../../constants/courseCategories';
+import { COURSE_CATEGORIES, LEVEL_TYPE_OPTIONS } from '../../constants/courseCategories';
 import Logo from '../../components/Logo';
 
 const LEVEL_DOT_COLORS = ['#DC2626', '#059669', '#D97706', '#2563EB', '#7C3AED', '#DB2777'];
-const EMPTY_LEVEL_FORM = { code: '', name: '', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 1 };
+const EMPTY_LEVEL_FORM = { code: '', name: '', type: 'HSK', order: 1 };
 
 function AdminLevelLinks({ items, onDelete }) {
   if (items.length === 0) return <span className="sidebar-sublink" style={{ opacity: 0.5, fontSize: 12 }}>Trống</span>;
@@ -41,9 +41,7 @@ function AdminLevelsNav() {
 
   const createLevel = async (e) => {
     e.preventDefault();
-    const payload = { ...form, order: Number(form.order) || 1 };
-    if (form.category !== 'hsk_hskk') payload.group = '';
-    await api.post('/levels', payload);
+    await api.post('/levels', { ...form, order: Number(form.order) || 1 });
     setForm(EMPTY_LEVEL_FORM);
     setAdding(false);
     load();
@@ -102,16 +100,9 @@ function AdminLevelsNav() {
         <form className="admin-level-add-form" onSubmit={createLevel}>
           <input placeholder="Mã (VD: HSK4)" value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} required />
           <input placeholder="Tên hiển thị" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-          <input placeholder="Loại (VD: HSK, KIDS, CONVO...)" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} />
-          <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
-            {COURSE_CATEGORIES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+          <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
+            {LEVEL_TYPE_OPTIONS.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
           </select>
-          {form.category === 'hsk_hskk' && (
-            <select value={form.group} onChange={(e) => setForm({ ...form, group: e.target.value })}>
-              <option value="HSK 3.0">HSK 3.0</option>
-              <option value="HSKK">HSKK</option>
-            </select>
-          )}
           <input type="number" placeholder="Thứ tự" value={form.order} onChange={(e) => setForm({ ...form, order: e.target.value })} />
           <div style={{ display: 'flex', gap: 6 }}>
             <button type="submit" className="btn-primary" style={{ flex: 1, padding: '7px 0', fontSize: 12.5 }}>Tạo</button>
