@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+import { BookOpen } from 'lucide-react';
 import AdminCrud from '../../components/AdminCrud';
 import { LEVEL_TYPE_OPTIONS, placementLabel } from '../../constants/courseCategories';
 
@@ -20,5 +22,18 @@ const COLUMNS = [
 ];
 
 export default function AdminLevels() {
-  return <AdminCrud title="Quản lý cấp độ / khoá học" endpoint="/levels" fields={FIELDS} listColumns={COLUMNS} />;
+  return (
+    <AdminCrud
+      title="Quản lý cấp độ / khoá học"
+      hint="Form dưới đây chỉ sửa thông tin cấp độ (mã, tên, loại, thứ tự). Để sửa bài học, từ vựng, ngữ pháp... bấm 'Nội dung' trên từng dòng."
+      endpoint="/levels"
+      fields={FIELDS}
+      listColumns={COLUMNS}
+      renderRowExtra={(item) => (
+        <Link to={`/admin/levels/${item.id}`} className="btn-secondary">
+          <BookOpen size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Nội dung
+        </Link>
+      )}
+    />
+  );
 }
