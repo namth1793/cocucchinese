@@ -35,6 +35,7 @@ import AdminLevelDetail from './pages/admin/AdminLevelDetail';
 import AdminLessonEditor from './pages/admin/AdminLessonEditor';
 import AdminInstructors from './pages/admin/AdminInstructors';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminGuide from './pages/admin/AdminGuide';
 
 /** Admin/giáo viên đăng nhập vào thẳng trang quản trị, không thấy dashboard học sinh. */
 function RoleHome() {
@@ -84,6 +85,7 @@ export default function App() {
             <Route path="levels/:levelId/lessons/:lessonId" element={<AdminLessonEditor />} />
             <Route path="instructors" element={<AdminInstructors />} />
             <Route path="users" element={<AdminUsers />} />
+            <Route path="guide" element={<AdminGuide />} />
           </Route>
         </Route>
       </Route>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { ChevronRight, GraduationCap, LogOut, Plus, ShieldCheck, Trash2, UserRound, X } from 'lucide-react';
+import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ShieldCheck, Trash2, UserRound, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/client';
 import { COURSE_CATEGORIES, LEVEL_TYPE_OPTIONS } from '../../constants/courseCategories';
@@ -135,6 +135,9 @@ export default function AdminLayout() {
           <AdminLevelsNav />
 
           <div className="sidebar-section-label">Khác</div>
+          <NavLink to="/admin/guide" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+            <BookOpen size={18} /> Hướng dẫn sử dụng
+          </NavLink>
           <NavLink to="/admin/instructors" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <UserRound size={18} /> Giảng viên
           </NavLink>
@@ -175,6 +178,9 @@ export default function AdminLayout() {
 
         <nav className="admin-tabs navbar-mobile-only">
           <MobileLevelTabs />
+          <NavLink to="/admin/guide" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+            <BookOpen size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Hướng dẫn
+          </NavLink>
           <NavLink to="/admin/instructors" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
             <GraduationCap size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Giảng viên
           </NavLink>
