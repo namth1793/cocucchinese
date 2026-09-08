@@ -1,5 +1,7 @@
 const express = require('express');
 const path = require('path');
+const axios = require('axios');
+const FormData = require('form-data');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
 const { requireAuth, requireRole, JWT_SECRET } = require('../middleware/auth');
@@ -7,6 +9,18 @@ const { slideUpload, sourceFileUpload } = require('../middleware/upload');
 const storage = require('../storage');
 
 const router = express.Router();
+
+const CLOUDCONVERT_API_KEY = process.env.CLOUDCONVERT_API_KEY;
+const cloudconvert = axios.create({
+  baseURL: 'https://api.cloudconvert.com/v2',
+  headers: { Authorization: `Bearer ${CLOUDCONVERT_API_KEY}` }
+});
+
+/** Số trang trong tên file CloudConvert trả về (VD: "bai-1-2.png" -> 2), dùng để sắp đúng thứ tự. */
+function pageNumberFromFilename(filename) {
+  const match = filename.match(/(\d+)(?=\.\w+$)/);
+  return match ? parseInt(match[1], 10) : 0;
+}
 
 // Danh sách bài giảng của 1 bài học - CHỈ trả về metadata, không lộ đường dẫn file gốc.
 // sourceFileName/sourceOriginalName cũng chỉ hiển thị cho giáo viên/admin (route staff).
@@ -59,6 +73,66 @@ router.post('/:id/source', requireAuth, requireRole('admin', 'teacher'), sourceF
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: 'Tải file PowerPoint lên thất bại' });
+  }
+});
+
+// Tải file PPT/PDF lên và TỰ ĐỘNG convert thành ảnh từng trang qua CloudConvert
+// (thay cho việc giáo viên phải tự xuất ảnh rồi tải lên thủ công ở route
+// /:id/pages). File gốc cũng được lưu lại như route /:id/source ở trên.
+router.post('/:id/convert-pptx', requireAuth, requireRole('admin', 'teacher'), sourceFileUpload.single('file'), async (req, res) => {
+  const slide = db.find('slides', req.params.id);
+  if (!slide) return res.status(404).json({ error: 'Không tìm thấy bài giảng' });
+  if (!req.file) return res.status(400).json({ error: 'Thiếu file' });
+  if (!CLOUDCONVERT_API_KEY) {
+    return res.status(500).json({ error: 'Chưa cấu hình CLOUDCONVERT_API_KEY trên server. Vui lòng tải ảnh từng trang thủ công, hoặc liên hệ quản trị hệ thống.' });
+  }
+
+  try {
+    const { data: job } = await cloudconvert.post('/jobs', {
+      tasks: {
+        'upload-file': { operation: 'import/upload' },
+        'convert-file': { operation: 'convert', input: 'upload-file', output_format: 'png', engine: 'office' },
+        'export-file': { operation: 'export/url', input: 'convert-file' }
+      }
+    });
+
+    const uploadTask = job.data.tasks.find((t) => t.name === 'upload-file');
+    const form = uploadTask.result.form;
+    const uploadForm = new FormData();
+    Object.entries(form.parameters).forEach(([key, value]) => uploadForm.append(key, value));
+    uploadForm.append('file', req.file.buffer, { filename: req.file.originalname });
+    await axios.post(form.url, uploadForm, { headers: uploadForm.getHeaders(), maxBodyLength: Infinity });
+
+    const { data: waited } = await cloudconvert.get(`/jobs/${job.data.id}/wait`);
+    const finishedJob = waited.data;
+    const failedTask = finishedJob.tasks.find((t) => t.status === 'error');
+    if (finishedJob.status !== 'finished' || failedTask) {
+      throw new Error(failedTask?.message || 'CloudConvert không hoàn tất được việc chuyển đổi');
+    }
+
+    const exportTask = finishedJob.tasks.find((t) => t.name === 'export-file');
+    const files = (exportTask.result?.files || []).slice()
+      .sort((a, b) => pageNumberFromFilename(a.filename) - pageNumberFromFilename(b.filename));
+    if (files.length === 0) throw new Error('Không nhận được trang nào từ CloudConvert');
+
+    const uploaded = [];
+    for (const f of files) {
+      const { data: buf } = await axios.get(f.url, { responseType: 'arraybuffer' });
+      uploaded.push(await storage.saveSlidePage(slide.id, Buffer.from(buf), f.filename, 'image/png'));
+    }
+
+    const newPages = uploaded.map(({ key }, i) => ({ pageNum: slide.pages.length + i + 1, fileName: key }));
+    const pages = [...slide.pages, ...newPages];
+    db.update('slides', slide.id, { pages, version: (slide.version || 1) + 1 });
+
+    await storage.saveSlideSource(slide.id, req.file.buffer, req.file.originalname, req.file.mimetype);
+    const updated = db.update('slides', slide.id, { sourceOriginalName: req.file.originalname });
+
+    db.logActivity(req.user.id, 'convert_pptx', { slideId: slide.id, pages: newPages.length, name: req.file.originalname });
+    res.json(updated);
+  } catch (e) {
+    console.error('convert-pptx failed:', e?.response?.data || e.message || e);
+    res.status(500).json({ error: 'Chuyển đổi PPT thất bại: ' + (e.message || 'lỗi không xác định') });
   }
 });
 

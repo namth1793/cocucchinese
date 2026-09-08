@@ -7,8 +7,9 @@ export default function AdminSlides({ lessonId: lockedLessonId }) {
   const [lessonId, setLessonId] = useState(lockedLessonId || '');
   const [decks, setDecks] = useState([]);
   const [newTitle, setNewTitle] = useState('');
-  const [uploadingId, setUploadingId] = useState(null);
   const [uploadingSourceId, setUploadingSourceId] = useState(null);
+  const [convertingId, setConvertingId] = useState(null);
+  const [convertError, setConvertError] = useState({});
 
   useEffect(() => { if (!lockedLessonId) api.get('/lessons').then((res) => setLessons(res.data)); }, [lockedLessonId]);
 
@@ -27,14 +28,20 @@ export default function AdminSlides({ lessonId: lockedLessonId }) {
     loadDecks();
   };
 
-  const uploadPages = async (deckId, files) => {
-    if (!files || files.length === 0) return;
-    setUploadingId(deckId);
+  const convertPptx = async (deckId, file) => {
+    if (!file) return;
+    setConvertingId(deckId);
+    setConvertError((e) => ({ ...e, [deckId]: '' }));
     const fd = new FormData();
-    Array.from(files).forEach((f) => fd.append('pages', f));
-    await api.post(`/slides/${deckId}/pages`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-    setUploadingId(null);
-    loadDecks();
+    fd.append('file', file);
+    try {
+      await api.post(`/slides/${deckId}/convert-pptx`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      loadDecks();
+    } catch (err) {
+      setConvertError((e) => ({ ...e, [deckId]: err?.response?.data?.error || 'Chuyển đổi thất bại, vui lòng thử lại.' }));
+    } finally {
+      setConvertingId(null);
+    }
   };
 
   const uploadSource = async (deckId, file) => {
@@ -94,16 +101,22 @@ export default function AdminSlides({ lessonId: lockedLessonId }) {
               <h3 style={{ marginTop: 0 }}>{deck.title}</h3>
               <p style={{ fontSize: 13, color: 'var(--muted)' }}>{deck.pageCount} trang · phiên bản {deck.version}</p>
 
-              <label style={{ fontWeight: 600, fontSize: 13 }}>Tải thêm trang (ảnh, có thể chọn nhiều file cùng lúc)</label><br />
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                disabled={uploadingId === deck.id}
-                onChange={(e) => uploadPages(deck.id, e.target.files)}
-                style={{ marginTop: 8 }}
-              />
-              {uploadingId === deck.id && <p style={{ fontSize: 13 }}>Đang tải lên...</p>}
+              <div style={{ background: 'var(--primary-soft)', borderRadius: 10, padding: 12, marginBottom: 14 }}>
+                <label style={{ fontWeight: 700, fontSize: 13, color: 'var(--primary-dark)' }}>
+                  ⚡ Tải file PPT/PDF lên (tự động chuyển thành ảnh từng trang)
+                </label>
+                <p style={{ fontSize: 12, color: 'var(--ink-soft)', margin: '4px 0 8px' }}>
+                  Cách nhanh nhất — không cần tự xuất ảnh. Quá trình chuyển đổi mất khoảng 10-30 giây tuỳ số trang.
+                </p>
+                <input
+                  type="file"
+                  accept=".ppt,.pptx,.pdf"
+                  disabled={convertingId === deck.id}
+                  onChange={(e) => convertPptx(deck.id, e.target.files[0])}
+                />
+                {convertingId === deck.id && <p style={{ fontSize: 13, marginTop: 8 }}>Đang chuyển đổi, vui lòng đợi...</p>}
+                {convertError[deck.id] && <p style={{ fontSize: 12.5, color: 'var(--primary-dark)', marginTop: 8 }}>{convertError[deck.id]}</p>}
+              </div>
 
               <div style={{ marginTop: 16, paddingTop: 14, borderTop: '1px dashed var(--line-strong)' }}>
                 <label style={{ fontWeight: 600, fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
