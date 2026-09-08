@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const path = require('path');
-const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectsCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const client = new S3Client({
@@ -99,4 +99,20 @@ async function sendSlideSource(res, slideId, fileName, downloadName) {
   return true;
 }
 
-module.exports = { mode: 'r2', saveMedia, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource };
+/** Xoá toàn bộ object (trang ảnh + file gốc) của 1 bộ bài giảng trên R2 - dùng khi admin xoá deck để tải lại từ đầu. */
+async function deleteSlideDeck(slideId) {
+  const prefix = `slides/${slideId}/`;
+  let continuationToken;
+  do {
+    const list = await client.send(new ListObjectsV2Command({
+      Bucket: SLIDES_BUCKET, Prefix: prefix, ContinuationToken: continuationToken
+    }));
+    const objects = (list.Contents || []).map((o) => ({ Key: o.Key }));
+    if (objects.length > 0) {
+      await client.send(new DeleteObjectsCommand({ Bucket: SLIDES_BUCKET, Delete: { Objects: objects } }));
+    }
+    continuationToken = list.IsTruncated ? list.NextContinuationToken : undefined;
+  } while (continuationToken);
+}
+
+module.exports = { mode: 'r2', saveMedia, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource, deleteSlideDeck };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FileText, Download } from 'lucide-react';
+import { FileText, Download, Trash2, Eye } from 'lucide-react';
 import api from '../../api/client';
 
 export default function AdminSlides({ lessonId: lockedLessonId }) {
@@ -54,6 +54,12 @@ export default function AdminSlides({ lessonId: lockedLessonId }) {
     loadDecks();
   };
 
+  const deleteDeck = async (deckId, title) => {
+    if (!window.confirm(`Xoá bộ bài giảng "${title}"? Toàn bộ ảnh và file gốc đã tải lên sẽ bị xoá vĩnh viễn.`)) return;
+    await api.delete(`/slides/${deckId}`);
+    loadDecks();
+  };
+
   const downloadSource = async (deckId, filename) => {
     const res = await api.get(`/slides/${deckId}/source`, { responseType: 'blob' });
     const url = URL.createObjectURL(res.data);
@@ -98,8 +104,22 @@ export default function AdminSlides({ lessonId: lockedLessonId }) {
 
           {decks.map((deck) => (
             <div key={deck.id} className="card">
-              <h3 style={{ marginTop: 0 }}>{deck.title}</h3>
-              <p style={{ fontSize: 13, color: 'var(--muted)' }}>{deck.pageCount} trang · phiên bản {deck.version}</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                <div>
+                  <h3 style={{ marginTop: 0, marginBottom: 4 }}>{deck.title}</h3>
+                  <p style={{ fontSize: 13, color: 'var(--muted)', margin: 0 }}>{deck.pageCount} trang · phiên bản {deck.version}</p>
+                </div>
+                <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                  {deck.pageCount > 0 && (
+                    <a href={`/lessons/${lessonId}/ppt`} target="_blank" rel="noreferrer" className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Eye size={13} /> Xem thử
+                    </a>
+                  )}
+                  <button type="button" className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#B91C1C' }} onClick={() => deleteDeck(deck.id, deck.title)}>
+                    <Trash2 size={13} /> Xoá
+                  </button>
+                </div>
+              </div>
 
               <div style={{ background: 'var(--primary-soft)', borderRadius: 10, padding: 12, marginBottom: 14 }}>
                 <label style={{ fontWeight: 700, fontSize: 13, color: 'var(--primary-dark)' }}>

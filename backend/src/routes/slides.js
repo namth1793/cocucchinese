@@ -189,6 +189,21 @@ router.get('/:id/page/:n', async (req, res) => {
   }
 });
 
+// Xoá cả bộ bài giảng (trang ảnh + file gốc) - dùng khi cần tải lại từ đầu.
+router.delete('/:id', requireAuth, requireRole('admin', 'teacher'), async (req, res) => {
+  const slide = db.find('slides', req.params.id);
+  if (!slide) return res.status(404).json({ error: 'Không tìm thấy bài giảng' });
+  try {
+    await storage.deleteSlideDeck(slide.id);
+    db.remove('slides', slide.id);
+    db.logActivity(req.user.id, 'delete_slide_deck', { slideId: slide.id, title: slide.title });
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Xoá bộ bài giảng thất bại' });
+  }
+});
+
 router.post('/:id/progress', requireAuth, (req, res) => {
   const { page, percent } = req.body;
   res.json(db.upsertSlideProgress(req.user.id, req.params.id, page, percent));

@@ -72,4 +72,10 @@ async function sendSlideSource(res, slideId, fileName, downloadName) {
   return true;
 }
 
-module.exports = { mode: 'local', saveMedia, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource };
+/** Xoá toàn bộ file (trang ảnh + file gốc) của 1 bộ bài giảng - dùng khi admin xoá deck để tải lại từ đầu. */
+async function deleteSlideDeck(slideId) {
+  const dir = path.join(UPLOAD_ROOT, 'slides', slideId);
+  fs.rmSync(dir, { recursive: true, force: true });
+}
+
+module.exports = { mode: 'local', saveMedia, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource, deleteSlideDeck };
