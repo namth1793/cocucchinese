@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const FormData = require('form-data');
@@ -66,13 +67,15 @@ router.post('/:id/source', requireAuth, requireRole('admin', 'teacher'), sourceF
   if (!slide) return res.status(404).json({ error: 'Không tìm thấy bài giảng' });
   if (!req.file) return res.status(400).json({ error: 'Thiếu file' });
   try {
-    await storage.saveSlideSource(slide.id, req.file.buffer, req.file.originalname, req.file.mimetype);
+    await storage.saveSlideSource(slide.id, req.file.path, req.file.originalname, req.file.mimetype);
     const updated = db.update('slides', slide.id, { sourceOriginalName: req.file.originalname });
     db.logActivity(req.user.id, 'upload_slide_source', { slideId: slide.id, name: req.file.originalname });
     res.json({ sourceOriginalName: updated.sourceOriginalName });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: 'Tải file PowerPoint lên thất bại' });
+  } finally {
+    fs.unlink(req.file.path, () => {});
   }
 });
 
@@ -84,6 +87,7 @@ router.post('/:id/convert-pptx', requireAuth, requireRole('admin', 'teacher'), s
   if (!slide) return res.status(404).json({ error: 'Không tìm thấy bài giảng' });
   if (!req.file) return res.status(400).json({ error: 'Thiếu file' });
   if (!CLOUDCONVERT_API_KEY) {
+    fs.unlink(req.file.path, () => {});
     return res.status(500).json({ error: 'Chưa cấu hình CLOUDCONVERT_API_KEY trên server. Vui lòng tải ảnh từng trang thủ công, hoặc liên hệ quản trị hệ thống.' });
   }
 
@@ -100,8 +104,8 @@ router.post('/:id/convert-pptx', requireAuth, requireRole('admin', 'teacher'), s
     const form = uploadTask.result.form;
     const uploadForm = new FormData();
     Object.entries(form.parameters).forEach(([key, value]) => uploadForm.append(key, value));
-    uploadForm.append('file', req.file.buffer, { filename: req.file.originalname });
-    await axios.post(form.url, uploadForm, { headers: uploadForm.getHeaders(), maxBodyLength: Infinity });
+    uploadForm.append('file', fs.createReadStream(req.file.path), { filename: req.file.originalname, knownLength: req.file.size });
+    await axios.post(form.url, uploadForm, { headers: uploadForm.getHeaders(), maxBodyLength: Infinity, maxContentLength: Infinity });
 
     const { data: waited } = await cloudconvert.get(`/jobs/${job.data.id}/wait`);
     const finishedJob = waited.data;
@@ -125,7 +129,7 @@ router.post('/:id/convert-pptx', requireAuth, requireRole('admin', 'teacher'), s
     const pages = [...slide.pages, ...newPages];
     db.update('slides', slide.id, { pages, version: (slide.version || 1) + 1 });
 
-    await storage.saveSlideSource(slide.id, req.file.buffer, req.file.originalname, req.file.mimetype);
+    await storage.saveSlideSource(slide.id, req.file.path, req.file.originalname, req.file.mimetype);
     const updated = db.update('slides', slide.id, { sourceOriginalName: req.file.originalname });
 
     db.logActivity(req.user.id, 'convert_pptx', { slideId: slide.id, pages: newPages.length, name: req.file.originalname });
@@ -133,6 +137,8 @@ router.post('/:id/convert-pptx', requireAuth, requireRole('admin', 'teacher'), s
   } catch (e) {
     console.error('convert-pptx failed:', e?.response?.data || e.message || e);
     res.status(500).json({ error: 'Chuyển đổi PPT thất bại: ' + (e.message || 'lỗi không xác định') });
+  } finally {
+    fs.unlink(req.file.path, () => {});
   }
 });
 

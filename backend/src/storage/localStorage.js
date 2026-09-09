@@ -52,12 +52,14 @@ async function sendSlidePage(res, slideId, key) {
  * Lưu file PowerPoint/tài liệu gốc của bộ bài giảng - chỉ giáo viên/admin tải
  * lên và tải về được (route tự kiểm tra role), KHÔNG hiển thị/convert cho học
  * sinh. Mỗi bộ bài giảng chỉ giữ 1 file gốc - tải lên lại sẽ ghi đè bản cũ.
+ * Nhận đường dẫn file tạm trên đĩa (route tự xoá sau khi gọi xong) thay vì
+ * buffer trong RAM - file gốc có thể tới 500MB, tránh giữ hết trong bộ nhớ.
  */
-async function saveSlideSource(slideId, buffer, originalname) {
+async function saveSlideSource(slideId, tmpFilePath, originalname) {
   const dir = path.join(UPLOAD_ROOT, 'slides', slideId);
   ensureDir(dir);
   const filename = `source${safeExt(originalname)}`;
-  fs.writeFileSync(path.join(dir, filename), buffer);
+  fs.copyFileSync(tmpFilePath, path.join(dir, filename));
   return { fileName: filename };
 }
 

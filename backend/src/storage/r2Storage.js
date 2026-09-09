@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const fs = require('fs');
 const path = require('path');
 const { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectsCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
@@ -72,14 +73,17 @@ async function sendSlidePage(res, slideId, key) {
  * File PowerPoint/tài liệu gốc của bộ bài giảng - lưu ở bucket slide (private),
  * chỉ giáo viên/admin tải lên và tải về được qua URL ký ngắn hạn (route tự
  * kiểm tra role trước khi phát hành). Mỗi bộ bài giảng chỉ giữ 1 file gốc.
+ * Nhận đường dẫn file tạm trên đĩa (route tự xoá sau khi gọi xong) và stream
+ * thẳng lên R2 - file gốc có thể tới 500MB, tránh giữ hết trong bộ nhớ.
  */
-async function saveSlideSource(slideId, buffer, originalname, mimetype) {
+async function saveSlideSource(slideId, tmpFilePath, originalname, mimetype) {
   const filename = `source${safeExt(originalname)}`;
   await client.send(new PutObjectCommand({
     Bucket: SLIDES_BUCKET,
     Key: `slides/${slideId}/${filename}`,
-    Body: buffer,
-    ContentType: mimetype
+    Body: fs.createReadStream(tmpFilePath),
+    ContentType: mimetype,
+    ContentLength: fs.statSync(tmpFilePath).size
   }));
   return { fileName: filename };
 }
