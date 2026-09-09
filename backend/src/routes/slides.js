@@ -108,10 +108,19 @@ router.post('/:id/source', requireAuth, requireRole('admin', 'teacher'), sourceF
  */
 async function runConvertPptxInBackground(slideId, file, userId) {
   try {
+    // Engine 'office' (LibreOffice) chỉ dùng cho file Office (ppt/pptx/doc...) -
+    // với PDF phải để CloudConvert tự chọn engine phù hợp (mupdf/poppler),
+    // ép engine 'office' sẽ làm job PDF luôn thất bại.
+    const isPdf = path.extname(file.originalname || '').toLowerCase() === '.pdf';
     const { data: job } = await cloudconvert.post('/jobs', {
       tasks: {
         'upload-file': { operation: 'import/upload' },
-        'convert-file': { operation: 'convert', input: 'upload-file', output_format: 'png', engine: 'office' },
+        'convert-file': {
+          operation: 'convert',
+          input: 'upload-file',
+          output_format: 'png',
+          ...(isPdf ? {} : { engine: 'office' })
+        },
         'export-file': { operation: 'export/url', input: 'convert-file' }
       }
     });
