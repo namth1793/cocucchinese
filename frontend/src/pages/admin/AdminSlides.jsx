@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FileText, Download, Trash2, Eye } from 'lucide-react';
 import api from '../../api/client';
 
@@ -10,12 +10,42 @@ export default function AdminSlides({ lessonId: lockedLessonId }) {
   const [uploadingSourceId, setUploadingSourceId] = useState(null);
   const [convertingId, setConvertingId] = useState(null);
   const [convertError, setConvertError] = useState({});
+  const pollingDeckIds = useRef(new Set());
 
   useEffect(() => { if (!lockedLessonId) api.get('/lessons').then((res) => setLessons(res.data)); }, [lockedLessonId]);
 
+  // Convert PPT chạy nền ở server (có thể mất nhiều phút với file nhiều trang) -
+  // tự hỏi lại định kỳ tới khi xong thay vì chờ 1 request duy nhất (dễ bị timeout).
+  const pollConvertStatus = (deckId) => {
+    if (pollingDeckIds.current.has(deckId)) return;
+    pollingDeckIds.current.add(deckId);
+    setConvertingId(deckId);
+    const tick = async () => {
+      try {
+        const res = await api.get(`/slides/${deckId}/convert-status`);
+        if (res.data.convertStatus?.state === 'processing') {
+          setTimeout(tick, 4000);
+          return;
+        }
+        pollingDeckIds.current.delete(deckId);
+        setConvertingId((id) => (id === deckId ? null : id));
+        setConvertError((e) => ({ ...e, [deckId]: res.data.convertStatus?.state === 'error' ? (res.data.convertStatus.error || 'Chuyển đổi thất bại, vui lòng thử lại.') : '' }));
+        loadDecks();
+      } catch {
+        pollingDeckIds.current.delete(deckId);
+        setConvertingId((id) => (id === deckId ? null : id));
+        setConvertError((e) => ({ ...e, [deckId]: 'Không kiểm tra được tiến độ, vui lòng tải lại trang.' }));
+      }
+    };
+    tick();
+  };
+
   const loadDecks = () => {
     if (!lessonId) { setDecks([]); return; }
-    api.get('/slides', { params: { lessonId } }).then((res) => setDecks(res.data));
+    api.get('/slides', { params: { lessonId } }).then((res) => {
+      setDecks(res.data);
+      res.data.forEach((d) => { if (d.convertStatus?.state === 'processing') pollConvertStatus(d.id); });
+    });
   };
 
   useEffect(loadDecks, [lessonId]);
@@ -36,11 +66,10 @@ export default function AdminSlides({ lessonId: lockedLessonId }) {
     fd.append('file', file);
     try {
       await api.post(`/slides/${deckId}/convert-pptx`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-      loadDecks();
+      pollConvertStatus(deckId);
     } catch (err) {
-      setConvertError((e) => ({ ...e, [deckId]: err?.response?.data?.error || 'Chuyển đổi thất bại, vui lòng thử lại.' }));
-    } finally {
       setConvertingId(null);
+      setConvertError((e) => ({ ...e, [deckId]: err?.response?.data?.error || 'Chuyển đổi thất bại, vui lòng thử lại.' }));
     }
   };
 
@@ -126,7 +155,7 @@ export default function AdminSlides({ lessonId: lockedLessonId }) {
                   ⚡ Tải file PPT/PDF lên (tự động chuyển thành ảnh từng trang)
                 </label>
                 <p style={{ fontSize: 12, color: 'var(--ink-soft)', margin: '4px 0 8px' }}>
-                  Cách nhanh nhất — không cần tự xuất ảnh. Quá trình chuyển đổi mất khoảng 10-30 giây tuỳ số trang.
+                  Cách nhanh nhất — không cần tự xuất ảnh. File ít trang thường mất dưới 1 phút; file vài trăm trang có thể mất nhiều phút — bạn có thể rời trang này, hệ thống vẫn xử lý ngầm và tự cập nhật khi quay lại.
                 </p>
                 <input
                   type="file"
@@ -134,7 +163,7 @@ export default function AdminSlides({ lessonId: lockedLessonId }) {
                   disabled={convertingId === deck.id}
                   onChange={(e) => convertPptx(deck.id, e.target.files[0])}
                 />
-                {convertingId === deck.id && <p style={{ fontSize: 13, marginTop: 8 }}>Đang chuyển đổi, vui lòng đợi...</p>}
+                {convertingId === deck.id && <p style={{ fontSize: 13, marginTop: 8 }}>Đang chuyển đổi, có thể mất vài phút, vui lòng đợi hoặc quay lại sau...</p>}
                 {convertError[deck.id] && <p style={{ fontSize: 12.5, color: 'var(--primary-dark)', marginTop: 8 }}>{convertError[deck.id]}</p>}
               </div>
 
