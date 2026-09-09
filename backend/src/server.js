@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const multer = require('multer');
 const path = require('path');
 const morgan = require('morgan');
 
@@ -56,6 +57,12 @@ app.get('/api/health', (req, res) => res.json({ ok: true }));
 app.use((req, res) => res.status(404).json({ error: 'Không tìm thấy endpoint' }));
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({ error: 'File quá lớn, vượt giới hạn cho phép. Vui lòng nén nhỏ lại rồi thử lại.' });
+    }
+    return res.status(400).json({ error: 'Tải file lên thất bại: ' + err.message });
+  }
   console.error(err);
   res.status(500).json({ error: 'Lỗi hệ thống' });
 });
