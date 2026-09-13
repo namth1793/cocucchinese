@@ -45,6 +45,7 @@ app.use('/api/characters', require('./routes/characters'));
 app.use('/api/dialogues', require('./routes/dialogues'));
 app.use('/api/speaking', require('./routes/speaking'));
 app.use('/api/fill', require('./routes/fillExercises'));
+app.use('/api/admin', require('./routes/adminBulk'));
 app.use('/api/exercises', require('./routes/exercises'));
 app.use('/api/flashcards', require('./routes/flashcards'));
 app.use('/api/progress', require('./routes/progress'));
