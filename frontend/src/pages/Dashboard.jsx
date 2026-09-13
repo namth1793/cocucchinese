@@ -53,25 +53,6 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h2 className="page-title" style={{ fontSize: 17 }}>Các cấp độ</h2>
-      <p className="page-sub">HSK / YCT → Bài → Chủ đề → Dạng bài</p>
-
-      {loading && <p className="empty-state">Đang tải...</p>}
-      <div className="level-grid" style={{ marginBottom: 24 }}>
-        {levels.map((lv, i) => (
-          <Link to={`/levels/${lv.id}`} key={lv.id} className="level-card">
-            <span className="level-card-band" style={{ background: bandFor(i) }}>
-              <span className="level-card-band-label">{lv.code}</span>
-            </span>
-            <span className="level-card-body">
-              <span className="level-card-name">{lv.name}</span>
-              <span className="level-card-sub">{levelSubtitle(lv)}</span>
-            </span>
-          </Link>
-        ))}
-      </div>
-      {!loading && levels.length === 0 && <p className="empty-state">Chưa có cấp độ nào. Vui lòng liên hệ giáo viên/quản trị.</p>}
-
       <div className="hero-grid">
         <div className="hero-banner">
           <div className="hero-banner-text">
@@ -137,6 +118,25 @@ export default function Dashboard() {
           <div><div className="stat-tile-num">{stats ? stats.sentences : '—'}</div><div className="stat-tile-label">Câu ví dụ</div></div>
         </div>
       </div>
+
+      <h2 className="page-title" style={{ fontSize: 17 }}>Các cấp độ</h2>
+      <p className="page-sub">HSK / YCT → Bài → Chủ đề → Dạng bài</p>
+
+      {loading && <p className="empty-state">Đang tải...</p>}
+      <div className="level-grid" style={{ marginBottom: 24 }}>
+        {levels.map((lv, i) => (
+          <Link to={`/levels/${lv.id}`} key={lv.id} className="level-card">
+            <span className="level-card-band" style={{ background: bandFor(i) }}>
+              <span className="level-card-band-label">{lv.code}</span>
+            </span>
+            <span className="level-card-body">
+              <span className="level-card-name">{lv.name}</span>
+              <span className="level-card-sub">{levelSubtitle(lv)}</span>
+            </span>
+          </Link>
+        ))}
+      </div>
+      {!loading && levels.length === 0 && <p className="empty-state">Chưa có cấp độ nào. Vui lòng liên hệ giáo viên/quản trị.</p>}
 
       {reviewCounts && reviewTotal > 0 && (
         <div className="card suggest-card">

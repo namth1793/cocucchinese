@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   Trophy, RotateCcw, BookOpen, GraduationCap, Headphones,
-  BookText, Repeat, Mic2, Presentation, Gamepad2, CheckCircle2
+  BookText, Repeat, Mic2, PenLine, Presentation, Gamepad2, CheckCircle2
 } from 'lucide-react';
 import api from '../api/client';
 import PageHeader from '../components/PageHeader';
@@ -13,6 +13,8 @@ const MODULE_META = {
   listening: { label: 'Nghe', icon: Headphones, color: '#059669' },
   reading: { label: 'Đọc', icon: BookText, color: '#0D9488' },
   translate: { label: 'Dịch', icon: Repeat, color: '#DB2777' },
+  speaking: { label: 'Luyện nói', icon: Mic2, color: '#EA580C' },
+  writing: { label: 'Luyện viết', icon: PenLine, color: '#9D174D' },
   shadowing: { label: 'Shadowing', icon: Mic2, color: '#EA580C' },
   ppt: { label: 'PPT / Bài giảng', icon: Presentation, color: '#B91C1C' },
   game: { label: 'Game ôn tập', icon: Gamepad2, color: '#7C3AED' }

@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   Presentation, BookOpen, Layers, GraduationCap, Gamepad2, Headphones,
-  BookText, Mic2, Repeat, Clapperboard, ChevronRight, Trophy
+  BookText, Mic2, Repeat, PenLine, ChevronRight, Trophy,
+  MessagesSquare, PenTool
 } from 'lucide-react';
 import api from '../api/client';
 import ProgressBar from '../components/ProgressBar';
@@ -10,14 +11,16 @@ import ProgressBar from '../components/ProgressBar';
 const MODULES = [
   { key: 'ppt', icon: Presentation, label: 'PPT / Bài giảng', path: 'ppt', color: '#B91C1C' },
   { key: 'vocab', icon: BookOpen, label: 'Từ vựng', path: 'vocab', color: '#DC2626' },
+  { key: 'hanzi', icon: PenTool, label: 'Chữ Hán', path: 'hanzi', color: '#6B21A8' },
   { key: 'flashcard', icon: Layers, label: 'Flashcard', path: 'flashcards', color: '#D97706' },
+  { key: 'text', icon: MessagesSquare, label: 'Bài khoá', path: 'text', color: '#0D7377' },
   { key: 'grammar', icon: GraduationCap, label: 'Ngữ pháp', path: 'grammar', color: '#2563EB' },
   { key: 'games', icon: Gamepad2, label: 'Game ôn tập', path: 'games', color: '#7C3AED' },
   { key: 'listening', icon: Headphones, label: 'Luyện nghe', path: 'listening', color: '#059669' },
   { key: 'reading', icon: BookText, label: 'Luyện đọc', path: 'reading', color: '#0D9488' },
-  { key: 'shadowing', icon: Mic2, label: 'Shadowing', path: 'shadowing', color: '#EA580C' },
+  { key: 'speaking', icon: Mic2, label: 'Luyện nói', path: 'speaking', color: '#EA580C' },
   { key: 'translate', icon: Repeat, label: 'Luyện dịch', path: 'translate', color: '#DB2777' },
-  { key: 'video', icon: Clapperboard, label: 'Học qua video', path: 'video', color: '#B91C1C' }
+  { key: 'writing', icon: PenLine, label: 'Luyện viết', path: 'writing', color: '#9D174D' }
 ];
 
 export default function LessonHome() {

@@ -3,16 +3,24 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import api from '../../api/client';
 import AdminWords from './AdminWords';
+import AdminCharacters from './AdminCharacters';
 import AdminGrammar from './AdminGrammar';
+import AdminDialogues from './AdminDialogues';
 import AdminSentences from './AdminSentences';
+import AdminSpeaking from './AdminSpeaking';
+import AdminFill from './AdminFill';
 import AdminSlides from './AdminSlides';
 import AdminVideos from './AdminVideos';
 import AdminSongs from './AdminSongs';
 
 const TABS = [
   { key: 'words', label: 'Từ vựng', Component: AdminWords },
+  { key: 'characters', label: 'Chữ Hán', Component: AdminCharacters },
+  { key: 'dialogues', label: 'Bài khoá', Component: AdminDialogues },
   { key: 'grammar', label: 'Ngữ pháp', Component: AdminGrammar },
   { key: 'sentences', label: 'Câu (đọc/nghe)', Component: AdminSentences },
+  { key: 'speaking', label: 'Luyện nói', Component: AdminSpeaking },
+  { key: 'fill', label: 'Điền từ', Component: AdminFill },
   { key: 'slides', label: 'PPT', Component: AdminSlides },
   { key: 'videos', label: 'Video', Component: AdminVideos },
   { key: 'songs', label: 'Bài hát', Component: AdminSongs }

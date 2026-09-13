@@ -1,0 +1,3445 @@
+{
+  "users": [
+    {
+      "id": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "createdAt": "2026-09-04T14:42:38.350Z",
+      "name": "Quản trị viên",
+      "email": "admin@hsk360.vn",
+      "passwordHash": "$2a$10$GjWoen1uCxuRC6ATJP5zOeGSxIcOX2.xjR43ltWH4qzgSuM/8BCLy",
+      "role": "admin",
+      "status": "active",
+      "activeSessions": [
+        {
+          "jti": "063e20d1-8fa8-4e17-a1a1-9c2b5b3434f4",
+          "device": "curl/8.4.0",
+          "ip": "::1",
+          "createdAt": "2026-09-09T12:27:26.865Z"
+        },
+        {
+          "jti": "f3527b2a-8c8c-4e70-9e40-0d63d9049870",
+          "device": "curl/8.4.0",
+          "ip": "::1",
+          "createdAt": "2026-09-09T12:44:37.681Z"
+        }
+      ],
+      "updatedAt": "2026-09-09T12:44:37.681Z"
+    },
+    {
+      "id": "9353e33c-120c-4484-bff3-976c1b66242d",
+      "createdAt": "2026-09-04T14:42:38.484Z",
+      "name": "Cô Lan",
+      "email": "teacher@hsk360.vn",
+      "passwordHash": "$2a$10$2Tnf.BTnRdyk8u7BESmZD.vXo/iqnn0zzET5TYWUjGsbOgRoYrv9O",
+      "role": "teacher",
+      "status": "active",
+      "activeSessions": []
+    },
+    {
+      "id": "4370c69a-42ed-4da4-8a9f-5d4c345a4711",
+      "createdAt": "2026-09-04T14:42:38.618Z",
+      "name": "Học sinh Demo",
+      "email": "student@hsk360.vn",
+      "passwordHash": "$2a$10$eKq5ll6uX5EDmmS7EVk80uhTOU5UmMeYnPUCKQhGZky2a4Dk7J6UO",
+      "role": "student",
+      "status": "active",
+      "activeSessions": [
+        {
+          "jti": "f984af0f-391b-4411-bdda-9e3364746fb8",
+          "device": "axios/1.20.0",
+          "ip": "::1",
+          "createdAt": "2026-09-04T14:43:35.993Z"
+        },
+        {
+          "jti": "22ff0da2-9c94-4b23-9a8f-bea7bb2396da",
+          "device": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537",
+          "ip": "::1",
+          "createdAt": "2026-09-04T14:43:54.795Z"
+        }
+      ],
+      "updatedAt": "2026-09-04T14:43:54.795Z"
+    }
+  ],
+  "levels": [
+    {
+      "id": "dc55ba33-7133-4824-987f-263ca0cf5f9c",
+      "createdAt": "2026-09-04T14:42:38.619Z",
+      "code": "HSK1",
+      "name": "HSK 1",
+      "type": "HSK",
+      "category": "hsk_hskk",
+      "group": "HSK 3.0",
+      "order": 1
+    },
+    {
+      "id": "83c30f07-48da-45c3-aa37-530296b32d44",
+      "createdAt": "2026-09-04T14:42:38.620Z",
+      "code": "HSK2",
+      "name": "HSK 2",
+      "type": "HSK",
+      "category": "hsk_hskk",
+      "group": "HSK 3.0",
+      "order": 2
+    },
+    {
+      "id": "c3210708-79e1-42a5-b719-3c30378b9736",
+      "createdAt": "2026-09-04T14:42:38.620Z",
+      "code": "HSK3",
+      "name": "HSK 3",
+      "type": "HSK",
+      "category": "hsk_hskk",
+      "group": "HSK 3.0",
+      "order": 3
+    },
+    {
+      "id": "3264f47a-634f-49c6-9f11-639250880bad",
+      "createdAt": "2026-09-04T14:42:38.621Z",
+      "code": "HSK4",
+      "name": "HSK 4",
+      "type": "HSK",
+      "category": "hsk_hskk",
+      "group": "HSK 3.0",
+      "order": 4
+    },
+    {
+      "id": "85d9e7d9-188c-4101-be41-0488800126a1",
+      "createdAt": "2026-09-04T14:42:38.621Z",
+      "code": "HSK5",
+      "name": "HSK 5",
+      "type": "HSK",
+      "category": "hsk_hskk",
+      "group": "HSK 3.0",
+      "order": 5
+    },
+    {
+      "id": "fb90a55e-6bbf-4f5f-879b-e8c2a5eaa1bd",
+      "createdAt": "2026-09-04T14:42:38.622Z",
+      "code": "HSK6",
+      "name": "HSK 6",
+      "type": "HSK",
+      "category": "hsk_hskk",
+      "group": "HSK 3.0",
+      "order": 6
+    },
+    {
+      "id": "1c0dadfc-8949-4005-bdeb-ee3992117e84",
+      "createdAt": "2026-09-04T14:42:38.623Z",
+      "code": "HSKK-SC",
+      "name": "HSKK Sơ cấp",
+      "type": "HSKK",
+      "category": "hsk_hskk",
+      "group": "HSKK",
+      "order": 1
+    },
+    {
+      "id": "8bb9bea5-8a27-48f3-a14c-ffbba88316b7",
+      "createdAt": "2026-09-04T14:42:38.623Z",
+      "code": "HSKK-TC",
+      "name": "HSKK Trung cấp",
+      "type": "HSKK",
+      "category": "hsk_hskk",
+      "group": "HSKK",
+      "order": 2
+    },
+    {
+      "id": "9283b56e-d90f-4c99-93cd-e71068698b68",
+      "createdAt": "2026-09-04T14:42:38.624Z",
+      "code": "HSKK-CC",
+      "name": "HSKK Cao cấp",
+      "type": "HSKK",
+      "category": "hsk_hskk",
+      "group": "HSKK",
+      "order": 3
+    },
+    {
+      "id": "a101fd15-ca36-451d-9012-d6f8433e7efe",
+      "createdAt": "2026-09-04T14:42:38.624Z",
+      "code": "YCT1",
+      "name": "YCT 1",
+      "type": "YCT",
+      "category": "kids",
+      "order": 1
+    },
+    {
+      "id": "1cd14baa-2648-4ff6-bd2d-bdddcb33232a",
+      "createdAt": "2026-09-04T14:42:38.625Z",
+      "code": "YCT2",
+      "name": "YCT 2",
+      "type": "YCT",
+      "category": "kids",
+      "order": 2
+    },
+    {
+      "id": "b121665d-ab49-4d11-8709-f9f5dfbcc17a",
+      "createdAt": "2026-09-04T14:42:38.626Z",
+      "code": "YCT3",
+      "name": "YCT 3",
+      "type": "YCT",
+      "category": "kids",
+      "order": 3
+    },
+    {
+      "id": "d9f0ce37-7149-452d-8a39-2d834e2c214c",
+      "createdAt": "2026-09-04T14:42:38.626Z",
+      "code": "YCT4",
+      "name": "YCT 4",
+      "type": "YCT",
+      "category": "kids",
+      "order": 4
+    },
+    {
+      "id": "4f5d3cd7-2655-42d4-8c25-aa316c8a5f8c",
+      "createdAt": "2026-09-04T14:42:38.627Z",
+      "code": "KIDS-FLASHCARD",
+      "name": "Flashcard theo chủ đề",
+      "type": "KIDS",
+      "category": "kids",
+      "order": 5
+    },
+    {
+      "id": "849834c5-f929-4999-b4ff-56ce00bc9be4",
+      "createdAt": "2026-09-04T14:42:38.627Z",
+      "code": "KIDS-LITTLEFOX",
+      "name": "Little Fox Chinese",
+      "type": "KIDS",
+      "category": "kids",
+      "order": 6
+    },
+    {
+      "id": "36d37dc1-aba1-4c06-a8ba-d84c867af1d6",
+      "createdAt": "2026-09-04T14:42:38.628Z",
+      "code": "KIDS-STORY",
+      "name": "Truyện tiếng Trung",
+      "type": "KIDS",
+      "category": "kids",
+      "order": 7
+    },
+    {
+      "id": "5db3a184-1013-4fa8-8e90-623880f2b88f",
+      "createdAt": "2026-09-04T14:42:38.628Z",
+      "code": "KIDS-SONG",
+      "name": "Bài hát tiếng Trung",
+      "type": "KIDS",
+      "category": "kids",
+      "order": 8
+    },
+    {
+      "id": "9efd9413-c6d6-47e0-9da8-3e8b608ca7b5",
+      "createdAt": "2026-09-04T14:42:38.629Z",
+      "code": "CONVO-BASIC",
+      "name": "Giao tiếp cơ bản",
+      "type": "CONVO",
+      "category": "conversation",
+      "order": 1
+    },
+    {
+      "id": "fde6450d-b7ac-4c22-8117-7e358d21231b",
+      "createdAt": "2026-09-04T14:42:38.630Z",
+      "code": "CONVO-DAILY",
+      "name": "Giao tiếp hằng ngày",
+      "type": "CONVO",
+      "category": "conversation",
+      "order": 2
+    },
+    {
+      "id": "69574b65-fdf4-4728-9e4a-940890e961bb",
+      "createdAt": "2026-09-04T14:42:38.630Z",
+      "code": "CONVO-TRAVEL",
+      "name": "Tiếng Trung du lịch",
+      "type": "CONVO",
+      "category": "conversation",
+      "order": 3
+    },
+    {
+      "id": "e59246c4-4c4f-4d9b-a2ca-402fca80352a",
+      "createdAt": "2026-09-04T14:42:38.631Z",
+      "code": "CONVO-WORK",
+      "name": "Tiếng Trung công việc",
+      "type": "CONVO",
+      "category": "conversation",
+      "order": 4
+    },
+    {
+      "id": "6756d535-e038-4c6b-9db5-ee661d1dd854",
+      "createdAt": "2026-09-04T14:42:38.632Z",
+      "code": "CONVO-OFFICE",
+      "name": "Tiếng Trung công sở",
+      "type": "CONVO",
+      "category": "conversation",
+      "order": 5
+    }
+  ],
+  "lessons": [
+    {
+      "id": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "createdAt": "2026-09-04T14:42:38.632Z",
+      "levelId": "dc55ba33-7133-4824-987f-263ca0cf5f9c",
+      "order": 1,
+      "title": "Bài 1: 你好 - Xin chào",
+      "description": "Chào hỏi cơ bản",
+      "published": true
+    },
+    {
+      "id": "761b7e62-ac5a-4d09-b385-7b2cec3fad81",
+      "createdAt": "2026-09-04T14:42:38.633Z",
+      "levelId": "dc55ba33-7133-4824-987f-263ca0cf5f9c",
+      "order": 2,
+      "title": "Bài 2: 谢谢 - Cảm ơn",
+      "description": "Cảm ơn và xin lỗi",
+      "published": true
+    },
+    {
+      "id": "171d4a59-8811-49bd-a083-9baad7efd04a",
+      "createdAt": "2026-09-04T14:42:38.652Z",
+      "levelId": "83c30f07-48da-45c3-aa37-530296b32d44",
+      "order": 1,
+      "title": "Bài 1: 你叫什么名字 - Hỏi tên",
+      "description": "Hỏi và trả lời tên, tuổi",
+      "published": true
+    },
+    {
+      "id": "e03a97e3-69fc-4c9c-a591-fb44532f4048",
+      "createdAt": "2026-09-04T14:42:38.659Z",
+      "levelId": "c3210708-79e1-42a5-b719-3c30378b9736",
+      "order": 1,
+      "title": "Bài 1: 你在哪儿工作 - Hỏi nơi làm việc",
+      "description": "Hỏi và trả lời về công việc, nơi làm việc",
+      "published": true
+    },
+    {
+      "id": "6545d250-93b7-4380-bdc7-1d7f96f26d9d",
+      "createdAt": "2026-09-04T14:42:38.665Z",
+      "levelId": "a101fd15-ca36-451d-9012-d6f8433e7efe",
+      "order": 1,
+      "title": "Bài 1: 数字 - Số đếm",
+      "description": "Học đếm số từ 1 đến 5 (dành cho thiếu nhi)",
+      "published": true
+    },
+    {
+      "id": "1a325bb4-c867-4d51-a84c-39d3c12556dc",
+      "createdAt": "2026-09-04T14:42:38.671Z",
+      "levelId": "1c0dadfc-8949-4005-bdeb-ee3992117e84",
+      "order": 1,
+      "title": "Bài 1: Tự giới thiệu bản thân",
+      "description": "Luyện khẩu ngữ giới thiệu bản thân trước lớp",
+      "published": true
+    },
+    {
+      "id": "cd100999-8d03-4a3e-848a-466f74402d10",
+      "createdAt": "2026-09-04T14:42:38.715Z",
+      "levelId": "5db3a184-1013-4fa8-8e90-623880f2b88f",
+      "order": 1,
+      "title": "Bài 1: 两只老虎 - Hai chú hổ",
+      "description": "Bài hát thiếu nhi kinh điển, giai điệu quen thuộc",
+      "published": true
+    },
+    {
+      "id": "f02d9e66-1cf1-4f22-8638-886e24ff5381",
+      "createdAt": "2026-09-04T14:42:38.753Z",
+      "levelId": "9efd9413-c6d6-47e0-9da8-3e8b608ca7b5",
+      "order": 1,
+      "title": "Bài 1: Xin phép & cảm ơn trong giao tiếp",
+      "description": "Các mẫu câu lịch sự dùng hằng ngày",
+      "published": true
+    },
+    {
+      "id": "d5c336b8-491e-42e4-a90e-20bc7c4cc3ad",
+      "createdAt": "2026-09-04T14:42:38.757Z",
+      "levelId": "3264f47a-634f-49c6-9f11-639250880bad",
+      "order": 1,
+      "title": "Bài 1: 周末你打算做什么 - Dự định cuối tuần",
+      "description": "Nói về dự định, kế hoạch trong tương lai gần",
+      "published": true
+    },
+    {
+      "id": "bd253b5e-a32e-4e0f-a36f-2c6dd7ee6463",
+      "createdAt": "2026-09-04T14:42:38.764Z",
+      "levelId": "85d9e7d9-188c-4101-be41-0488800126a1",
+      "order": 1,
+      "title": "Bài 1: 逐渐适应新环境 - Dần thích nghi môi trường mới",
+      "description": "Diễn đạt sự thay đổi, thích nghi theo thời gian",
+      "published": true
+    },
+    {
+      "id": "10ea0ab6-7bde-43d5-b0b0-581ca0758611",
+      "createdAt": "2026-09-04T14:42:38.771Z",
+      "levelId": "fb90a55e-6bbf-4f5f-879b-e8c2a5eaa1bd",
+      "order": 1,
+      "title": "Bài 1: 毫无疑问 - Diễn đạt học thuật & thành ngữ",
+      "description": "Từ vựng và cấu trúc dùng trong văn viết, tranh luận học thuật",
+      "published": true
+    },
+    {
+      "id": "73db9526-b881-4a04-9552-6f5f32d3a769",
+      "createdAt": "2026-09-04T14:42:38.778Z",
+      "levelId": "8bb9bea5-8a27-48f3-a14c-ffbba88316b7",
+      "order": 1,
+      "title": "Bài 1: 谈谈你的爱好 - Nói về sở thích",
+      "description": "Luyện khẩu ngữ trình bày về sở thích cá nhân",
+      "published": true
+    },
+    {
+      "id": "77a1b710-7371-4af7-b0f3-80c4be1f07ab",
+      "createdAt": "2026-09-04T14:42:38.811Z",
+      "levelId": "9283b56e-d90f-4c99-93cd-e71068698b68",
+      "order": 1,
+      "title": "Bài 1: 对这个问题的看法 - Nêu quan điểm về một vấn đề",
+      "description": "Luyện khẩu ngữ trình bày, tranh luận quan điểm ở trình độ cao cấp",
+      "published": true
+    },
+    {
+      "id": "d1821498-118d-4802-84e4-86fc0f6efcc3",
+      "createdAt": "2026-09-04T14:42:38.854Z",
+      "levelId": "1cd14baa-2648-4ff6-bd2d-bdddcb33232a",
+      "order": 1,
+      "title": "Bài 1: 颜色 - Màu sắc",
+      "description": "Học tên các màu sắc cơ bản (dành cho thiếu nhi)",
+      "published": true
+    },
+    {
+      "id": "ce03c30c-c0f6-41df-b859-da2a9422abee",
+      "createdAt": "2026-09-04T14:42:39.020Z",
+      "levelId": "b121665d-ab49-4d11-8709-f9f5dfbcc17a",
+      "order": 1,
+      "title": "Bài 1: 动物朋友 - Những người bạn động vật",
+      "description": "Học tên các con vật quen thuộc (dành cho thiếu nhi)",
+      "published": true
+    },
+    {
+      "id": "74a6bd64-e8bf-4b76-bc35-a670a3c5b9cc",
+      "createdAt": "2026-09-04T14:42:39.158Z",
+      "levelId": "d9f0ce37-7149-452d-8a39-2d834e2c214c",
+      "order": 1,
+      "title": "Bài 1: 我的一天 - Một ngày của tôi",
+      "description": "Mô tả các hoạt động thường ngày (dành cho thiếu nhi)",
+      "published": true
+    },
+    {
+      "id": "5aa06714-dae9-4343-bff7-1302913ed4ee",
+      "createdAt": "2026-09-04T14:42:39.256Z",
+      "levelId": "4f5d3cd7-2655-42d4-8c25-aa316c8a5f8c",
+      "order": 1,
+      "title": "Bộ thẻ 1: 水果 - Trái cây",
+      "description": "Flashcard theo chủ đề, dùng để học và ôn nhanh từ vựng theo nhóm",
+      "published": true
+    },
+    {
+      "id": "6fcc3f75-b526-45dc-b819-325149f0c484",
+      "createdAt": "2026-09-04T14:42:39.367Z",
+      "levelId": "849834c5-f929-4999-b4ff-56ce00bc9be4",
+      "order": 1,
+      "title": "Bài 1: 小狐狸的故事 - Câu chuyện chú cáo nhỏ",
+      "description": "Học từ vựng qua câu chuyện ngắn, phong cách Little Fox",
+      "published": true
+    },
+    {
+      "id": "2aeea559-1b7c-492f-a0f5-ff8b9189dabf",
+      "createdAt": "2026-09-04T14:42:39.636Z",
+      "levelId": "36d37dc1-aba1-4c06-a8ba-d84c867af1d6",
+      "order": 1,
+      "title": "Bài 1: 龟兔赛跑 - Rùa và Thỏ",
+      "description": "Truyện ngụ ngôn kinh điển, học từ vựng qua tình tiết câu chuyện",
+      "published": true
+    },
+    {
+      "id": "cac79a04-0bd9-41e2-b5e0-28eaac749e63",
+      "createdAt": "2026-09-04T14:42:39.672Z",
+      "levelId": "fde6450d-b7ac-4c22-8117-7e358d21231b",
+      "order": 1,
+      "title": "Bài 1: Hỏi thăm sức khoẻ & thời tiết",
+      "description": "Mẫu câu hỏi thăm, trò chuyện thường ngày",
+      "published": true
+    },
+    {
+      "id": "8a0a4c5b-3569-463e-a1e0-5c811160a95b",
+      "createdAt": "2026-09-04T14:42:39.680Z",
+      "levelId": "69574b65-fdf4-4728-9e4a-940890e961bb",
+      "order": 1,
+      "title": "Bài 1: Đặt phòng khách sạn & hỏi đường",
+      "description": "Các mẫu câu cần thiết khi đi du lịch",
+      "published": true
+    },
+    {
+      "id": "b6d77dfe-e222-4b42-8f42-d3b33edd2ce9",
+      "createdAt": "2026-09-04T14:42:39.811Z",
+      "levelId": "e59246c4-4c4f-4d9b-a2ca-402fca80352a",
+      "order": 1,
+      "title": "Bài 1: Giới thiệu công việc & trao đổi email",
+      "description": "Từ vựng và mẫu câu giao tiếp trong môi trường làm việc",
+      "published": true
+    },
+    {
+      "id": "6265eefb-ec32-4ab6-9d60-23159c7429ec",
+      "createdAt": "2026-09-04T14:42:40.002Z",
+      "levelId": "6756d535-e038-4c6b-9db5-ee661d1dd854",
+      "order": 1,
+      "title": "Bài 1: Giao tiếp nơi công sở",
+      "description": "Từ vựng và mẫu câu dùng phổ biến chốn công sở",
+      "published": true
+    }
+  ],
+  "topics": [
+    {
+      "id": "4a29edc6-4a5a-4e8a-a2b6-24fc7efc0c87",
+      "createdAt": "2026-09-04T14:42:38.634Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "name": "Chào hỏi"
+    },
+    {
+      "id": "b3039846-3f54-4554-bc0e-ffa9d82903b2",
+      "createdAt": "2026-09-04T14:42:38.653Z",
+      "lessonId": "171d4a59-8811-49bd-a083-9baad7efd04a",
+      "name": "Làm quen"
+    },
+    {
+      "id": "6efb1b82-4582-4068-85fd-9820be42d9c6",
+      "createdAt": "2026-09-04T14:42:38.660Z",
+      "lessonId": "e03a97e3-69fc-4c9c-a591-fb44532f4048",
+      "name": "Công việc"
+    },
+    {
+      "id": "11603cbc-e214-4e6a-ab28-4ef61e04e9e4",
+      "createdAt": "2026-09-04T14:42:38.666Z",
+      "lessonId": "6545d250-93b7-4380-bdc7-1d7f96f26d9d",
+      "name": "Số đếm"
+    },
+    {
+      "id": "70b1bb8f-213e-4b71-af81-28ca402cbbc0",
+      "createdAt": "2026-09-04T14:42:38.671Z",
+      "lessonId": "1a325bb4-c867-4d51-a84c-39d3c12556dc",
+      "name": "Khẩu ngữ giới thiệu"
+    },
+    {
+      "id": "0da06d5a-b2a0-4d95-9d62-7dec2673490e",
+      "createdAt": "2026-09-04T14:42:38.741Z",
+      "lessonId": "cd100999-8d03-4a3e-848a-466f74402d10",
+      "name": "Từ vựng trong bài hát"
+    },
+    {
+      "id": "4e5da361-176a-45ba-b8f8-9b7f585a1b3d",
+      "createdAt": "2026-09-04T14:42:38.754Z",
+      "lessonId": "f02d9e66-1cf1-4f22-8638-886e24ff5381",
+      "name": "Giao tiếp lịch sự"
+    },
+    {
+      "id": "9c725d4e-46eb-4d8f-8377-dfacaa24a3aa",
+      "createdAt": "2026-09-04T14:42:38.758Z",
+      "lessonId": "d5c336b8-491e-42e4-a90e-20bc7c4cc3ad",
+      "name": "Dự định & kế hoạch"
+    },
+    {
+      "id": "a56f161e-33d3-4a8f-a1c8-e1342f69fa60",
+      "createdAt": "2026-09-04T14:42:38.765Z",
+      "lessonId": "bd253b5e-a32e-4e0f-a36f-2c6dd7ee6463",
+      "name": "Thích nghi & thay đổi"
+    },
+    {
+      "id": "42102bb4-a90b-496e-b57d-816b7d1b89fb",
+      "createdAt": "2026-09-04T14:42:38.771Z",
+      "lessonId": "10ea0ab6-7bde-43d5-b0b0-581ca0758611",
+      "name": "Diễn đạt học thuật"
+    },
+    {
+      "id": "2562b8f3-e666-4cca-a9f9-2a6f5d3d776e",
+      "createdAt": "2026-09-04T14:42:38.778Z",
+      "lessonId": "73db9526-b881-4a04-9552-6f5f32d3a769",
+      "name": "Khẩu ngữ trung cấp"
+    },
+    {
+      "id": "83ac9229-2b66-49c4-baa6-0b351b2f137a",
+      "createdAt": "2026-09-04T14:42:38.812Z",
+      "lessonId": "77a1b710-7371-4af7-b0f3-80c4be1f07ab",
+      "name": "Khẩu ngữ cao cấp"
+    },
+    {
+      "id": "00c5efbb-caa0-415b-a8ad-725118884b28",
+      "createdAt": "2026-09-04T14:42:38.874Z",
+      "lessonId": "d1821498-118d-4802-84e4-86fc0f6efcc3",
+      "name": "Màu sắc"
+    },
+    {
+      "id": "8f4f195b-33ab-4aed-b60f-0bdf1a81257e",
+      "createdAt": "2026-09-04T14:42:39.040Z",
+      "lessonId": "ce03c30c-c0f6-41df-b859-da2a9422abee",
+      "name": "Động vật"
+    },
+    {
+      "id": "8c834820-1444-4086-86b7-248577647800",
+      "createdAt": "2026-09-04T14:42:39.182Z",
+      "lessonId": "74a6bd64-e8bf-4b76-bc35-a670a3c5b9cc",
+      "name": "Sinh hoạt hằng ngày"
+    },
+    {
+      "id": "e20cd5ae-8a30-4dab-9a19-f3b358457b3c",
+      "createdAt": "2026-09-04T14:42:39.281Z",
+      "lessonId": "5aa06714-dae9-4343-bff7-1302913ed4ee",
+      "name": "Chủ đề: Trái cây"
+    },
+    {
+      "id": "d84d4114-9812-481b-a278-ab4d9bedf1cd",
+      "createdAt": "2026-09-04T14:42:39.398Z",
+      "lessonId": "6fcc3f75-b526-45dc-b819-325149f0c484",
+      "name": "Từ vựng trong truyện"
+    },
+    {
+      "id": "8d856a64-b07d-440e-b39d-44c9c9d09bfa",
+      "createdAt": "2026-09-04T14:42:39.637Z",
+      "lessonId": "2aeea559-1b7c-492f-a0f5-ff8b9189dabf",
+      "name": "Từ vựng trong truyện"
+    },
+    {
+      "id": "82989621-3749-4de6-beb6-ee544a49f2e1",
+      "createdAt": "2026-09-04T14:42:39.673Z",
+      "lessonId": "cac79a04-0bd9-41e2-b5e0-28eaac749e63",
+      "name": "Trò chuyện hằng ngày"
+    },
+    {
+      "id": "1f4350ff-9d7d-4936-85b2-34cd555b62ee",
+      "createdAt": "2026-09-04T14:42:39.681Z",
+      "lessonId": "8a0a4c5b-3569-463e-a1e0-5c811160a95b",
+      "name": "Giao tiếp du lịch"
+    },
+    {
+      "id": "e79bd3c7-28ff-4024-9d9b-58e4bdf39ac2",
+      "createdAt": "2026-09-04T14:42:39.836Z",
+      "lessonId": "b6d77dfe-e222-4b42-8f42-d3b33edd2ce9",
+      "name": "Giao tiếp công việc"
+    },
+    {
+      "id": "be89d6df-86ab-4908-9fd3-87db818628db",
+      "createdAt": "2026-09-04T14:42:40.021Z",
+      "lessonId": "6265eefb-ec32-4ab6-9d60-23159c7429ec",
+      "name": "Giao tiếp công sở"
+    }
+  ],
+  "words": [
+    {
+      "id": "20662fe2-7bdb-41b7-abfc-aa83e05d47d6",
+      "createdAt": "2026-09-04T14:42:38.635Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "topicId": "4a29edc6-4a5a-4e8a-a2b6-24fc7efc0c87",
+      "hanzi": "你好",
+      "pinyin": "nǐ hǎo",
+      "meaningVi": "Xin chào",
+      "type": "Danh từ/Đại từ",
+      "example": {
+        "hanzi": "你好！",
+        "pinyin": "nǐ hǎo!",
+        "vi": "Xin chào"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "2d0c154c-5b01-4cf4-b050-6f31975296e0",
+      "createdAt": "2026-09-04T14:42:38.635Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "topicId": "4a29edc6-4a5a-4e8a-a2b6-24fc7efc0c87",
+      "hanzi": "谢谢",
+      "pinyin": "xièxiè",
+      "meaningVi": "Cảm ơn",
+      "type": "Danh từ/Đại từ",
+      "example": {
+        "hanzi": "谢谢！",
+        "pinyin": "xièxiè!",
+        "vi": "Cảm ơn"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "67c53818-cdab-48d4-ac18-23d832afb13d",
+      "createdAt": "2026-09-04T14:42:38.636Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "topicId": "4a29edc6-4a5a-4e8a-a2b6-24fc7efc0c87",
+      "hanzi": "再见",
+      "pinyin": "zàijiàn",
+      "meaningVi": "Tạm biệt",
+      "type": "Danh từ/Đại từ",
+      "example": {
+        "hanzi": "再见！",
+        "pinyin": "zàijiàn!",
+        "vi": "Tạm biệt"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "95d5f144-a562-43f3-9a61-b71d41b2806f",
+      "createdAt": "2026-09-04T14:42:38.636Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "topicId": "4a29edc6-4a5a-4e8a-a2b6-24fc7efc0c87",
+      "hanzi": "老师",
+      "pinyin": "lǎoshī",
+      "meaningVi": "Giáo viên",
+      "type": "Danh từ/Đại từ",
+      "example": {
+        "hanzi": "老师！",
+        "pinyin": "lǎoshī!",
+        "vi": "Giáo viên"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "190c2a2a-b5fe-45cc-a0cc-bb857cc67bf0",
+      "createdAt": "2026-09-04T14:42:38.637Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "topicId": "4a29edc6-4a5a-4e8a-a2b6-24fc7efc0c87",
+      "hanzi": "学生",
+      "pinyin": "xuéshēng",
+      "meaningVi": "Học sinh",
+      "type": "Danh từ/Đại từ",
+      "example": {
+        "hanzi": "学生！",
+        "pinyin": "xuéshēng!",
+        "vi": "Học sinh"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "1d60244d-daf7-4c3c-9cda-c44926db271f",
+      "createdAt": "2026-09-04T14:42:38.638Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "topicId": "4a29edc6-4a5a-4e8a-a2b6-24fc7efc0c87",
+      "hanzi": "我",
+      "pinyin": "wǒ",
+      "meaningVi": "Tôi",
+      "type": "Danh từ/Đại từ",
+      "example": {
+        "hanzi": "我！",
+        "pinyin": "wǒ!",
+        "vi": "Tôi"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "1cb095e7-f435-4bf1-8c24-4b6de28845b4",
+      "createdAt": "2026-09-04T14:42:38.638Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "topicId": "4a29edc6-4a5a-4e8a-a2b6-24fc7efc0c87",
+      "hanzi": "是",
+      "pinyin": "shì",
+      "meaningVi": "Là",
+      "type": "Danh từ/Đại từ",
+      "example": {
+        "hanzi": "是！",
+        "pinyin": "shì!",
+        "vi": "Là"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "47dbeb4a-9aaa-4a8d-a9a1-8e66389a296a",
+      "createdAt": "2026-09-04T14:42:38.639Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "topicId": "4a29edc6-4a5a-4e8a-a2b6-24fc7efc0c87",
+      "hanzi": "苹果",
+      "pinyin": "píngguǒ",
+      "meaningVi": "Quả táo",
+      "type": "Danh từ/Đại từ",
+      "example": {
+        "hanzi": "苹果！",
+        "pinyin": "píngguǒ!",
+        "vi": "Quả táo"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "baf8a4ee-cd17-41cd-ac2e-a3c11ee36c8b",
+      "createdAt": "2026-09-04T14:42:38.655Z",
+      "lessonId": "171d4a59-8811-49bd-a083-9baad7efd04a",
+      "topicId": "b3039846-3f54-4554-bc0e-ffa9d82903b2",
+      "hanzi": "叫",
+      "pinyin": "jiào",
+      "meaningVi": "Tên là, gọi là",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "叫。",
+        "pinyin": "jiào.",
+        "vi": "Tên là, gọi là"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "410320cf-f4a8-4169-80c6-536e805071a3",
+      "createdAt": "2026-09-04T14:42:38.656Z",
+      "lessonId": "171d4a59-8811-49bd-a083-9baad7efd04a",
+      "topicId": "b3039846-3f54-4554-bc0e-ffa9d82903b2",
+      "hanzi": "名字",
+      "pinyin": "míngzi",
+      "meaningVi": "Tên",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "名字。",
+        "pinyin": "míngzi.",
+        "vi": "Tên"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "06c66df6-1951-4c4e-af7b-2eee8f8ba71f",
+      "createdAt": "2026-09-04T14:42:38.657Z",
+      "lessonId": "171d4a59-8811-49bd-a083-9baad7efd04a",
+      "topicId": "b3039846-3f54-4554-bc0e-ffa9d82903b2",
+      "hanzi": "什么",
+      "pinyin": "shénme",
+      "meaningVi": "Gì, cái gì",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "什么。",
+        "pinyin": "shénme.",
+        "vi": "Gì, cái gì"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "8ada0bdd-729e-4d71-b64a-d15fdbabd4c1",
+      "createdAt": "2026-09-04T14:42:38.657Z",
+      "lessonId": "171d4a59-8811-49bd-a083-9baad7efd04a",
+      "topicId": "b3039846-3f54-4554-bc0e-ffa9d82903b2",
+      "hanzi": "多大",
+      "pinyin": "duōdà",
+      "meaningVi": "Bao nhiêu tuổi",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "多大。",
+        "pinyin": "duōdà.",
+        "vi": "Bao nhiêu tuổi"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "8f4bb9fb-a74d-43f5-a5a8-7a077869901a",
+      "createdAt": "2026-09-04T14:42:38.658Z",
+      "lessonId": "171d4a59-8811-49bd-a083-9baad7efd04a",
+      "topicId": "b3039846-3f54-4554-bc0e-ffa9d82903b2",
+      "hanzi": "岁",
+      "pinyin": "suì",
+      "meaningVi": "Tuổi",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "岁。",
+        "pinyin": "suì.",
+        "vi": "Tuổi"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "17bb05b9-38e7-4077-8764-c95fe0314a21",
+      "createdAt": "2026-09-04T14:42:38.661Z",
+      "lessonId": "e03a97e3-69fc-4c9c-a591-fb44532f4048",
+      "topicId": "6efb1b82-4582-4068-85fd-9820be42d9c6",
+      "hanzi": "工作",
+      "pinyin": "gōngzuò",
+      "meaningVi": "Công việc, làm việc",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "工作。",
+        "pinyin": "gōngzuò.",
+        "vi": "Công việc, làm việc"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "a72e9c84-1706-41ef-a54f-4995597d5553",
+      "createdAt": "2026-09-04T14:42:38.661Z",
+      "lessonId": "e03a97e3-69fc-4c9c-a591-fb44532f4048",
+      "topicId": "6efb1b82-4582-4068-85fd-9820be42d9c6",
+      "hanzi": "在",
+      "pinyin": "zài",
+      "meaningVi": "Ở, tại",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "在。",
+        "pinyin": "zài.",
+        "vi": "Ở, tại"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "fc801b48-15fc-4fec-8b49-2cbaf4908128",
+      "createdAt": "2026-09-04T14:42:38.662Z",
+      "lessonId": "e03a97e3-69fc-4c9c-a591-fb44532f4048",
+      "topicId": "6efb1b82-4582-4068-85fd-9820be42d9c6",
+      "hanzi": "哪儿",
+      "pinyin": "nǎr",
+      "meaningVi": "Ở đâu",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "哪儿。",
+        "pinyin": "nǎr.",
+        "vi": "Ở đâu"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "292585ea-6433-44ae-b39a-e2438033274e",
+      "createdAt": "2026-09-04T14:42:38.663Z",
+      "lessonId": "e03a97e3-69fc-4c9c-a591-fb44532f4048",
+      "topicId": "6efb1b82-4582-4068-85fd-9820be42d9c6",
+      "hanzi": "公司",
+      "pinyin": "gōngsī",
+      "meaningVi": "Công ty",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "公司。",
+        "pinyin": "gōngsī.",
+        "vi": "Công ty"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "81fcdb3c-b27e-4a9e-98c0-4efd8038f5cf",
+      "createdAt": "2026-09-04T14:42:38.663Z",
+      "lessonId": "e03a97e3-69fc-4c9c-a591-fb44532f4048",
+      "topicId": "6efb1b82-4582-4068-85fd-9820be42d9c6",
+      "hanzi": "医生",
+      "pinyin": "yīshēng",
+      "meaningVi": "Bác sĩ",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "医生。",
+        "pinyin": "yīshēng.",
+        "vi": "Bác sĩ"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "1949d2c7-02dd-46a8-9f6f-62b7aa43231a",
+      "createdAt": "2026-09-04T14:42:38.667Z",
+      "lessonId": "6545d250-93b7-4380-bdc7-1d7f96f26d9d",
+      "topicId": "11603cbc-e214-4e6a-ab28-4ef61e04e9e4",
+      "hanzi": "一",
+      "pinyin": "yī",
+      "meaningVi": "Một",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "一。",
+        "pinyin": "yī.",
+        "vi": "Một"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "8a640a15-e86a-478a-ac5b-d8f29c51ce7f",
+      "createdAt": "2026-09-04T14:42:38.667Z",
+      "lessonId": "6545d250-93b7-4380-bdc7-1d7f96f26d9d",
+      "topicId": "11603cbc-e214-4e6a-ab28-4ef61e04e9e4",
+      "hanzi": "二",
+      "pinyin": "èr",
+      "meaningVi": "Hai",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "二。",
+        "pinyin": "èr.",
+        "vi": "Hai"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "57d238b6-1762-48eb-8afb-dfe3baa8d096",
+      "createdAt": "2026-09-04T14:42:38.668Z",
+      "lessonId": "6545d250-93b7-4380-bdc7-1d7f96f26d9d",
+      "topicId": "11603cbc-e214-4e6a-ab28-4ef61e04e9e4",
+      "hanzi": "三",
+      "pinyin": "sān",
+      "meaningVi": "Ba",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "三。",
+        "pinyin": "sān.",
+        "vi": "Ba"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "c88cd0eb-fec9-4d93-913a-1e11a3ae59c0",
+      "createdAt": "2026-09-04T14:42:38.669Z",
+      "lessonId": "6545d250-93b7-4380-bdc7-1d7f96f26d9d",
+      "topicId": "11603cbc-e214-4e6a-ab28-4ef61e04e9e4",
+      "hanzi": "四",
+      "pinyin": "sì",
+      "meaningVi": "Bốn",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "四。",
+        "pinyin": "sì.",
+        "vi": "Bốn"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "f350b2f9-e6e5-43bd-866f-4ed333464151",
+      "createdAt": "2026-09-04T14:42:38.670Z",
+      "lessonId": "6545d250-93b7-4380-bdc7-1d7f96f26d9d",
+      "topicId": "11603cbc-e214-4e6a-ab28-4ef61e04e9e4",
+      "hanzi": "五",
+      "pinyin": "wǔ",
+      "meaningVi": "Năm",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "五。",
+        "pinyin": "wǔ.",
+        "vi": "Năm"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "491acba4-af22-4dae-93f3-a6cf2561aad6",
+      "createdAt": "2026-09-04T14:42:38.672Z",
+      "lessonId": "1a325bb4-c867-4d51-a84c-39d3c12556dc",
+      "topicId": "70b1bb8f-213e-4b71-af81-28ca402cbbc0",
+      "hanzi": "大家好",
+      "pinyin": "dàjiā hǎo",
+      "meaningVi": "Chào mọi người",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "大家好。",
+        "pinyin": "dàjiā hǎo.",
+        "vi": "Chào mọi người"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "a88a00eb-8435-4a16-872d-39d2e3a72155",
+      "createdAt": "2026-09-04T14:42:38.673Z",
+      "lessonId": "1a325bb4-c867-4d51-a84c-39d3c12556dc",
+      "topicId": "70b1bb8f-213e-4b71-af81-28ca402cbbc0",
+      "hanzi": "我叫",
+      "pinyin": "wǒ jiào",
+      "meaningVi": "Tôi tên là",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "我叫。",
+        "pinyin": "wǒ jiào.",
+        "vi": "Tôi tên là"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "9a82af04-5a00-48ad-83e7-9589ec9dfcdc",
+      "createdAt": "2026-09-04T14:42:38.674Z",
+      "lessonId": "1a325bb4-c867-4d51-a84c-39d3c12556dc",
+      "topicId": "70b1bb8f-213e-4b71-af81-28ca402cbbc0",
+      "hanzi": "很高兴认识你",
+      "pinyin": "hěn gāoxìng rènshi nǐ",
+      "meaningVi": "Rất vui được quen bạn",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "很高兴认识你。",
+        "pinyin": "hěn gāoxìng rènshi nǐ.",
+        "vi": "Rất vui được quen bạn"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "4cf1ad8e-2dff-468c-8ce9-ec52944aa16a",
+      "createdAt": "2026-09-04T14:42:38.693Z",
+      "lessonId": "1a325bb4-c867-4d51-a84c-39d3c12556dc",
+      "topicId": "70b1bb8f-213e-4b71-af81-28ca402cbbc0",
+      "hanzi": "来自",
+      "pinyin": "láizì",
+      "meaningVi": "Đến từ",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "来自。",
+        "pinyin": "láizì.",
+        "vi": "Đến từ"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "6acc7545-a242-4360-859a-8d78b9387771",
+      "createdAt": "2026-09-04T14:42:38.750Z",
+      "lessonId": "cd100999-8d03-4a3e-848a-466f74402d10",
+      "topicId": "0da06d5a-b2a0-4d95-9d62-7dec2673490e",
+      "hanzi": "老虎",
+      "pinyin": "lǎohǔ",
+      "meaningVi": "Con hổ",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "老虎。",
+        "pinyin": "lǎohǔ.",
+        "vi": "Con hổ"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "7732d35d-4e35-427b-93c3-264d765a12b4",
+      "createdAt": "2026-09-04T14:42:38.751Z",
+      "lessonId": "cd100999-8d03-4a3e-848a-466f74402d10",
+      "topicId": "0da06d5a-b2a0-4d95-9d62-7dec2673490e",
+      "hanzi": "跑",
+      "pinyin": "pǎo",
+      "meaningVi": "Chạy",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "跑。",
+        "pinyin": "pǎo.",
+        "vi": "Chạy"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "8fc1f94c-9902-4a78-b67e-502d0b265043",
+      "createdAt": "2026-09-04T14:42:38.752Z",
+      "lessonId": "cd100999-8d03-4a3e-848a-466f74402d10",
+      "topicId": "0da06d5a-b2a0-4d95-9d62-7dec2673490e",
+      "hanzi": "快",
+      "pinyin": "kuài",
+      "meaningVi": "Nhanh",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "快。",
+        "pinyin": "kuài.",
+        "vi": "Nhanh"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "09cde215-7143-4be0-a838-45a7258235d1",
+      "createdAt": "2026-09-04T14:42:38.752Z",
+      "lessonId": "cd100999-8d03-4a3e-848a-466f74402d10",
+      "topicId": "0da06d5a-b2a0-4d95-9d62-7dec2673490e",
+      "hanzi": "眼睛",
+      "pinyin": "yǎnjīng",
+      "meaningVi": "Mắt",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "眼睛。",
+        "pinyin": "yǎnjīng.",
+        "vi": "Mắt"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "6c79f8ba-029c-41c3-ad9c-d94d22580e71",
+      "createdAt": "2026-09-04T14:42:38.753Z",
+      "lessonId": "cd100999-8d03-4a3e-848a-466f74402d10",
+      "topicId": "0da06d5a-b2a0-4d95-9d62-7dec2673490e",
+      "hanzi": "耳朵",
+      "pinyin": "ěrduo",
+      "meaningVi": "Tai",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "耳朵。",
+        "pinyin": "ěrduo.",
+        "vi": "Tai"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "78bdc48a-462d-4f87-ac4d-15d5824018fa",
+      "createdAt": "2026-09-04T14:42:38.754Z",
+      "lessonId": "f02d9e66-1cf1-4f22-8638-886e24ff5381",
+      "topicId": "4e5da361-176a-45ba-b8f8-9b7f585a1b3d",
+      "hanzi": "麻烦你",
+      "pinyin": "máfan nǐ",
+      "meaningVi": "Phiền bạn",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "麻烦你。",
+        "pinyin": "máfan nǐ.",
+        "vi": "Phiền bạn"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "550dba00-3ee6-400c-b153-0abaa8bcd19b",
+      "createdAt": "2026-09-04T14:42:38.755Z",
+      "lessonId": "f02d9e66-1cf1-4f22-8638-886e24ff5381",
+      "topicId": "4e5da361-176a-45ba-b8f8-9b7f585a1b3d",
+      "hanzi": "没关系",
+      "pinyin": "méi guānxi",
+      "meaningVi": "Không sao",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "没关系。",
+        "pinyin": "méi guānxi.",
+        "vi": "Không sao"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "fd5ba1b6-d797-4fac-809a-a05362996114",
+      "createdAt": "2026-09-04T14:42:38.756Z",
+      "lessonId": "f02d9e66-1cf1-4f22-8638-886e24ff5381",
+      "topicId": "4e5da361-176a-45ba-b8f8-9b7f585a1b3d",
+      "hanzi": "请问",
+      "pinyin": "qǐngwèn",
+      "meaningVi": "Xin hỏi",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "请问。",
+        "pinyin": "qǐngwèn.",
+        "vi": "Xin hỏi"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "67a6bb85-4d73-4e36-8e0d-4cbb1b4a1aaf",
+      "createdAt": "2026-09-04T14:42:38.756Z",
+      "lessonId": "f02d9e66-1cf1-4f22-8638-886e24ff5381",
+      "topicId": "4e5da361-176a-45ba-b8f8-9b7f585a1b3d",
+      "hanzi": "谢谢你",
+      "pinyin": "xièxiè nǐ",
+      "meaningVi": "Cảm ơn bạn",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "谢谢你。",
+        "pinyin": "xièxiè nǐ.",
+        "vi": "Cảm ơn bạn"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "e4e97402-f262-4e64-a9f1-7006f7f59ca1",
+      "createdAt": "2026-09-04T14:42:38.757Z",
+      "lessonId": "f02d9e66-1cf1-4f22-8638-886e24ff5381",
+      "topicId": "4e5da361-176a-45ba-b8f8-9b7f585a1b3d",
+      "hanzi": "不客气",
+      "pinyin": "bú kèqi",
+      "meaningVi": "Không có gì",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "不客气。",
+        "pinyin": "bú kèqi.",
+        "vi": "Không có gì"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "1e9f451a-25e8-46e1-ad48-6a9e601ac371",
+      "createdAt": "2026-09-04T14:42:38.758Z",
+      "lessonId": "d5c336b8-491e-42e4-a90e-20bc7c4cc3ad",
+      "topicId": "9c725d4e-46eb-4d8f-8377-dfacaa24a3aa",
+      "hanzi": "打算",
+      "pinyin": "dǎsuàn",
+      "meaningVi": "Dự định",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "打算。",
+        "pinyin": "dǎsuàn.",
+        "vi": "Dự định"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "6bda0d72-d9f3-4433-bfad-eeb07df0a156",
+      "createdAt": "2026-09-04T14:42:38.759Z",
+      "lessonId": "d5c336b8-491e-42e4-a90e-20bc7c4cc3ad",
+      "topicId": "9c725d4e-46eb-4d8f-8377-dfacaa24a3aa",
+      "hanzi": "周末",
+      "pinyin": "zhōumò",
+      "meaningVi": "Cuối tuần",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "周末。",
+        "pinyin": "zhōumò.",
+        "vi": "Cuối tuần"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "1fa01254-2b2b-4e04-9d80-296af50d8bb5",
+      "createdAt": "2026-09-04T14:42:38.760Z",
+      "lessonId": "d5c336b8-491e-42e4-a90e-20bc7c4cc3ad",
+      "topicId": "9c725d4e-46eb-4d8f-8377-dfacaa24a3aa",
+      "hanzi": "计划",
+      "pinyin": "jìhuà",
+      "meaningVi": "Kế hoạch",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "计划。",
+        "pinyin": "jìhuà.",
+        "vi": "Kế hoạch"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "1b9ea382-dd1c-479f-8c2a-c381b074efea",
+      "createdAt": "2026-09-04T14:42:38.761Z",
+      "lessonId": "d5c336b8-491e-42e4-a90e-20bc7c4cc3ad",
+      "topicId": "9c725d4e-46eb-4d8f-8377-dfacaa24a3aa",
+      "hanzi": "决定",
+      "pinyin": "juédìng",
+      "meaningVi": "Quyết định",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "决定。",
+        "pinyin": "juédìng.",
+        "vi": "Quyết định"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "8b6a2a6d-3406-43e6-a069-7daca32d506c",
+      "createdAt": "2026-09-04T14:42:38.761Z",
+      "lessonId": "d5c336b8-491e-42e4-a90e-20bc7c4cc3ad",
+      "topicId": "9c725d4e-46eb-4d8f-8377-dfacaa24a3aa",
+      "hanzi": "需要",
+      "pinyin": "xūyào",
+      "meaningVi": "Cần",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "需要。",
+        "pinyin": "xūyào.",
+        "vi": "Cần"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "f89c12aa-db84-4b50-9659-fe5944a97d9a",
+      "createdAt": "2026-09-04T14:42:38.762Z",
+      "lessonId": "d5c336b8-491e-42e4-a90e-20bc7c4cc3ad",
+      "topicId": "9c725d4e-46eb-4d8f-8377-dfacaa24a3aa",
+      "hanzi": "提高",
+      "pinyin": "tígāo",
+      "meaningVi": "Nâng cao",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "提高。",
+        "pinyin": "tígāo.",
+        "vi": "Nâng cao"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "5c22d44a-2cf9-4c07-b537-92f3a74cc2de",
+      "createdAt": "2026-09-04T14:42:38.763Z",
+      "lessonId": "d5c336b8-491e-42e4-a90e-20bc7c4cc3ad",
+      "topicId": "9c725d4e-46eb-4d8f-8377-dfacaa24a3aa",
+      "hanzi": "影响",
+      "pinyin": "yǐngxiǎng",
+      "meaningVi": "Ảnh hưởng",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "影响。",
+        "pinyin": "yǐngxiǎng.",
+        "vi": "Ảnh hưởng"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "dbfc3407-1a2a-4d3e-a12f-807393914402",
+      "createdAt": "2026-09-04T14:42:38.765Z",
+      "lessonId": "bd253b5e-a32e-4e0f-a36f-2c6dd7ee6463",
+      "topicId": "a56f161e-33d3-4a8f-a1c8-e1342f69fa60",
+      "hanzi": "逐渐",
+      "pinyin": "zhújiàn",
+      "meaningVi": "Dần dần",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "逐渐。",
+        "pinyin": "zhújiàn.",
+        "vi": "Dần dần"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "293f9172-80b0-46f7-bb89-187c3074783c",
+      "createdAt": "2026-09-04T14:42:38.766Z",
+      "lessonId": "bd253b5e-a32e-4e0f-a36f-2c6dd7ee6463",
+      "topicId": "a56f161e-33d3-4a8f-a1c8-e1342f69fa60",
+      "hanzi": "适应",
+      "pinyin": "shìyìng",
+      "meaningVi": "Thích nghi",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "适应。",
+        "pinyin": "shìyìng.",
+        "vi": "Thích nghi"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "987c4132-0030-4c09-a536-e40e43b46581",
+      "createdAt": "2026-09-04T14:42:38.767Z",
+      "lessonId": "bd253b5e-a32e-4e0f-a36f-2c6dd7ee6463",
+      "topicId": "a56f161e-33d3-4a8f-a1c8-e1342f69fa60",
+      "hanzi": "环境",
+      "pinyin": "huánjìng",
+      "meaningVi": "Môi trường",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "环境。",
+        "pinyin": "huánjìng.",
+        "vi": "Môi trường"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "4cd14f1a-e80a-4091-8819-ef4349f6069c",
+      "createdAt": "2026-09-04T14:42:38.767Z",
+      "lessonId": "bd253b5e-a32e-4e0f-a36f-2c6dd7ee6463",
+      "topicId": "a56f161e-33d3-4a8f-a1c8-e1342f69fa60",
+      "hanzi": "特点",
+      "pinyin": "tèdiǎn",
+      "meaningVi": "Đặc điểm",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "特点。",
+        "pinyin": "tèdiǎn.",
+        "vi": "Đặc điểm"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "85284649-391b-4700-8b2c-12b84b2d2fad",
+      "createdAt": "2026-09-04T14:42:38.768Z",
+      "lessonId": "bd253b5e-a32e-4e0f-a36f-2c6dd7ee6463",
+      "topicId": "a56f161e-33d3-4a8f-a1c8-e1342f69fa60",
+      "hanzi": "竞争",
+      "pinyin": "jìngzhēng",
+      "meaningVi": "Cạnh tranh",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "竞争。",
+        "pinyin": "jìngzhēng.",
+        "vi": "Cạnh tranh"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "230a1a5e-1c4c-43aa-a904-e4331152698b",
+      "createdAt": "2026-09-04T14:42:38.769Z",
+      "lessonId": "bd253b5e-a32e-4e0f-a36f-2c6dd7ee6463",
+      "topicId": "a56f161e-33d3-4a8f-a1c8-e1342f69fa60",
+      "hanzi": "承担",
+      "pinyin": "chéngdān",
+      "meaningVi": "Đảm nhận, gánh vác",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "承担。",
+        "pinyin": "chéngdān.",
+        "vi": "Đảm nhận, gánh vác"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "b6cc0130-fb0f-49e3-802b-fcfa841f45fe",
+      "createdAt": "2026-09-04T14:42:38.769Z",
+      "lessonId": "bd253b5e-a32e-4e0f-a36f-2c6dd7ee6463",
+      "topicId": "a56f161e-33d3-4a8f-a1c8-e1342f69fa60",
+      "hanzi": "挑战",
+      "pinyin": "tiǎozhàn",
+      "meaningVi": "Thách thức",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "挑战。",
+        "pinyin": "tiǎozhàn.",
+        "vi": "Thách thức"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "9d4e6dbb-e44c-4a91-aadb-7937f26c6295",
+      "createdAt": "2026-09-04T14:42:38.772Z",
+      "lessonId": "10ea0ab6-7bde-43d5-b0b0-581ca0758611",
+      "topicId": "42102bb4-a90b-496e-b57d-816b7d1b89fb",
+      "hanzi": "毫无疑问",
+      "pinyin": "háo wú yíyì",
+      "meaningVi": "Không nghi ngờ gì, chắc chắn",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "毫无疑问。",
+        "pinyin": "háo wú yíyì.",
+        "vi": "Không nghi ngờ gì, chắc chắn"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "e6619edf-d861-4b8f-9a91-af7253fa1c7f",
+      "createdAt": "2026-09-04T14:42:38.772Z",
+      "lessonId": "10ea0ab6-7bde-43d5-b0b0-581ca0758611",
+      "topicId": "42102bb4-a90b-496e-b57d-816b7d1b89fb",
+      "hanzi": "局面",
+      "pinyin": "júmiàn",
+      "meaningVi": "Cục diện, tình hình",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "局面。",
+        "pinyin": "júmiàn.",
+        "vi": "Cục diện, tình hình"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "9825ecaa-02d6-41db-a40d-9f8a05ddde5b",
+      "createdAt": "2026-09-04T14:42:38.773Z",
+      "lessonId": "10ea0ab6-7bde-43d5-b0b0-581ca0758611",
+      "topicId": "42102bb4-a90b-496e-b57d-816b7d1b89fb",
+      "hanzi": "采取",
+      "pinyin": "cǎiqǔ",
+      "meaningVi": "Áp dụng, thực hiện",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "采取。",
+        "pinyin": "cǎiqǔ.",
+        "vi": "Áp dụng, thực hiện"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "e651d1f2-defc-48e1-b56c-cc29accf95cd",
+      "createdAt": "2026-09-04T14:42:38.774Z",
+      "lessonId": "10ea0ab6-7bde-43d5-b0b0-581ca0758611",
+      "topicId": "42102bb4-a90b-496e-b57d-816b7d1b89fb",
+      "hanzi": "措施",
+      "pinyin": "cuòshī",
+      "meaningVi": "Biện pháp",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "措施。",
+        "pinyin": "cuòshī.",
+        "vi": "Biện pháp"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "17f5362a-af69-4ee9-8d5a-c722f95b39d9",
+      "createdAt": "2026-09-04T14:42:38.775Z",
+      "lessonId": "10ea0ab6-7bde-43d5-b0b0-581ca0758611",
+      "topicId": "42102bb4-a90b-496e-b57d-816b7d1b89fb",
+      "hanzi": "显著",
+      "pinyin": "xiǎnzhù",
+      "meaningVi": "Rõ rệt, đáng kể",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "显著。",
+        "pinyin": "xiǎnzhù.",
+        "vi": "Rõ rệt, đáng kể"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "93416acb-0fb4-425b-b8f7-9037110b41bc",
+      "createdAt": "2026-09-04T14:42:38.776Z",
+      "lessonId": "10ea0ab6-7bde-43d5-b0b0-581ca0758611",
+      "topicId": "42102bb4-a90b-496e-b57d-816b7d1b89fb",
+      "hanzi": "缓解",
+      "pinyin": "huǎnjiě",
+      "meaningVi": "Giảm bớt, xoa dịu",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "缓解。",
+        "pinyin": "huǎnjiě.",
+        "vi": "Giảm bớt, xoa dịu"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "a431364a-ef6f-4fbc-b5b0-24412a1ecb86",
+      "createdAt": "2026-09-04T14:42:38.776Z",
+      "lessonId": "10ea0ab6-7bde-43d5-b0b0-581ca0758611",
+      "topicId": "42102bb4-a90b-496e-b57d-816b7d1b89fb",
+      "hanzi": "趋势",
+      "pinyin": "qūshì",
+      "meaningVi": "Xu hướng",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "趋势。",
+        "pinyin": "qūshì.",
+        "vi": "Xu hướng"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "e75f968e-cd4c-4efe-8405-0c37ac3786de",
+      "createdAt": "2026-09-04T14:42:38.808Z",
+      "lessonId": "73db9526-b881-4a04-9552-6f5f32d3a769",
+      "topicId": "2562b8f3-e666-4cca-a9f9-2a6f5d3d776e",
+      "hanzi": "爱好",
+      "pinyin": "àihào",
+      "meaningVi": "Sở thích",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "爱好。",
+        "pinyin": "àihào.",
+        "vi": "Sở thích"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "724d9a4b-b928-4aed-9b1f-29c7e97f6ce4",
+      "createdAt": "2026-09-04T14:42:38.809Z",
+      "lessonId": "73db9526-b881-4a04-9552-6f5f32d3a769",
+      "topicId": "2562b8f3-e666-4cca-a9f9-2a6f5d3d776e",
+      "hanzi": "兴趣",
+      "pinyin": "xìngqù",
+      "meaningVi": "Hứng thú",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "兴趣。",
+        "pinyin": "xìngqù.",
+        "vi": "Hứng thú"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "c551b3ff-d5b1-48fe-8c86-8c6b63b4c78b",
+      "createdAt": "2026-09-04T14:42:38.809Z",
+      "lessonId": "73db9526-b881-4a04-9552-6f5f32d3a769",
+      "topicId": "2562b8f3-e666-4cca-a9f9-2a6f5d3d776e",
+      "hanzi": "坚持",
+      "pinyin": "jiānchí",
+      "meaningVi": "Kiên trì",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "坚持。",
+        "pinyin": "jiānchí.",
+        "vi": "Kiên trì"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "db74257f-a4bd-4e52-9c02-a46f13d0a9fb",
+      "createdAt": "2026-09-04T14:42:38.810Z",
+      "lessonId": "73db9526-b881-4a04-9552-6f5f32d3a769",
+      "topicId": "2562b8f3-e666-4cca-a9f9-2a6f5d3d776e",
+      "hanzi": "业余时间",
+      "pinyin": "yèyú shíjiān",
+      "meaningVi": "Thời gian rảnh",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "业余时间。",
+        "pinyin": "yèyú shíjiān.",
+        "vi": "Thời gian rảnh"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "224afc49-3ee3-4615-ad72-679ce3464d20",
+      "createdAt": "2026-09-04T14:42:38.811Z",
+      "lessonId": "73db9526-b881-4a04-9552-6f5f32d3a769",
+      "topicId": "2562b8f3-e666-4cca-a9f9-2a6f5d3d776e",
+      "hanzi": "提高水平",
+      "pinyin": "tígāo shuǐpíng",
+      "meaningVi": "Nâng cao trình độ",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "提高水平。",
+        "pinyin": "tígāo shuǐpíng.",
+        "vi": "Nâng cao trình độ"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "dbcfa4df-58a8-4b3d-b65f-4a462718e431",
+      "createdAt": "2026-09-04T14:42:38.813Z",
+      "lessonId": "77a1b710-7371-4af7-b0f3-80c4be1f07ab",
+      "topicId": "83ac9229-2b66-49c4-baa6-0b351b2f137a",
+      "hanzi": "看法",
+      "pinyin": "kànfǎ",
+      "meaningVi": "Quan điểm, cách nhìn",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "看法。",
+        "pinyin": "kànfǎ.",
+        "vi": "Quan điểm, cách nhìn"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "11e06866-f361-4179-b1ec-877d8e14296c",
+      "createdAt": "2026-09-04T14:42:38.814Z",
+      "lessonId": "77a1b710-7371-4af7-b0f3-80c4be1f07ab",
+      "topicId": "83ac9229-2b66-49c4-baa6-0b351b2f137a",
+      "hanzi": "观点",
+      "pinyin": "guāndiǎn",
+      "meaningVi": "Quan điểm, góc nhìn",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "观点。",
+        "pinyin": "guāndiǎn.",
+        "vi": "Quan điểm, góc nhìn"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "aa906009-e8e0-4b18-bd3f-e25925b4ecfa",
+      "createdAt": "2026-09-04T14:42:38.815Z",
+      "lessonId": "77a1b710-7371-4af7-b0f3-80c4be1f07ab",
+      "topicId": "83ac9229-2b66-49c4-baa6-0b351b2f137a",
+      "hanzi": "赞成",
+      "pinyin": "zànchéng",
+      "meaningVi": "Tán thành",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "赞成。",
+        "pinyin": "zànchéng.",
+        "vi": "Tán thành"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "e6c81ca6-f7a6-4e27-9967-111c9ed2c9b1",
+      "createdAt": "2026-09-04T14:42:38.816Z",
+      "lessonId": "77a1b710-7371-4af7-b0f3-80c4be1f07ab",
+      "topicId": "83ac9229-2b66-49c4-baa6-0b351b2f137a",
+      "hanzi": "反对",
+      "pinyin": "fǎnduì",
+      "meaningVi": "Phản đối",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "反对。",
+        "pinyin": "fǎnduì.",
+        "vi": "Phản đối"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "308a827f-ffa2-442b-b4e4-51e4dcf20b3d",
+      "createdAt": "2026-09-04T14:42:38.817Z",
+      "lessonId": "77a1b710-7371-4af7-b0f3-80c4be1f07ab",
+      "topicId": "83ac9229-2b66-49c4-baa6-0b351b2f137a",
+      "hanzi": "综合来看",
+      "pinyin": "zōnghé lái kàn",
+      "meaningVi": "Nhìn tổng thể",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "综合来看。",
+        "pinyin": "zōnghé lái kàn.",
+        "vi": "Nhìn tổng thể"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "bc6cac49-17c1-4aa4-a533-d54f137b6885",
+      "createdAt": "2026-09-04T14:42:38.832Z",
+      "lessonId": "77a1b710-7371-4af7-b0f3-80c4be1f07ab",
+      "topicId": "83ac9229-2b66-49c4-baa6-0b351b2f137a",
+      "hanzi": "举例来说",
+      "pinyin": "jǔlì lái shuō",
+      "meaningVi": "Ví dụ như",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "举例来说。",
+        "pinyin": "jǔlì lái shuō.",
+        "vi": "Ví dụ như"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "691f1ce4-0fea-4dbd-b1e6-60838538e25b",
+      "createdAt": "2026-09-04T14:42:38.875Z",
+      "lessonId": "d1821498-118d-4802-84e4-86fc0f6efcc3",
+      "topicId": "00c5efbb-caa0-415b-a8ad-725118884b28",
+      "hanzi": "红色",
+      "pinyin": "hóngsè",
+      "meaningVi": "Màu đỏ",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "红色。",
+        "pinyin": "hóngsè.",
+        "vi": "Màu đỏ"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "f2ffa16b-856a-4b5c-8e6e-1af85a2f4951",
+      "createdAt": "2026-09-04T14:42:38.903Z",
+      "lessonId": "d1821498-118d-4802-84e4-86fc0f6efcc3",
+      "topicId": "00c5efbb-caa0-415b-a8ad-725118884b28",
+      "hanzi": "黄色",
+      "pinyin": "huángsè",
+      "meaningVi": "Màu vàng",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "黄色。",
+        "pinyin": "huángsè.",
+        "vi": "Màu vàng"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "e1bf4451-7ec0-4083-9860-5c3e51085874",
+      "createdAt": "2026-09-04T14:42:38.923Z",
+      "lessonId": "d1821498-118d-4802-84e4-86fc0f6efcc3",
+      "topicId": "00c5efbb-caa0-415b-a8ad-725118884b28",
+      "hanzi": "蓝色",
+      "pinyin": "lánsè",
+      "meaningVi": "Màu xanh dương",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "蓝色。",
+        "pinyin": "lánsè.",
+        "vi": "Màu xanh dương"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "fae8f281-0bad-4ed4-a525-175780e058be",
+      "createdAt": "2026-09-04T14:42:38.944Z",
+      "lessonId": "d1821498-118d-4802-84e4-86fc0f6efcc3",
+      "topicId": "00c5efbb-caa0-415b-a8ad-725118884b28",
+      "hanzi": "绿色",
+      "pinyin": "lǜsè",
+      "meaningVi": "Màu xanh lá",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "绿色。",
+        "pinyin": "lǜsè.",
+        "vi": "Màu xanh lá"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "ab677523-8928-41e4-bb35-5e891929fdb3",
+      "createdAt": "2026-09-04T14:42:38.986Z",
+      "lessonId": "d1821498-118d-4802-84e4-86fc0f6efcc3",
+      "topicId": "00c5efbb-caa0-415b-a8ad-725118884b28",
+      "hanzi": "白色",
+      "pinyin": "báisè",
+      "meaningVi": "Màu trắng",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "白色。",
+        "pinyin": "báisè.",
+        "vi": "Màu trắng"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "3b041d74-8220-45d4-8247-d33f7bcdbc97",
+      "createdAt": "2026-09-04T14:42:38.988Z",
+      "lessonId": "d1821498-118d-4802-84e4-86fc0f6efcc3",
+      "topicId": "00c5efbb-caa0-415b-a8ad-725118884b28",
+      "hanzi": "黑色",
+      "pinyin": "hēisè",
+      "meaningVi": "Màu đen",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "黑色。",
+        "pinyin": "hēisè.",
+        "vi": "Màu đen"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "ff2bf99b-1a21-4fe9-9185-3ad136726256",
+      "createdAt": "2026-09-04T14:42:39.061Z",
+      "lessonId": "ce03c30c-c0f6-41df-b859-da2a9422abee",
+      "topicId": "8f4f195b-33ab-4aed-b60f-0bdf1a81257e",
+      "hanzi": "猫",
+      "pinyin": "māo",
+      "meaningVi": "Con mèo",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "猫。",
+        "pinyin": "māo.",
+        "vi": "Con mèo"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "891d2992-ec74-4cb0-ab4a-e16d86d50314",
+      "createdAt": "2026-09-04T14:42:39.084Z",
+      "lessonId": "ce03c30c-c0f6-41df-b859-da2a9422abee",
+      "topicId": "8f4f195b-33ab-4aed-b60f-0bdf1a81257e",
+      "hanzi": "狗",
+      "pinyin": "gǒu",
+      "meaningVi": "Con chó",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "狗。",
+        "pinyin": "gǒu.",
+        "vi": "Con chó"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "6f04d7fb-1dcb-4420-8488-70e9fa66adb1",
+      "createdAt": "2026-09-04T14:42:39.086Z",
+      "lessonId": "ce03c30c-c0f6-41df-b859-da2a9422abee",
+      "topicId": "8f4f195b-33ab-4aed-b60f-0bdf1a81257e",
+      "hanzi": "兔子",
+      "pinyin": "tùzi",
+      "meaningVi": "Con thỏ",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "兔子。",
+        "pinyin": "tùzi.",
+        "vi": "Con thỏ"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "d384b7d3-5b7c-4d30-a4e4-267c4c672420",
+      "createdAt": "2026-09-04T14:42:39.087Z",
+      "lessonId": "ce03c30c-c0f6-41df-b859-da2a9422abee",
+      "topicId": "8f4f195b-33ab-4aed-b60f-0bdf1a81257e",
+      "hanzi": "熊猫",
+      "pinyin": "xióngmāo",
+      "meaningVi": "Gấu trúc",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "熊猫。",
+        "pinyin": "xióngmāo.",
+        "vi": "Gấu trúc"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "9fc12abd-d21c-4b0f-ace1-812d7e823858",
+      "createdAt": "2026-09-04T14:42:39.112Z",
+      "lessonId": "ce03c30c-c0f6-41df-b859-da2a9422abee",
+      "topicId": "8f4f195b-33ab-4aed-b60f-0bdf1a81257e",
+      "hanzi": "大象",
+      "pinyin": "dàxiàng",
+      "meaningVi": "Con voi",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "大象。",
+        "pinyin": "dàxiàng.",
+        "vi": "Con voi"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "55fac43a-6bf2-4e26-b260-43ff75bc2ca9",
+      "createdAt": "2026-09-04T14:42:39.134Z",
+      "lessonId": "ce03c30c-c0f6-41df-b859-da2a9422abee",
+      "topicId": "8f4f195b-33ab-4aed-b60f-0bdf1a81257e",
+      "hanzi": "小鸟",
+      "pinyin": "xiǎoniǎo",
+      "meaningVi": "Chim nhỏ",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "小鸟。",
+        "pinyin": "xiǎoniǎo.",
+        "vi": "Chim nhỏ"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "eb4bd992-3390-4d1a-a18d-8a6896a3a780",
+      "createdAt": "2026-09-04T14:42:39.206Z",
+      "lessonId": "74a6bd64-e8bf-4b76-bc35-a670a3c5b9cc",
+      "topicId": "8c834820-1444-4086-86b7-248577647800",
+      "hanzi": "起床",
+      "pinyin": "qǐchuáng",
+      "meaningVi": "Thức dậy",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "起床。",
+        "pinyin": "qǐchuáng.",
+        "vi": "Thức dậy"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "2114c974-42d9-4fd9-8035-73b350c3731e",
+      "createdAt": "2026-09-04T14:42:39.225Z",
+      "lessonId": "74a6bd64-e8bf-4b76-bc35-a670a3c5b9cc",
+      "topicId": "8c834820-1444-4086-86b7-248577647800",
+      "hanzi": "刷牙",
+      "pinyin": "shuāyá",
+      "meaningVi": "Đánh răng",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "刷牙。",
+        "pinyin": "shuāyá.",
+        "vi": "Đánh răng"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "347cd93b-a187-450d-a3a7-65a6e7dcaa3a",
+      "createdAt": "2026-09-04T14:42:39.226Z",
+      "lessonId": "74a6bd64-e8bf-4b76-bc35-a670a3c5b9cc",
+      "topicId": "8c834820-1444-4086-86b7-248577647800",
+      "hanzi": "上学",
+      "pinyin": "shàngxué",
+      "meaningVi": "Đi học",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "上学。",
+        "pinyin": "shàngxué.",
+        "vi": "Đi học"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "1b898da0-1cc0-41b0-a57c-7529a345bf49",
+      "createdAt": "2026-09-04T14:42:39.227Z",
+      "lessonId": "74a6bd64-e8bf-4b76-bc35-a670a3c5b9cc",
+      "topicId": "8c834820-1444-4086-86b7-248577647800",
+      "hanzi": "放学",
+      "pinyin": "fàngxué",
+      "meaningVi": "Tan học",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "放学。",
+        "pinyin": "fàngxué.",
+        "vi": "Tan học"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "e70e7313-aa8b-4786-93e5-2d0d0f2f21aa",
+      "createdAt": "2026-09-04T14:42:39.252Z",
+      "lessonId": "74a6bd64-e8bf-4b76-bc35-a670a3c5b9cc",
+      "topicId": "8c834820-1444-4086-86b7-248577647800",
+      "hanzi": "做作业",
+      "pinyin": "zuò zuòyè",
+      "meaningVi": "Làm bài tập",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "做作业。",
+        "pinyin": "zuò zuòyè.",
+        "vi": "Làm bài tập"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "a97b91d6-08f4-4bdb-9c5c-f0c9882078d7",
+      "createdAt": "2026-09-04T14:42:39.254Z",
+      "lessonId": "74a6bd64-e8bf-4b76-bc35-a670a3c5b9cc",
+      "topicId": "8c834820-1444-4086-86b7-248577647800",
+      "hanzi": "睡觉",
+      "pinyin": "shuìjiào",
+      "meaningVi": "Đi ngủ",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "睡觉。",
+        "pinyin": "shuìjiào.",
+        "vi": "Đi ngủ"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "8abb6a87-7eb9-458b-90ad-4dd8795ffa97",
+      "createdAt": "2026-09-04T14:42:39.282Z",
+      "lessonId": "5aa06714-dae9-4343-bff7-1302913ed4ee",
+      "topicId": "e20cd5ae-8a30-4dab-9a19-f3b358457b3c",
+      "hanzi": "苹果",
+      "pinyin": "píngguǒ",
+      "meaningVi": "Quả táo",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "苹果。",
+        "pinyin": "píngguǒ.",
+        "vi": "Quả táo"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "719ad423-dad2-4ecf-871f-2224b5564170",
+      "createdAt": "2026-09-04T14:42:39.299Z",
+      "lessonId": "5aa06714-dae9-4343-bff7-1302913ed4ee",
+      "topicId": "e20cd5ae-8a30-4dab-9a19-f3b358457b3c",
+      "hanzi": "香蕉",
+      "pinyin": "xiāngjiāo",
+      "meaningVi": "Quả chuối",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "香蕉。",
+        "pinyin": "xiāngjiāo.",
+        "vi": "Quả chuối"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "a5581faf-3e89-4959-b72e-4f7c3642f081",
+      "createdAt": "2026-09-04T14:42:39.300Z",
+      "lessonId": "5aa06714-dae9-4343-bff7-1302913ed4ee",
+      "topicId": "e20cd5ae-8a30-4dab-9a19-f3b358457b3c",
+      "hanzi": "西瓜",
+      "pinyin": "xīguā",
+      "meaningVi": "Quả dưa hấu",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "西瓜。",
+        "pinyin": "xīguā.",
+        "vi": "Quả dưa hấu"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "df35ec1d-4237-4072-94ff-5f15387c8e1c",
+      "createdAt": "2026-09-04T14:42:39.320Z",
+      "lessonId": "5aa06714-dae9-4343-bff7-1302913ed4ee",
+      "topicId": "e20cd5ae-8a30-4dab-9a19-f3b358457b3c",
+      "hanzi": "草莓",
+      "pinyin": "cǎoméi",
+      "meaningVi": "Quả dâu tây",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "草莓。",
+        "pinyin": "cǎoméi.",
+        "vi": "Quả dâu tây"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "5d7ec545-7f7b-4751-9114-0237a229c4a3",
+      "createdAt": "2026-09-04T14:42:39.343Z",
+      "lessonId": "5aa06714-dae9-4343-bff7-1302913ed4ee",
+      "topicId": "e20cd5ae-8a30-4dab-9a19-f3b358457b3c",
+      "hanzi": "葡萄",
+      "pinyin": "pútáo",
+      "meaningVi": "Quả nho",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "葡萄。",
+        "pinyin": "pútáo.",
+        "vi": "Quả nho"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "d07acf86-8d01-4aea-b47c-37c2a7ec9bc5",
+      "createdAt": "2026-09-04T14:42:39.366Z",
+      "lessonId": "5aa06714-dae9-4343-bff7-1302913ed4ee",
+      "topicId": "e20cd5ae-8a30-4dab-9a19-f3b358457b3c",
+      "hanzi": "橙子",
+      "pinyin": "chéngzi",
+      "meaningVi": "Quả cam",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "橙子。",
+        "pinyin": "chéngzi.",
+        "vi": "Quả cam"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "d1786f07-9535-4014-a8cc-273d0270f7a9",
+      "createdAt": "2026-09-04T14:42:39.400Z",
+      "lessonId": "6fcc3f75-b526-45dc-b819-325149f0c484",
+      "topicId": "d84d4114-9812-481b-a278-ab4d9bedf1cd",
+      "hanzi": "狐狸",
+      "pinyin": "húli",
+      "meaningVi": "Con cáo",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "狐狸。",
+        "pinyin": "húli.",
+        "vi": "Con cáo"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "9d12130d-be87-449d-a850-7f775ca9cf78",
+      "createdAt": "2026-09-04T14:42:39.420Z",
+      "lessonId": "6fcc3f75-b526-45dc-b819-325149f0c484",
+      "topicId": "d84d4114-9812-481b-a278-ab4d9bedf1cd",
+      "hanzi": "森林",
+      "pinyin": "sēnlín",
+      "meaningVi": "Khu rừng",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "森林。",
+        "pinyin": "sēnlín.",
+        "vi": "Khu rừng"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "6232afc5-d7a7-4fb5-a112-b51309b430a4",
+      "createdAt": "2026-09-04T14:42:39.447Z",
+      "lessonId": "6fcc3f75-b526-45dc-b819-325149f0c484",
+      "topicId": "d84d4114-9812-481b-a278-ab4d9bedf1cd",
+      "hanzi": "朋友",
+      "pinyin": "péngyou",
+      "meaningVi": "Bạn bè",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "朋友。",
+        "pinyin": "péngyou.",
+        "vi": "Bạn bè"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "29b47092-106a-47fd-bd06-d25b053d6ed4",
+      "createdAt": "2026-09-04T14:42:39.595Z",
+      "lessonId": "6fcc3f75-b526-45dc-b819-325149f0c484",
+      "topicId": "d84d4114-9812-481b-a278-ab4d9bedf1cd",
+      "hanzi": "帮助",
+      "pinyin": "bāngzhù",
+      "meaningVi": "Giúp đỡ",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "帮助。",
+        "pinyin": "bāngzhù.",
+        "vi": "Giúp đỡ"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "287c0e01-e7c2-4ca0-8c67-da21bf950d08",
+      "createdAt": "2026-09-04T14:42:39.596Z",
+      "lessonId": "6fcc3f75-b526-45dc-b819-325149f0c484",
+      "topicId": "d84d4114-9812-481b-a278-ab4d9bedf1cd",
+      "hanzi": "勇敢",
+      "pinyin": "yǒnggǎn",
+      "meaningVi": "Dũng cảm",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "勇敢。",
+        "pinyin": "yǒnggǎn.",
+        "vi": "Dũng cảm"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "6a5cdf1f-e5dd-4b8c-bc07-d1d0b4e3fcf7",
+      "createdAt": "2026-09-04T14:42:39.635Z",
+      "lessonId": "6fcc3f75-b526-45dc-b819-325149f0c484",
+      "topicId": "d84d4114-9812-481b-a278-ab4d9bedf1cd",
+      "hanzi": "聪明",
+      "pinyin": "cōngmíng",
+      "meaningVi": "Thông minh",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "聪明。",
+        "pinyin": "cōngmíng.",
+        "vi": "Thông minh"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "20d33eab-d418-4b6e-9116-5846d3208eda",
+      "createdAt": "2026-09-04T14:42:39.667Z",
+      "lessonId": "2aeea559-1b7c-492f-a0f5-ff8b9189dabf",
+      "topicId": "8d856a64-b07d-440e-b39d-44c9c9d09bfa",
+      "hanzi": "乌龟",
+      "pinyin": "wūguī",
+      "meaningVi": "Con rùa",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "乌龟。",
+        "pinyin": "wūguī.",
+        "vi": "Con rùa"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "76c47bbd-e3d9-41c3-bfe0-9a9c0bb5f589",
+      "createdAt": "2026-09-04T14:42:39.668Z",
+      "lessonId": "2aeea559-1b7c-492f-a0f5-ff8b9189dabf",
+      "topicId": "8d856a64-b07d-440e-b39d-44c9c9d09bfa",
+      "hanzi": "兔子",
+      "pinyin": "tùzi",
+      "meaningVi": "Con thỏ",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "兔子。",
+        "pinyin": "tùzi.",
+        "vi": "Con thỏ"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "9b122076-1ff0-4f81-a243-eab53d0197fa",
+      "createdAt": "2026-09-04T14:42:39.669Z",
+      "lessonId": "2aeea559-1b7c-492f-a0f5-ff8b9189dabf",
+      "topicId": "8d856a64-b07d-440e-b39d-44c9c9d09bfa",
+      "hanzi": "比赛",
+      "pinyin": "bǐsài",
+      "meaningVi": "Cuộc thi",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "比赛。",
+        "pinyin": "bǐsài.",
+        "vi": "Cuộc thi"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "a60d49df-2fa9-4f76-b7ed-cc3372810a76",
+      "createdAt": "2026-09-04T14:42:39.670Z",
+      "lessonId": "2aeea559-1b7c-492f-a0f5-ff8b9189dabf",
+      "topicId": "8d856a64-b07d-440e-b39d-44c9c9d09bfa",
+      "hanzi": "慢",
+      "pinyin": "màn",
+      "meaningVi": "Chậm",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "慢。",
+        "pinyin": "màn.",
+        "vi": "Chậm"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "4ecc3557-76d1-4751-97c6-230c46c61509",
+      "createdAt": "2026-09-04T14:42:39.670Z",
+      "lessonId": "2aeea559-1b7c-492f-a0f5-ff8b9189dabf",
+      "topicId": "8d856a64-b07d-440e-b39d-44c9c9d09bfa",
+      "hanzi": "骄傲",
+      "pinyin": "jiāo'ào",
+      "meaningVi": "Kiêu ngạo",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "骄傲。",
+        "pinyin": "jiāo'ào.",
+        "vi": "Kiêu ngạo"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "8e848742-023b-4be8-a505-6dcf11bf65bc",
+      "createdAt": "2026-09-04T14:42:39.671Z",
+      "lessonId": "2aeea559-1b7c-492f-a0f5-ff8b9189dabf",
+      "topicId": "8d856a64-b07d-440e-b39d-44c9c9d09bfa",
+      "hanzi": "认真",
+      "pinyin": "rènzhēn",
+      "meaningVi": "Nghiêm túc, chăm chỉ",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "认真。",
+        "pinyin": "rènzhēn.",
+        "vi": "Nghiêm túc, chăm chỉ"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "890fe49c-e463-41e5-90c8-b5361fbc5027",
+      "createdAt": "2026-09-04T14:42:39.674Z",
+      "lessonId": "cac79a04-0bd9-41e2-b5e0-28eaac749e63",
+      "topicId": "82989621-3749-4de6-beb6-ee544a49f2e1",
+      "hanzi": "你怎么样",
+      "pinyin": "nǐ zěnmeyàng",
+      "meaningVi": "Bạn thế nào",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "你怎么样。",
+        "pinyin": "nǐ zěnmeyàng.",
+        "vi": "Bạn thế nào"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "af5911c0-72d8-4076-afe9-976fada42503",
+      "createdAt": "2026-09-04T14:42:39.675Z",
+      "lessonId": "cac79a04-0bd9-41e2-b5e0-28eaac749e63",
+      "topicId": "82989621-3749-4de6-beb6-ee544a49f2e1",
+      "hanzi": "今天天气",
+      "pinyin": "jīntiān tiānqì",
+      "meaningVi": "Thời tiết hôm nay",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "今天天气。",
+        "pinyin": "jīntiān tiānqì.",
+        "vi": "Thời tiết hôm nay"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "69251ad3-23f7-4edf-913b-9c4f6ac7e1d0",
+      "createdAt": "2026-09-04T14:42:39.676Z",
+      "lessonId": "cac79a04-0bd9-41e2-b5e0-28eaac749e63",
+      "topicId": "82989621-3749-4de6-beb6-ee544a49f2e1",
+      "hanzi": "有点儿",
+      "pinyin": "yǒudiǎnr",
+      "meaningVi": "Hơi, một chút",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "有点儿。",
+        "pinyin": "yǒudiǎnr.",
+        "vi": "Hơi, một chút"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "c07f4663-d99e-4436-b44e-e5bae62ba2cf",
+      "createdAt": "2026-09-04T14:42:39.677Z",
+      "lessonId": "cac79a04-0bd9-41e2-b5e0-28eaac749e63",
+      "topicId": "82989621-3749-4de6-beb6-ee544a49f2e1",
+      "hanzi": "没事",
+      "pinyin": "méishì",
+      "meaningVi": "Không sao",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "没事。",
+        "pinyin": "méishì.",
+        "vi": "Không sao"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "4dbb2e35-c70e-497a-932f-30e0aad14486",
+      "createdAt": "2026-09-04T14:42:39.678Z",
+      "lessonId": "cac79a04-0bd9-41e2-b5e0-28eaac749e63",
+      "topicId": "82989621-3749-4de6-beb6-ee544a49f2e1",
+      "hanzi": "保重",
+      "pinyin": "bǎozhòng",
+      "meaningVi": "Bảo trọng",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "保重。",
+        "pinyin": "bǎozhòng.",
+        "vi": "Bảo trọng"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "06ad4556-6eb2-4a38-a263-e48921b601e5",
+      "createdAt": "2026-09-04T14:42:39.683Z",
+      "lessonId": "8a0a4c5b-3569-463e-a1e0-5c811160a95b",
+      "topicId": "1f4350ff-9d7d-4936-85b2-34cd555b62ee",
+      "hanzi": "酒店",
+      "pinyin": "jiǔdiàn",
+      "meaningVi": "Khách sạn",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "酒店。",
+        "pinyin": "jiǔdiàn.",
+        "vi": "Khách sạn"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "0b5fe049-c98b-4f80-953a-1da2bb6f76b4",
+      "createdAt": "2026-09-04T14:42:39.684Z",
+      "lessonId": "8a0a4c5b-3569-463e-a1e0-5c811160a95b",
+      "topicId": "1f4350ff-9d7d-4936-85b2-34cd555b62ee",
+      "hanzi": "预订",
+      "pinyin": "yùdìng",
+      "meaningVi": "Đặt trước",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "预订。",
+        "pinyin": "yùdìng.",
+        "vi": "Đặt trước"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "8a32c868-8a43-474f-af2d-aafefc1677ff",
+      "createdAt": "2026-09-04T14:42:39.789Z",
+      "lessonId": "8a0a4c5b-3569-463e-a1e0-5c811160a95b",
+      "topicId": "1f4350ff-9d7d-4936-85b2-34cd555b62ee",
+      "hanzi": "请问怎么走",
+      "pinyin": "qǐngwèn zěnme zǒu",
+      "meaningVi": "Xin hỏi đi thế nào",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "请问怎么走。",
+        "pinyin": "qǐngwèn zěnme zǒu.",
+        "vi": "Xin hỏi đi thế nào"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "096c1368-b56f-4f6f-8a34-0f0a5e700371",
+      "createdAt": "2026-09-04T14:42:39.791Z",
+      "lessonId": "8a0a4c5b-3569-463e-a1e0-5c811160a95b",
+      "topicId": "1f4350ff-9d7d-4936-85b2-34cd555b62ee",
+      "hanzi": "机场",
+      "pinyin": "jīchǎng",
+      "meaningVi": "Sân bay",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "机场。",
+        "pinyin": "jīchǎng.",
+        "vi": "Sân bay"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "c44e99a0-eb36-4663-9735-f757ecd7558d",
+      "createdAt": "2026-09-04T14:42:39.792Z",
+      "lessonId": "8a0a4c5b-3569-463e-a1e0-5c811160a95b",
+      "topicId": "1f4350ff-9d7d-4936-85b2-34cd555b62ee",
+      "hanzi": "护照",
+      "pinyin": "hùzhào",
+      "meaningVi": "Hộ chiếu",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "护照。",
+        "pinyin": "hùzhào.",
+        "vi": "Hộ chiếu"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "77991487-e9cb-485c-a67f-3e35fb70b32a",
+      "createdAt": "2026-09-04T14:42:39.793Z",
+      "lessonId": "8a0a4c5b-3569-463e-a1e0-5c811160a95b",
+      "topicId": "1f4350ff-9d7d-4936-85b2-34cd555b62ee",
+      "hanzi": "行李",
+      "pinyin": "xíngli",
+      "meaningVi": "Hành lý",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "行李。",
+        "pinyin": "xíngli.",
+        "vi": "Hành lý"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "ae215fc9-bca9-432c-837c-bcec516cdd9c",
+      "createdAt": "2026-09-04T14:42:39.862Z",
+      "lessonId": "b6d77dfe-e222-4b42-8f42-d3b33edd2ce9",
+      "topicId": "e79bd3c7-28ff-4024-9d9b-58e4bdf39ac2",
+      "hanzi": "项目",
+      "pinyin": "xiàngmù",
+      "meaningVi": "Dự án",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "项目。",
+        "pinyin": "xiàngmù.",
+        "vi": "Dự án"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "b5d85fde-7202-426c-8bd2-108e111a1d4f",
+      "createdAt": "2026-09-04T14:42:39.864Z",
+      "lessonId": "b6d77dfe-e222-4b42-8f42-d3b33edd2ce9",
+      "topicId": "e79bd3c7-28ff-4024-9d9b-58e4bdf39ac2",
+      "hanzi": "会议",
+      "pinyin": "huìyì",
+      "meaningVi": "Cuộc họp",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "会议。",
+        "pinyin": "huìyì.",
+        "vi": "Cuộc họp"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "2a7d0603-ac25-487f-802a-fcace6bbdfa4",
+      "createdAt": "2026-09-04T14:42:39.865Z",
+      "lessonId": "b6d77dfe-e222-4b42-8f42-d3b33edd2ce9",
+      "topicId": "e79bd3c7-28ff-4024-9d9b-58e4bdf39ac2",
+      "hanzi": "截止日期",
+      "pinyin": "jiézhǐ rìqī",
+      "meaningVi": "Hạn chót",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "截止日期。",
+        "pinyin": "jiézhǐ rìqī.",
+        "vi": "Hạn chót"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "4eca69a5-2672-47d8-a2bb-b5055da26b2b",
+      "createdAt": "2026-09-04T14:42:39.865Z",
+      "lessonId": "b6d77dfe-e222-4b42-8f42-d3b33edd2ce9",
+      "topicId": "e79bd3c7-28ff-4024-9d9b-58e4bdf39ac2",
+      "hanzi": "汇报",
+      "pinyin": "huìbào",
+      "meaningVi": "Báo cáo",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "汇报。",
+        "pinyin": "huìbào.",
+        "vi": "Báo cáo"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "62207675-638b-4858-9aee-03092c77422b",
+      "createdAt": "2026-09-04T14:42:39.900Z",
+      "lessonId": "b6d77dfe-e222-4b42-8f42-d3b33edd2ce9",
+      "topicId": "e79bd3c7-28ff-4024-9d9b-58e4bdf39ac2",
+      "hanzi": "同事",
+      "pinyin": "tóngshì",
+      "meaningVi": "Đồng nghiệp",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "同事。",
+        "pinyin": "tóngshì.",
+        "vi": "Đồng nghiệp"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "862fe864-686d-4691-b5e4-c96ea05057be",
+      "createdAt": "2026-09-04T14:42:39.901Z",
+      "lessonId": "b6d77dfe-e222-4b42-8f42-d3b33edd2ce9",
+      "topicId": "e79bd3c7-28ff-4024-9d9b-58e4bdf39ac2",
+      "hanzi": "加班",
+      "pinyin": "jiābān",
+      "meaningVi": "Làm thêm giờ",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "加班。",
+        "pinyin": "jiābān.",
+        "vi": "Làm thêm giờ"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "f3c6f2a1-fc40-468f-a528-ea639d393516",
+      "createdAt": "2026-09-04T14:42:40.022Z",
+      "lessonId": "6265eefb-ec32-4ab6-9d60-23159c7429ec",
+      "topicId": "be89d6df-86ab-4908-9fd3-87db818628db",
+      "hanzi": "老板",
+      "pinyin": "lǎobǎn",
+      "meaningVi": "Sếp",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "老板。",
+        "pinyin": "lǎobǎn.",
+        "vi": "Sếp"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "04bddc44-f589-44d9-8edb-2b934c64f7d3",
+      "createdAt": "2026-09-04T14:42:40.023Z",
+      "lessonId": "6265eefb-ec32-4ab6-9d60-23159c7429ec",
+      "topicId": "be89d6df-86ab-4908-9fd3-87db818628db",
+      "hanzi": "客户",
+      "pinyin": "kèhù",
+      "meaningVi": "Khách hàng",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "客户。",
+        "pinyin": "kèhù.",
+        "vi": "Khách hàng"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "c7970ca8-6aba-4152-a278-8b442d7f9216",
+      "createdAt": "2026-09-04T14:42:40.040Z",
+      "lessonId": "6265eefb-ec32-4ab6-9d60-23159c7429ec",
+      "topicId": "be89d6df-86ab-4908-9fd3-87db818628db",
+      "hanzi": "安排",
+      "pinyin": "ānpái",
+      "meaningVi": "Sắp xếp",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "安排。",
+        "pinyin": "ānpái.",
+        "vi": "Sắp xếp"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "eb5c025f-4090-4b61-80c6-d8f9a5991a42",
+      "createdAt": "2026-09-04T14:42:40.041Z",
+      "lessonId": "6265eefb-ec32-4ab6-9d60-23159c7429ec",
+      "topicId": "be89d6df-86ab-4908-9fd3-87db818628db",
+      "hanzi": "通知",
+      "pinyin": "tōngzhī",
+      "meaningVi": "Thông báo",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "通知。",
+        "pinyin": "tōngzhī.",
+        "vi": "Thông báo"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "6c661c93-3f48-42b1-b0c4-88841a9b4bab",
+      "createdAt": "2026-09-04T14:42:40.043Z",
+      "lessonId": "6265eefb-ec32-4ab6-9d60-23159c7429ec",
+      "topicId": "be89d6df-86ab-4908-9fd3-87db818628db",
+      "hanzi": "出差",
+      "pinyin": "chūchāi",
+      "meaningVi": "Đi công tác",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "出差。",
+        "pinyin": "chūchāi.",
+        "vi": "Đi công tác"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    },
+    {
+      "id": "1ac82fd1-ac40-4898-8592-4d5f69c687ce",
+      "createdAt": "2026-09-04T14:42:40.044Z",
+      "lessonId": "6265eefb-ec32-4ab6-9d60-23159c7429ec",
+      "topicId": "be89d6df-86ab-4908-9fd3-87db818628db",
+      "hanzi": "请假",
+      "pinyin": "qǐngjià",
+      "meaningVi": "Xin nghỉ phép",
+      "type": "Từ vựng",
+      "example": {
+        "hanzi": "请假。",
+        "pinyin": "qǐngjià.",
+        "vi": "Xin nghỉ phép"
+      },
+      "imageUrl": null,
+      "audioUrl": null,
+      "strokeOrderUrl": null
+    }
+  ],
+  "grammarPoints": [
+    {
+      "id": "691b7a9a-50a7-4ea9-87c7-baf08ee78c10",
+      "createdAt": "2026-09-04T14:42:38.639Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "structure": "A + 是 + B",
+      "usageVi": "Dùng để giới thiệu A chính là B, thường dùng khi giới thiệu tên, nghề nghiệp, danh tính.",
+      "example": {
+        "hanzi": "我是学生。",
+        "pinyin": "Wǒ shì xuéshēng.",
+        "vi": "Tôi là học sinh."
+      },
+      "notes": "Học sinh thường quên từ 是 hoặc đặt sai vị trí trong câu.",
+      "exercises": [
+        {
+          "type": "mcq",
+          "question": "我 ___ 学生。",
+          "options": [
+            "是",
+            "你",
+            "好"
+          ],
+          "answerIndex": 0,
+          "explanation": "是 dùng để nối A và B trong câu giới thiệu."
+        }
+      ]
+    },
+    {
+      "id": "15e6db9b-1e60-4021-be10-7b39dd21a74a",
+      "createdAt": "2026-09-04T14:42:38.658Z",
+      "lessonId": "171d4a59-8811-49bd-a083-9baad7efd04a",
+      "structure": "你叫什么名字？",
+      "usageVi": "Mẫu câu hỏi tên người khác một cách lịch sự, dùng phổ biến khi mới làm quen.",
+      "example": {
+        "hanzi": "我叫王明。",
+        "pinyin": "Wǒ jiào Wáng Míng.",
+        "vi": "Tôi tên là Vương Minh."
+      },
+      "notes": "Trả lời bằng 我叫 + tên, không lặp lại 什么名字.",
+      "exercises": [
+        {
+          "type": "mcq",
+          "question": "你 ___ 什么名字？",
+          "options": [
+            "叫",
+            "是",
+            "在"
+          ],
+          "answerIndex": 0,
+          "explanation": "叫 dùng để hỏi/nói tên."
+        }
+      ]
+    },
+    {
+      "id": "5ecb2d05-ab91-477b-899a-5a7e97b67d20",
+      "createdAt": "2026-09-04T14:42:38.664Z",
+      "lessonId": "e03a97e3-69fc-4c9c-a591-fb44532f4048",
+      "structure": "你在哪儿工作？",
+      "usageVi": "Hỏi địa điểm làm việc của ai đó, trả lời bằng 我在 + địa điểm + 工作.",
+      "example": {
+        "hanzi": "我在医院工作。",
+        "pinyin": "Wǒ zài yīyuàn gōngzuò.",
+        "vi": "Tôi làm việc ở bệnh viện."
+      },
+      "notes": "Giới từ 在 luôn đứng trước địa điểm, không đứng sau động từ.",
+      "exercises": [
+        {
+          "type": "mcq",
+          "question": "我 ___ 公司工作。",
+          "options": [
+            "在",
+            "是",
+            "叫"
+          ],
+          "answerIndex": 0,
+          "explanation": "在 chỉ nơi chốn diễn ra hành động."
+        }
+      ]
+    },
+    {
+      "id": "7dca8da1-fac6-4992-8f3c-b388430a8787",
+      "createdAt": "2026-09-04T14:42:38.763Z",
+      "lessonId": "d5c336b8-491e-42e4-a90e-20bc7c4cc3ad",
+      "structure": "S + 打算 + V",
+      "usageVi": "Diễn đạt dự định, kế hoạch sắp làm trong tương lai gần.",
+      "example": {
+        "hanzi": "我打算周末去爬山。",
+        "pinyin": "Wǒ dǎsuàn zhōumò qù páshān.",
+        "vi": "Tôi dự định cuối tuần đi leo núi."
+      },
+      "notes": "打算 luôn đứng trước động từ chỉ hành động, không dùng cho việc đã xảy ra.",
+      "exercises": [
+        {
+          "type": "mcq",
+          "question": "你周末 ___ 做什么？",
+          "options": [
+            "打算",
+            "需要",
+            "影响"
+          ],
+          "answerIndex": 0,
+          "explanation": "打算 dùng để hỏi/nói về dự định."
+        }
+      ]
+    },
+    {
+      "id": "ab50bec6-aeef-471e-87bb-2cc68fef17d5",
+      "createdAt": "2026-09-04T14:42:38.770Z",
+      "lessonId": "bd253b5e-a32e-4e0f-a36f-2c6dd7ee6463",
+      "structure": "随着 + Mệnh đề，逐渐 + V/Adj",
+      "usageVi": "Diễn đạt một sự thay đổi diễn ra từ từ, theo cùng với một điều kiện/thời gian nào đó.",
+      "example": {
+        "hanzi": "随着时间的推移，他逐渐适应了新环境。",
+        "pinyin": "Suízhe shíjiān de tuīyí, tā zhújiàn shìyìngle xīn huánjìng.",
+        "vi": "Theo thời gian, anh ấy dần thích nghi với môi trường mới."
+      },
+      "notes": "逐渐 nhấn mạnh quá trình từ từ, khác với 突然 (đột nhiên).",
+      "exercises": [
+        {
+          "type": "mcq",
+          "question": "他 ___ 适应了这里的生活。",
+          "options": [
+            "逐渐",
+            "突然",
+            "马上"
+          ],
+          "answerIndex": 0,
+          "explanation": "逐渐 diễn tả quá trình thay đổi từ từ theo thời gian."
+        }
+      ]
+    },
+    {
+      "id": "28a27fab-227f-4e65-8326-fcd4fd083370",
+      "createdAt": "2026-09-04T14:42:38.777Z",
+      "lessonId": "10ea0ab6-7bde-43d5-b0b0-581ca0758611",
+      "structure": "毫无疑问，...",
+      "usageVi": "Dùng ở đầu câu để nhấn mạnh một khẳng định chắc chắn, thường gặp trong văn viết/tranh luận học thuật.",
+      "example": {
+        "hanzi": "毫无疑问，这项政策对经济发展有积极影响。",
+        "pinyin": "Háo wú yíyì, zhè xiàng zhèngcè duì jīngjì fāzhǎn yǒu jījí yǐngxiǎng.",
+        "vi": "Không nghi ngờ gì, chính sách này có ảnh hưởng tích cực đến phát triển kinh tế."
+      },
+      "notes": "Là cách diễn đạt trang trọng, ít dùng trong khẩu ngữ hằng ngày.",
+      "exercises": [
+        {
+          "type": "mcq",
+          "question": "___，环境保护非常重要。",
+          "options": [
+            "毫无疑问",
+            "没关系",
+            "打算"
+          ],
+          "answerIndex": 0,
+          "explanation": "毫无疑问 dùng để nhấn mạnh khẳng định chắc chắn ở đầu câu."
+        }
+      ]
+    }
+  ],
+  "sentences": [
+    {
+      "id": "74ce39ba-129b-41e6-be85-c6e571879ceb",
+      "createdAt": "2026-09-04T14:42:38.641Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "hanzi": "老师，您好。",
+      "pinyin": "Lǎoshī, nín hǎo.",
+      "vi": "Xin chào cô giáo.",
+      "category": "dialogue",
+      "order": 1,
+      "questions": [
+        {
+          "q": "Câu \"老师，您好。\" có nghĩa là gì?",
+          "options": [
+            "Xin chào cô giáo.",
+            "Tạm biệt bạn",
+            "Chào buổi sáng"
+          ],
+          "answerIndex": 0,
+          "explanation": "老师，您好。 (Lǎoshī, nín hǎo.) = Xin chào cô giáo."
+        }
+      ]
+    },
+    {
+      "id": "18c3f3ff-444f-44cb-b680-f3e55d774a7b",
+      "createdAt": "2026-09-04T14:42:38.641Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "hanzi": "我是学生。",
+      "pinyin": "Wǒ shì xuéshēng.",
+      "vi": "Tôi là học sinh.",
+      "category": "reading",
+      "order": 2,
+      "questions": [
+        {
+          "q": "Câu \"我是学生。\" có nghĩa là gì?",
+          "options": [
+            "Tôi là học sinh.",
+            "Tạm biệt bạn",
+            "Chào buổi sáng"
+          ],
+          "answerIndex": 0,
+          "explanation": "我是学生。 (Wǒ shì xuéshēng.) = Tôi là học sinh."
+        }
+      ]
+    },
+    {
+      "id": "b0202dec-be10-4aba-8621-99ebeadd8948",
+      "createdAt": "2026-09-04T14:42:38.642Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "hanzi": "谢谢老师。",
+      "pinyin": "Xièxiè lǎoshī.",
+      "vi": "Cảm ơn cô giáo.",
+      "category": "listening",
+      "order": 3,
+      "questions": [
+        {
+          "q": "Câu \"谢谢老师。\" có nghĩa là gì?",
+          "options": [
+            "Cảm ơn cô giáo.",
+            "Tạm biệt bạn",
+            "Chào buổi sáng"
+          ],
+          "answerIndex": 0,
+          "explanation": "谢谢老师。 (Xièxiè lǎoshī.) = Cảm ơn cô giáo."
+        }
+      ]
+    },
+    {
+      "id": "0538a5f3-d49a-4568-aaf6-8ffab23c64b2",
+      "createdAt": "2026-09-04T14:42:38.643Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "hanzi": "再见，老师。",
+      "pinyin": "Zàijiàn, lǎoshī.",
+      "vi": "Tạm biệt cô giáo.",
+      "category": "reading",
+      "order": 4,
+      "questions": [
+        {
+          "q": "Câu \"再见，老师。\" có nghĩa là gì?",
+          "options": [
+            "Tạm biệt cô giáo.",
+            "Tạm biệt bạn",
+            "Chào buổi sáng"
+          ],
+          "answerIndex": 0,
+          "explanation": "再见，老师。 (Zàijiàn, lǎoshī.) = Tạm biệt cô giáo."
+        }
+      ]
+    }
+  ],
+  "images": [],
+  "slides": [
+    {
+      "id": "b7038eb8-ce43-4459-b4a4-46a5e5900579",
+      "createdAt": "2026-09-04T14:42:38.643Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "title": "PPT Bài 1: 你好",
+      "pages": [
+        {
+          "pageNum": 1,
+          "fileName": "page-1.svg"
+        },
+        {
+          "pageNum": 2,
+          "fileName": "page-2.svg"
+        }
+      ],
+      "version": 1,
+      "updatedAt": "2026-09-04T14:42:38.648Z"
+    }
+  ],
+  "slideProgress": [],
+  "songs": [
+    {
+      "id": "27b2d9c2-0da1-4e11-b5bf-735742377e98",
+      "createdAt": "2026-09-04T14:42:38.648Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "title": "你好歌 (Bài hát chào hỏi)",
+      "mediaUrl": "",
+      "lines": [
+        {
+          "start": 0,
+          "end": 3,
+          "hanzi": "你好你好",
+          "pinyin": "nǐ hǎo nǐ hǎo",
+          "vi": "Xin chào, xin chào"
+        },
+        {
+          "start": 3,
+          "end": 6,
+          "hanzi": "谢谢谢谢",
+          "pinyin": "xièxiè xièxiè",
+          "vi": "Cảm ơn, cảm ơn"
+        },
+        {
+          "start": 6,
+          "end": 9,
+          "hanzi": "再见再见",
+          "pinyin": "zàijiàn zàijiàn",
+          "vi": "Tạm biệt, tạm biệt"
+        }
+      ],
+      "grammarNotes": "Bài hát lặp lại các từ chào hỏi đã học trong bài 1. Giáo viên có thể cập nhật link nhạc thật qua trang Quản trị."
+    }
+  ],
+  "videos": [
+    {
+      "id": "145dce85-17dd-44d1-9d42-60b44ceab7f8",
+      "createdAt": "2026-09-04T14:42:38.650Z",
+      "lessonId": "06b4f2ed-2a33-438d-b337-3013a3cde34e",
+      "title": "Tình huống: Chào hỏi ở lớp học",
+      "url": "",
+      "description": "Giáo viên cập nhật link video thực tế qua trang Quản trị."
+    }
+  ],
+  "progress": [
+    {
+      "id": "79673843-a5bb-4356-bed7-ca4a317fd35b",
+      "createdAt": "2026-09-04T14:43:56.133Z",
+      "userId": "4370c69a-42ed-4da4-8a9f-5d4c345a4711",
+      "lessonId": "d5c336b8-491e-42e4-a90e-20bc7c4cc3ad",
+      "modules": {},
+      "wrongItems": []
+    }
+  ],
+  "flashcardStatus": [],
+  "activityLogs": [
+    {
+      "id": "6f02ad7a-b520-4e32-8382-5c6a8b3d5b64",
+      "createdAt": "2026-09-04T14:42:47.118Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "login",
+      "meta": {
+        "ip": "::1"
+      }
+    },
+    {
+      "id": "dbc16581-93ce-4801-8863-8b170e6d9289",
+      "createdAt": "2026-09-04T14:43:25.666Z",
+      "userId": "4370c69a-42ed-4da4-8a9f-5d4c345a4711",
+      "type": "login",
+      "meta": {
+        "ip": "::1"
+      }
+    },
+    {
+      "id": "9a52c5e4-36af-447f-917e-73aaa7500ba1",
+      "createdAt": "2026-09-04T14:43:35.998Z",
+      "userId": "4370c69a-42ed-4da4-8a9f-5d4c345a4711",
+      "type": "login",
+      "meta": {
+        "ip": "::1"
+      }
+    },
+    {
+      "id": "5eccfbea-4b2a-4a55-8dae-d479ef5bcd84",
+      "createdAt": "2026-09-04T14:43:54.801Z",
+      "userId": "4370c69a-42ed-4da4-8a9f-5d4c345a4711",
+      "type": "login",
+      "meta": {
+        "ip": "::1"
+      }
+    },
+    {
+      "id": "c1a56022-63ef-4098-a9b4-5e3e87cabf99",
+      "createdAt": "2026-09-04T14:46:12.439Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "login",
+      "meta": {
+        "ip": "::1"
+      }
+    },
+    {
+      "id": "9499173d-7f9d-4273-b531-0f6ce30fd6d7",
+      "createdAt": "2026-09-04T15:14:12.431Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "login",
+      "meta": {
+        "ip": "::1"
+      }
+    },
+    {
+      "id": "d96079cd-fad4-410a-8172-f1720795a9e9",
+      "createdAt": "2026-09-09T01:06:23.437Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "login",
+      "meta": {
+        "ip": "::1"
+      }
+    },
+    {
+      "id": "97ec0787-11f9-47f5-9f9c-35fef7eacdba",
+      "createdAt": "2026-09-09T01:06:31.608Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "upload_slide_source",
+      "meta": {
+        "slideId": "892fbc53-a338-44ea-9670-e958f6f10030",
+        "name": "test.pptx"
+      }
+    },
+    {
+      "id": "79528285-7bdb-4d41-a8e9-04ed6be59745",
+      "createdAt": "2026-09-09T01:07:00.160Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "delete_slide_deck",
+      "meta": {
+        "slideId": "892fbc53-a338-44ea-9670-e958f6f10030",
+        "title": "Test deck"
+      }
+    },
+    {
+      "id": "cc4faf3f-d06d-41c3-914c-3c868e114791",
+      "createdAt": "2026-09-09T12:08:34.917Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "login",
+      "meta": {
+        "ip": "::1"
+      }
+    },
+    {
+      "id": "87a83ec5-89c7-4212-ad3e-c91a1d8c6c85",
+      "createdAt": "2026-09-09T12:08:35.389Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "delete_slide_deck",
+      "meta": {
+        "slideId": "a9150a5c-eeca-4747-b9c6-f4a7f57ece60",
+        "title": "Test large"
+      }
+    },
+    {
+      "id": "06d687b0-c1e6-409b-95d6-9fa3d0c049ad",
+      "createdAt": "2026-09-09T12:09:02.907Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "login",
+      "meta": {
+        "ip": "::1"
+      }
+    },
+    {
+      "id": "65836d5f-7934-47e3-9267-266707c45899",
+      "createdAt": "2026-09-09T12:09:03.935Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "delete_slide_deck",
+      "meta": {
+        "slideId": "6f5f4071-fe65-4d8b-ab03-3fb26c4356cd",
+        "title": "Test large"
+      }
+    },
+    {
+      "id": "daddebce-3444-4a64-b8a8-849c6c63def3",
+      "createdAt": "2026-09-09T12:26:52.800Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "login",
+      "meta": {
+        "ip": "::1"
+      }
+    },
+    {
+      "id": "31ef0cfc-614f-4c62-bc6f-f30f3d825f9b",
+      "createdAt": "2026-09-09T12:27:12.195Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "upload_slide_source",
+      "meta": {
+        "slideId": "9388d9ed-fb30-40dc-b13d-a556b7c45ada",
+        "name": "test300.pptx"
+      }
+    },
+    {
+      "id": "eb8fb0af-3105-44bf-965e-06c4696a4687",
+      "createdAt": "2026-09-09T12:27:13.173Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "delete_slide_deck",
+      "meta": {
+        "slideId": "9388d9ed-fb30-40dc-b13d-a556b7c45ada",
+        "title": "Test disk upload"
+      }
+    },
+    {
+      "id": "cbe1ec8f-99da-498c-bf07-ae553ad7d0fd",
+      "createdAt": "2026-09-09T12:27:26.870Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "login",
+      "meta": {
+        "ip": "::1"
+      }
+    },
+    {
+      "id": "17a97104-1acc-41d5-91ed-105637ff1fee",
+      "createdAt": "2026-09-09T12:27:27.358Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "delete_slide_deck",
+      "meta": {
+        "slideId": "7405646a-ce7d-44fc-a245-782f0e79fbcc",
+        "title": "Test convert route"
+      }
+    },
+    {
+      "id": "974f6320-f75d-44b4-99c5-6f34856e9945",
+      "createdAt": "2026-09-09T12:44:37.696Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "login",
+      "meta": {
+        "ip": "::1"
+      }
+    },
+    {
+      "id": "68f73aac-d98e-4219-8fd4-9cf5cc76b2e0",
+      "createdAt": "2026-09-09T12:44:38.563Z",
+      "userId": "2906f30d-34d1-4d2e-83b3-dafabf3aa850",
+      "type": "delete_slide_deck",
+      "meta": {
+        "slideId": "17e5e488-82f9-4fbe-855d-f8b15caff3fe",
+        "title": "Test async flow"
+      }
+    }
+  ],
+  "instructors": [
+    {
+      "id": "2477d841-7866-4cb0-913e-a63f2a240335",
+      "createdAt": "2026-09-04T14:42:38.651Z",
+      "name": "Cô Lan",
+      "title": "Giáo viên",
+      "avatarUrl": null,
+      "order": 1,
+      "bio": "Thông tin giới thiệu (kinh nghiệm, bằng cấp, ảnh...) sẽ được admin/giáo viên cập nhật qua trang Quản trị."
+    }
+  ]
+}

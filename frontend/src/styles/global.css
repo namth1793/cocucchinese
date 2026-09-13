@@ -24,6 +24,11 @@
   --correct-soft: #D1FAE5;
   --wrong: #EA580C;
   --wrong-soft: #FFEDD5;
+  --teal: #0D7377;
+  --teal-dark: #0A4F52;
+  --teal-soft: #E6F5F4;
+  --purple: #6B21A8;
+  --purple-soft: #F5F3FF;
 
   /* Nền & bề mặt */
   --bg: #FAFAF9;
@@ -761,6 +766,82 @@ input, select, textarea { font-family: inherit; }
 .word-card-type { font-size: 11.5px; color: var(--ink-faint); margin-top: 3px; font-weight: 600; }
 .word-card-example { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line-strong); }
 
+/* ---------- Bài khoá (dialogues) ---------- */
+
+.dialogue-card { border-top: 3px solid var(--teal); }
+.dialogue-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.dialogue-badge {
+  flex-shrink: 0; background: var(--teal-soft); color: var(--teal-dark);
+  font-size: 11px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: var(--radius-pill);
+}
+.dialogue-title { font-weight: 700; font-size: 14.5px; color: var(--ink); }
+.dialogue-context {
+  font-size: 13px; color: var(--ink-soft); font-style: italic; margin-bottom: 12px;
+  padding-bottom: 10px; border-bottom: 1px dashed var(--line-strong);
+}
+.dialogue-context .cn { display: block; font-family: var(--font-cn); font-style: normal; color: var(--ink); margin-bottom: 3px; }
+.dialogue-context-en { display: block; }
+.dialogue-tip {
+  background: var(--gold-soft); border-left: 3px solid var(--gold); border-radius: var(--radius-sm);
+  padding: 10px 12px; font-size: 13px; color: #92400E; margin-bottom: 12px;
+}
+.dialogue-tip .cn { font-family: var(--font-cn); font-weight: 700; }
+.dialogue-tip-en { margin-top: 3px; font-size: 12px; opacity: 0.85; }
+
+.dialogue-lines { display: flex; flex-direction: column; gap: 12px; }
+.dialogue-line { display: flex; gap: 10px; align-items: flex-start; }
+.dialogue-speaker {
+  flex-shrink: 0; width: 84px; font-size: 12px; font-weight: 700; color: var(--teal-dark);
+  padding-top: 10px; text-align: right;
+}
+.dialogue-bubble {
+  flex: 1; min-width: 0; background: var(--teal-soft); border-radius: var(--radius-md);
+  border-top-left-radius: 4px; padding: 10px 13px;
+}
+.dialogue-hanzi-row { display: flex; align-items: center; gap: 8px; }
+.dialogue-hanzi { font-family: var(--font-cn-serif); font-size: 18px; font-weight: 700; color: var(--ink); }
+.dialogue-pinyin { font-size: 12.5px; color: var(--teal-dark); font-weight: 600; margin-top: 2px; }
+.dialogue-vi { font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+.dialogue-scenario-hint {
+  background: var(--purple-soft); color: var(--purple); border-radius: var(--radius-sm);
+  padding: 8px 12px; font-size: 13px; font-weight: 600; margin-bottom: 14px; text-align: left;
+}
+
+@media (max-width: 480px) {
+  .dialogue-speaker { width: 64px; font-size: 11px; }
+}
+
+/* ---------- Chữ Hán (characters) ---------- */
+
+.char-grid { display: flex; flex-direction: column; }
+@media (min-width: 760px) { .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; } }
+@media (min-width: 1200px) { .char-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+.char-card { border-top: 3px solid var(--purple); }
+.char-head { margin-bottom: 10px; }
+.char-hanzi-row { display: flex; align-items: center; gap: 10px; }
+.char-hanzi-big { font-size: 40px; font-weight: 700; color: var(--purple); line-height: 1; }
+.char-meta { display: flex; align-items: baseline; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+.char-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.char-tag {
+  background: var(--purple-soft); color: var(--purple); font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: var(--radius-pill);
+}
+.char-row { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; font-size: 13px; flex-wrap: wrap; }
+.char-row-label { flex-shrink: 0; font-size: 11px; font-weight: 800; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.03em; width: 60px; }
+.char-radical { font-size: 18px; font-weight: 700; color: var(--purple); }
+.char-row-text { color: var(--ink-soft); }
+.char-stroke-seq { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+.char-stroke-chip {
+  background: var(--bg-alt); border: 1px solid var(--line); border-radius: var(--radius-sm);
+  padding: 3px 8px; font-size: 12px; color: var(--ink-soft);
+}
+.char-memo {
+  margin-top: 10px; padding: 10px 12px; background: var(--gold-soft); border-left: 3px solid var(--gold);
+  border-radius: var(--radius-sm); font-size: 13px; color: #92400E; line-height: 1.5;
+}
+
 /* ---------- Giới thiệu giảng viên ---------- */
 
 .instructor-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
@@ -851,6 +932,51 @@ input, select, textarea { font-family: inherit; }
 .fc-known { background: var(--jade); }
 .fc-unknown { background: var(--wrong); }
 
+/* ---------- Flashcard grid (flip tiles) ---------- */
+
+.flip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 480px) { .flip-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 760px) { .flip-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
+@media (min-width: 1024px) { .flip-grid { grid-template-columns: repeat(5, 1fr); } }
+
+.flip-tile { aspect-ratio: 1; perspective: 1000px; cursor: pointer; border-radius: var(--radius-lg); }
+.flip-tile-inner {
+  position: relative; width: 100%; height: 100%; transform-style: preserve-3d;
+  transition: transform .45s cubic-bezier(.2,.8,.2,1);
+}
+.flip-tile-inner.is-flipped { transform: rotateY(180deg); }
+.flip-tile-face {
+  position: absolute; inset: 0; backface-visibility: hidden;
+  border-radius: var(--radius-lg); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center; padding: 10px;
+  box-shadow: var(--shadow-sm);
+}
+.flip-tile-front { background: var(--surface); border: 1px solid var(--line); }
+.flip-tile-hanzi { font-size: clamp(20px, 4vw, 28px); font-weight: 700; color: var(--ink); }
+.flip-tile-speak {
+  position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border: none; border-radius: 50%;
+  background: var(--bg-alt); color: var(--ink-soft); display: flex; align-items: center; justify-content: center;
+}
+.flip-tile-speak:hover { background: var(--primary-soft); color: var(--primary-dark); }
+.flip-tile-back {
+  background: linear-gradient(155deg, var(--teal) 0%, var(--teal-dark) 100%); color: #fff;
+  transform: rotateY(180deg); gap: 5px;
+}
+.flip-tile-pinyin { font-size: clamp(13px, 2.4vw, 16px); font-weight: 800; }
+.flip-tile-meaning { font-size: clamp(11px, 2vw, 13px); opacity: 0.9; }
+.flip-tile-type {
+  margin-top: 4px; background: rgba(255,255,255,0.22); color: #fff; font-size: 10.5px; font-weight: 700;
+  padding: 2px 9px; border-radius: var(--radius-pill);
+}
+.flip-tile-marks { position: absolute; bottom: 6px; display: flex; gap: 6px; }
+.flip-tile-mark-btn {
+  width: 22px; height: 22px; border-radius: 50%; border: none; background: rgba(255,255,255,0.22); color: #fff;
+  font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+}
+.flip-tile-mark-btn:hover { background: rgba(255,255,255,0.4); }
+.flip-tile-known .flip-tile-front, .flip-tile-known .flip-tile-back { box-shadow: 0 0 0 2px var(--correct); }
+.flip-tile-unknown .flip-tile-front, .flip-tile-unknown .flip-tile-back { box-shadow: 0 0 0 2px var(--wrong); }
+
 /* ---------- Grammar ---------- */
 
 .grammar-num {
@@ -865,6 +991,7 @@ input, select, textarea { font-family: inherit; }
 .grammar-usage { margin-bottom: 14px; color: var(--ink-soft); line-height: 1.6; }
 .grammar-example { background: var(--bg-alt); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px; border-left: 3px solid var(--gold); }
 .grammar-note { background: var(--gold-soft); border-radius: var(--radius-md); padding: 14px; color: #92400E; font-size: 14px; border-left: 3px solid var(--gold); }
+.grammar-block { border-top: 3px solid #2563EB; }
 
 /* ---------- Games ---------- */
 

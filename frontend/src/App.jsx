@@ -10,6 +10,8 @@ import LevelLessons from './pages/LevelLessons';
 import LessonHome from './pages/LessonHome';
 import SlideViewer from './pages/SlideViewer';
 import Vocabulary from './pages/Vocabulary';
+import Dialogues from './pages/Dialogues';
+import Characters from './pages/Characters';
 import Flashcards from './pages/Flashcards';
 import Grammar from './pages/Grammar';
 import Games from './pages/Games';
@@ -22,7 +24,9 @@ import BuildSentenceGame from './pages/games/BuildSentenceGame';
 import Reading from './pages/Reading';
 import Listening from './pages/Listening';
 import Shadowing from './pages/Shadowing';
+import Speaking from './pages/Speaking';
 import Translate from './pages/Translate';
+import Writing from './pages/Writing';
 import VideoLearning from './pages/VideoLearning';
 import LessonResult from './pages/LessonResult';
 import Review from './pages/Review';
@@ -59,6 +63,8 @@ export default function App() {
           <Route path="/lessons/:lessonId" element={<LessonHome />} />
           <Route path="/lessons/:lessonId/ppt" element={<SlideViewer />} />
           <Route path="/lessons/:lessonId/vocab" element={<Vocabulary />} />
+          <Route path="/lessons/:lessonId/text" element={<Dialogues />} />
+          <Route path="/lessons/:lessonId/hanzi" element={<Characters />} />
           <Route path="/lessons/:lessonId/flashcards" element={<Flashcards />} />
           <Route path="/lessons/:lessonId/grammar" element={<Grammar />} />
           <Route path="/lessons/:lessonId/games" element={<Games />} />
@@ -71,7 +77,9 @@ export default function App() {
           <Route path="/lessons/:lessonId/reading" element={<Reading />} />
           <Route path="/lessons/:lessonId/listening" element={<Listening />} />
           <Route path="/lessons/:lessonId/shadowing" element={<Shadowing />} />
+          <Route path="/lessons/:lessonId/speaking" element={<Speaking />} />
           <Route path="/lessons/:lessonId/translate" element={<Translate />} />
+          <Route path="/lessons/:lessonId/writing" element={<Writing />} />
           <Route path="/lessons/:lessonId/video" element={<VideoLearning />} />
           <Route path="/lessons/:lessonId/song" element={<Navigate to="video" replace />} />
           <Route path="/lessons/:lessonId/result" element={<LessonResult />} />

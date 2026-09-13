@@ -11,6 +11,7 @@ import { speak } from '../utils/speak';
 export default function Shadowing() {
   const { lessonId } = useParams();
   const [sentences, setSentences] = useState([]);
+  const [scenarioMap, setScenarioMap] = useState({});
   const [index, setIndex] = useState(0);
   const [recording, setRecording] = useState(false);
   const [myAudioUrl, setMyAudioUrl] = useState(null);
@@ -22,6 +23,11 @@ export default function Shadowing() {
 
   useEffect(() => {
     api.get('/sentences', { params: { lessonId } }).then((res) => setSentences(res.data));
+    api.get('/speaking', { params: { lessonId } }).then((res) => {
+      const map = {};
+      res.data.forEach((sc) => { map[sc.targetHanzi.replace(/[。！？，]/g, '').trim()] = sc.context; });
+      setScenarioMap(map);
+    });
   }, [lessonId]);
 
   useEffect(() => () => { if (myAudioUrl) URL.revokeObjectURL(myAudioUrl); }, [myAudioUrl]);
@@ -104,6 +110,11 @@ export default function Shadowing() {
 
       <ProtectedContent>
         <div className="card" style={{ textAlign: 'center' }}>
+          {scenarioMap[sentence.hanzi.replace(/[。！？，]/g, '').trim()] && (
+            <p className="dialogue-scenario-hint">
+              🗣️ Tình huống: {scenarioMap[sentence.hanzi.replace(/[。！？，]/g, '').trim()]}
+            </p>
+          )}
           <Hanzi hanzi={sentence.hanzi} pinyin={sentence.pinyin} meaning={sentence.vi} />
         </div>
       </ProtectedContent>
