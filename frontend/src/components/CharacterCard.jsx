@@ -1,9 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import { X, Play, PenTool } from 'lucide-react';
 import HanziWriter from 'hanzi-writer';
+import api from '../api/client';
 import SpeakButton from './SpeakButton';
 
 const WRITER_SIZE = 180;
+
+// Lấy dữ liệu thứ tự nét từ chính backend (gói hanzi-writer-data) thay vì để
+// trình duyệt gọi thẳng ra CDN jsdelivr mặc định của hanzi-writer — tránh lỗi
+// "không tải được hoạt hình" khi máy/mạng không ra được Internet.
+function charDataLoader(char, onLoad, onError) {
+  api.get(`/hanzi-data/${encodeURIComponent(char)}`)
+    .then((res) => onLoad(res.data))
+    .catch((err) => onError(err));
+}
 
 export default function CharacterCard({ character, onClose }) {
   const targetRef = useRef(null);
@@ -28,6 +38,7 @@ export default function CharacterCard({ character, onClose }) {
       delayBetweenStrokes: 250,
       showCharacter: true,
       showOutline: true,
+      charDataLoader,
       onLoadCharDataError: () => setError(true),
       onLoadCharDataSuccess: () => setReady(true)
     });

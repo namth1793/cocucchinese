@@ -42,6 +42,7 @@ app.use('/api/words', require('./routes/words'));
 app.use('/api/grammar', require('./routes/grammar'));
 app.use('/api/sentences', require('./routes/sentences'));
 app.use('/api/characters', require('./routes/characters'));
+app.use('/api/hanzi-data', require('./routes/hanziData'));
 app.use('/api/dialogues', require('./routes/dialogues'));
 app.use('/api/speaking', require('./routes/speaking'));
 app.use('/api/fill', require('./routes/fillExercises'));
