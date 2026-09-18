@@ -8,7 +8,7 @@ const DATA_FILE = path.join(DATA_DIR, 'db.json');
 const COLLECTIONS = [
   'users', 'levels', 'lessons', 'topics', 'words', 'grammarPoints',
   'sentences', 'characters', 'dialogues', 'speakingScenarios', 'fillExercises',
-  'images', 'slides', 'slideProgress', 'songs', 'videos',
+  'images', 'slides', 'slideProgress', 'songs', 'videos', 'examPapers',
   'progress', 'flashcardStatus', 'activityLogs', 'instructors'
 ];
 

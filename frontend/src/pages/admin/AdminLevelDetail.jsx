@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Pencil } from 'lucide-react';
 import api from '../../api/client';
 import AdminLessons from './AdminLessons';
+import AdminExamPapers from './AdminExamPapers';
 import { LEVEL_TYPE_OPTIONS } from '../../constants/courseCategories';
 
 function EditLevelForm({ level, onSaved, onCancel }) {
@@ -87,6 +88,9 @@ export default function AdminLevelDetail() {
       )}
 
       <AdminLessons levelId={levelId} />
+
+      <hr style={{ margin: '28px 0', border: 0, borderTop: '1px solid var(--line)' }} />
+      <AdminExamPapers levelId={levelId} />
     </div>
   );
 }

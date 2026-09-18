@@ -46,6 +46,24 @@ async function saveMedia(buffer, originalname, mimetype) {
   return { url: `${MEDIA_PUBLIC_BASE}/${key}`, key };
 }
 
+/**
+ * File lớn (đề thi thử tự chứa HTML/CSS/JS, có thể tới hàng trăm MB) - nhận
+ * đường dẫn file tạm trên đĩa và stream thẳng lên R2 (bucket media, công khai
+ * qua CDN), tránh giữ hết trong RAM như saveMedia.
+ */
+async function saveExamFile(tmpFilePath, originalname, mimetype) {
+  const key = randomName('media/exam-', originalname);
+  await client.send(new PutObjectCommand({
+    Bucket: MEDIA_BUCKET,
+    Key: key,
+    Body: fs.createReadStream(tmpFilePath),
+    ContentType: mimetype || 'text/html; charset=utf-8',
+    ContentLength: fs.statSync(tmpFilePath).size,
+    CacheControl: 'public, max-age=31536000, immutable'
+  }));
+  return { url: `${MEDIA_PUBLIC_BASE}/${key}` };
+}
+
 async function saveSlidePage(slideId, buffer, originalname, mimetype) {
   const filename = randomName('page-', originalname);
   await client.send(new PutObjectCommand({
@@ -119,4 +137,4 @@ async function deleteSlideDeck(slideId) {
   } while (continuationToken);
 }
 
-module.exports = { mode: 'r2', saveMedia, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource, deleteSlideDeck };
+module.exports = { mode: 'r2', saveMedia, saveExamFile, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource, deleteSlideDeck };

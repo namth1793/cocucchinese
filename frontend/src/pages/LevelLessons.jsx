@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { FileText, ExternalLink } from 'lucide-react';
 import api from '../api/client';
 import ProgressBar from '../components/ProgressBar';
 
@@ -8,6 +9,7 @@ export default function LevelLessons() {
   const [level, setLevel] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [summaries, setSummaries] = useState({});
+  const [examGroups, setExamGroups] = useState([]);
 
   useEffect(() => {
     api.get(`/levels/${levelId}`).then((res) => setLevel(res.data));
@@ -24,12 +26,52 @@ export default function LevelLessons() {
       }));
       setSummaries(Object.fromEntries(entries));
     });
+    api.get('/exam-papers', { params: { levelId } }).then((res) => {
+      const byGroup = {};
+      res.data.forEach((p) => {
+        if (!byGroup[p.group]) byGroup[p.group] = [];
+        byGroup[p.group].push(p);
+      });
+      const groups = Object.keys(byGroup).sort().map((g) => ({
+        group: g,
+        papers: byGroup[g].sort((a, b) => (a.order || 0) - (b.order || 0)),
+      }));
+      setExamGroups(groups);
+    });
   }, [levelId]);
 
   return (
     <div>
       <Link to="/" className="top-back-link">← Chọn cấp độ khác</Link>
       <h1 className="page-title">{level ? level.name : '...'}</h1>
+
+      {examGroups.length > 0 && (
+        <div className="card" style={{ marginBottom: 20 }}>
+          <h2 style={{ marginTop: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <FileText size={19} /> Đề thi thử
+          </h2>
+          {examGroups.map(({ group, papers }) => (
+            <div key={group} style={{ marginBottom: 14 }}>
+              <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>{group}</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {papers.filter((p) => p.url).map((p) => (
+                  <a
+                    key={p.id}
+                    href={p.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-secondary"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                  >
+                    {p.title} <ExternalLink size={14} />
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {lessons.map((lesson) => (
         <Link to={`/lessons/${lesson.id}`} key={lesson.id} className="lesson-row">
           <span className="lesson-row-num">{String(lesson.order).padStart(2, '0')}</span>
@@ -42,7 +84,7 @@ export default function LevelLessons() {
           </div>
         </Link>
       ))}
-      {lessons.length === 0 && <p className="empty-state">Chưa có bài học trong cấp độ này.</p>}
+      {lessons.length === 0 && examGroups.length === 0 && <p className="empty-state">Chưa có bài học trong cấp độ này.</p>}
     </div>
   );
 }
