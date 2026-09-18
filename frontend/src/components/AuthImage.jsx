@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { API_ORIGIN } from '../api/client';
+import useAuthMedia from '../utils/useAuthMedia';
 
 /**
  * Ảnh minh hoạ có 2 kiểu URL tuỳ chế độ lưu trữ của backend:
@@ -11,29 +10,7 @@ import { API_ORIGIN } from '../api/client';
  *   dưới dạng blob URL.
  */
 export default function AuthImage({ src, alt = '', className, style }) {
-  const isPublicUrl = /^https?:\/\//i.test(src || '');
-  const [url, setUrl] = useState(isPublicUrl ? src : null);
-
-  useEffect(() => {
-    if (!src || isPublicUrl) { setUrl(src || null); return undefined; }
-    let objectUrl;
-    let cancelled = false;
-    const token = localStorage.getItem('cocuc_token');
-    fetch(`${API_ORIGIN}${src}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
-      .then((res) => (res.ok ? res.blob() : Promise.reject(res)))
-      .then((blob) => {
-        if (cancelled) return;
-        objectUrl = URL.createObjectURL(blob);
-        setUrl(objectUrl);
-      })
-      .catch(() => { if (!cancelled) setUrl(null); });
-    return () => {
-      cancelled = true;
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [src, isPublicUrl]);
-
+  const url = useAuthMedia(src);
   if (!url) return <div className={className} style={{ ...style, background: 'var(--bg-alt)' }} />;
   return <img className={className} style={style} src={url} alt={alt} />;
 }

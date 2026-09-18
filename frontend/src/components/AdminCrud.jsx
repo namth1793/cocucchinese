@@ -19,7 +19,7 @@ function toFormValue(fld, val) {
  * Form/bảng CRUD dùng chung cho toàn bộ CMS quản trị (bài học, từ vựng, ngữ pháp,
  * câu, bài hát, video...) - tránh viết trang riêng cho từng loại nội dung.
  */
-export default function AdminCrud({ title, endpoint, fields, filterKey, filterOptions, filterValue, onFilterChange, listColumns, hint, fixedValues, renderRowExtra }) {
+export default function AdminCrud({ title, endpoint, fields, filterKey, filterOptions, filterValue, onFilterChange, listColumns, hint, fixedValues, renderRowExtra, reloadToken }) {
   const [items, setItems] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({});
@@ -31,7 +31,7 @@ export default function AdminCrud({ title, endpoint, fields, filterKey, filterOp
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { load(); }, [filterValue, JSON.stringify(fixedValues || {})]);
+  useEffect(() => { load(); }, [filterValue, JSON.stringify(fixedValues || {}), reloadToken]);
 
   const emptyForm = () => {
     const f = {};
