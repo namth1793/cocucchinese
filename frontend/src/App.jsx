@@ -31,6 +31,7 @@ import VideoLearning from './pages/VideoLearning';
 import LessonResult from './pages/LessonResult';
 import Review from './pages/Review';
 import Instructors from './pages/Instructors';
+import ExamViewer from './pages/ExamViewer';
 
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminHome from './pages/admin/AdminHome';
@@ -55,6 +56,7 @@ export default function App() {
       <Route path="/register" element={<Register />} />
 
       <Route element={<RequireAuth />}>
+        <Route path="/exam/:paperId" element={<ExamViewer />} />
         <Route element={<Layout />}>
           <Route path="/" element={<RoleHome />} />
           <Route path="/review" element={<Review />} />

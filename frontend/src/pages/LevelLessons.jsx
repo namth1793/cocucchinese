@@ -55,16 +55,14 @@ export default function LevelLessons() {
               <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>{group}</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 {papers.filter((p) => p.url).map((p) => (
-                  <a
+                  <Link
                     key={p.id}
-                    href={p.url}
-                    target="_blank"
-                    rel="noreferrer"
+                    to={`/exam/${p.id}`}
                     className="btn-secondary"
                     style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
                   >
                     {p.title} <ExternalLink size={14} />
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
