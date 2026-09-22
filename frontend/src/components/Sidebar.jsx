@@ -1,4 +1,4 @@
-import { ChevronRight, Home, LogOut, RotateCcw, ShieldCheck, UserRound } from 'lucide-react';
+import { ChevronRight, GraduationCap, Home, LogOut, RotateCcw, ShieldCheck, UserRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import api from '../api/client';
@@ -10,7 +10,7 @@ const LEVEL_DOT_COLORS = ['#DC2626', '#059669', '#D97706', '#2563EB', '#7C3AED',
 
 function LevelLinks({ items }) {
   if (items.length === 0) {
-    return <span className="sidebar-sublink" style={{ opacity: 0.6 }}>Chưa có mục nào.</span>;
+    return <span className="sidebar-sublink" style={{ opacity: 0.6 }}>Chưa có khoá nào.</span>;
   }
   return items.map((lv, i) => (
     <NavLink key={lv.id} to={`/levels/${lv.id}`} className={({ isActive }) => `sidebar-sublink ${isActive ? 'active' : ''}`}>
@@ -112,8 +112,11 @@ export default function Sidebar() {
           <Home size={18} /> Trang chủ
         </NavLink>
 
-        <div className="sidebar-section-label">Khoá học</div>
+        <div className="sidebar-section-label">Khoá học của tôi</div>
         <CourseTree />
+        <NavLink to="/courses" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <GraduationCap size={18} /> Khám phá khoá học
+        </NavLink>
 
         <div className="sidebar-section-label">Học tập</div>
         <NavLink to="/review" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>

@@ -17,11 +17,6 @@ export function AuthProvider({ children }) {
     return data.user;
   }, []);
 
-  const register = useCallback(async (name, email, password) => {
-    await api.post('/auth/register', { name, email, password });
-    return login(email, password);
-  }, [login]);
-
   const logout = useCallback(async () => {
     try { await api.post('/auth/logout'); } catch (e) { /* ignore */ }
     localStorage.removeItem('cocuc_token');
@@ -30,7 +25,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -42,7 +42,7 @@ export default function LevelLessons() {
 
   return (
     <div>
-      <Link to="/" className="top-back-link">← Chọn cấp độ khác</Link>
+      <Link to="/" className="top-back-link">← Khoá học của tôi</Link>
       <h1 className="page-title">{level ? level.name : '...'}</h1>
 
       {examGroups.length > 0 && (

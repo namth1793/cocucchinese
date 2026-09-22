@@ -1,6 +1,7 @@
 const crudRoute = require('../utils/crudRoute');
 const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
+const access = require('../utils/access');
 
 const router = crudRoute({ collection: 'lessons', writeRoles: ['admin', 'teacher'], filterKeys: ['levelId'] });
 
@@ -8,6 +9,8 @@ const router = crudRoute({ collection: 'lessons', writeRoles: ['admin', 'teacher
 router.get('/:id/full', requireAuth, (req, res) => {
   const lesson = db.find('lessons', req.params.id);
   if (!lesson) return res.status(404).json({ error: 'Không tìm thấy bài học' });
+  if (!access.canAccessLevel(req.user, lesson.levelId)) return access.deny(res);
+  access.markLearning(req.user, lesson.levelId);
   const words = db.findWhere('words', (w) => w.lessonId === lesson.id);
   const grammarPoints = db.findWhere('grammarPoints', (g) => g.lessonId === lesson.id);
   const sentences = db.findWhere('sentences', (s) => s.lessonId === lesson.id);

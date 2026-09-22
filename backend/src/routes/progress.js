@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
+const access = require('../utils/access');
 
 const router = express.Router();
 
@@ -43,7 +44,8 @@ router.get('/streak', requireAuth, (req, res) => {
 });
 
 router.get('/review/all', requireAuth, (req, res) => {
-  const progs = db.findWhere('progress', (p) => p.userId === req.user.id);
+  // Chỉ ôn tập từ/câu thuộc các khoá còn quyền truy cập.
+  const progs = db.findWhere('progress', (p) => p.userId === req.user.id && access.canAccessLesson(req.user, p.lessonId));
   const words = [];
   const sentences = [];
   progs.forEach((p) => (p.wrongItems || []).forEach((w) => {
@@ -67,7 +69,7 @@ router.delete('/review/:itemId', requireAuth, (req, res) => {
   res.json({ success: true });
 });
 
-router.get('/:lessonId/summary', requireAuth, (req, res) => {
+router.get('/:lessonId/summary', requireAuth, access.requireLessonAccess(), (req, res) => {
   const prog = db.getOrCreateProgress(req.user.id, req.params.lessonId);
   const scores = {};
   Object.keys(prog.modules || {}).forEach((key) => { scores[key] = moduleScore(prog.modules[key]); });
@@ -82,14 +84,14 @@ router.get('/:lessonId/summary', requireAuth, (req, res) => {
   });
 });
 
-router.post('/:lessonId/complete-module', requireAuth, (req, res) => {
+router.post('/:lessonId/complete-module', requireAuth, access.requireLessonAccess(), (req, res) => {
   const { module: moduleName } = req.body;
   const prog = db.getOrCreateProgress(req.user.id, req.params.lessonId);
   const modules = { ...prog.modules, [moduleName]: { completed: true } };
   res.json(db.update('progress', prog.id, { modules }));
 });
 
-router.get('/:lessonId', requireAuth, (req, res) => {
+router.get('/:lessonId', requireAuth, access.requireLessonAccess(), (req, res) => {
   res.json(db.getOrCreateProgress(req.user.id, req.params.lessonId));
 });
 

@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, RotateCcw } from 'lucide-react';
+import { GraduationCap, Home, RotateCcw } from 'lucide-react';
 
 export default function BottomNav() {
   return (
@@ -7,6 +7,10 @@ export default function BottomNav() {
       <NavLink to="/" end className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
         <span className="bottom-nav-icon"><Home size={19} /></span>
         <span>Trang chủ</span>
+      </NavLink>
+      <NavLink to="/courses" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
+        <span className="bottom-nav-icon"><GraduationCap size={19} /></span>
+        <span>Khoá học</span>
       </NavLink>
       <NavLink to="/review" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
         <span className="bottom-nav-icon"><RotateCcw size={19} /></span>

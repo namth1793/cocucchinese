@@ -137,4 +137,7 @@ async function deleteSlideDeck(slideId) {
   } while (continuationToken);
 }
 
-module.exports = { mode: 'r2', saveMedia, saveExamFile, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource, deleteSlideDeck };
+// Bucket media đã công khai qua CDN nên ảnh bìa dùng chung cách lưu với ảnh minh hoạ.
+const saveCover = saveMedia;
+
+module.exports = { mode: 'r2', saveMedia, saveCover, saveExamFile, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource, deleteSlideDeck };

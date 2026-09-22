@@ -9,6 +9,7 @@ const morgan = require('morgan');
 
 const { requireAuth } = require('./middleware/auth');
 const { seedIfEmpty } = require('./seed');
+const { runMigrations, applyDefaultCovers } = require('./migrate');
 const storage = require('./storage');
 
 const app = express();
@@ -28,6 +29,10 @@ app.use('/api/auth/login', rateLimit({ windowMs: 15 * 60 * 1000, max: 20 }));
 // giúp giảm tải hoàn toàn khỏi server Node.
 if (storage.mode === 'local') {
   const uploadRoot = process.env.UPLOAD_DIR || path.join(__dirname, '..', 'uploads');
+  // Ảnh bìa khoá học phải công khai (trang danh sách khoá học không cần đăng nhập).
+  app.use('/uploads/covers', express.static(path.join(uploadRoot, 'covers'), {
+    setHeaders: (res) => res.set('Cache-Control', 'public, max-age=86400')
+  }));
   app.use('/uploads/media', requireAuth, express.static(path.join(uploadRoot, 'media'), {
     setHeaders: (res) => res.set('Cache-Control', 'no-store')
   }));
@@ -35,6 +40,9 @@ if (storage.mode === 'local') {
 console.log(`Chế độ lưu trữ file: ${storage.mode === 'r2' ? 'Cloudflare R2' : 'ổ đĩa cục bộ (local)'}`);
 
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/courses', require('./routes/courses'));
+app.use('/api/orders', require('./routes/orders'));
+app.use('/api/enrollments', require('./routes/enrollments'));
 app.use('/api/levels', require('./routes/levels'));
 app.use('/api/lessons', require('./routes/lessons'));
 app.use('/api/topics', require('./routes/topics'));
@@ -74,4 +82,6 @@ app.use((err, req, res, next) => {
 });
 
 seedIfEmpty();
+runMigrations();
+applyDefaultCovers().catch((e) => console.error('[migrate] nạp ảnh bìa lỗi:', e));
 app.listen(PORT, () => console.log(`Backend học tiếng Trung chạy tại http://localhost:${PORT}`));

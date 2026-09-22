@@ -35,6 +35,29 @@ Mở `http://localhost:5173`.
 
 Dữ liệu mẫu gồm 1 bài học đầy đủ (HSK1 – Bài 1: 你好) để test toàn bộ các module.
 
+## Mua khoá học & phân quyền theo email
+
+Mỗi **cấp độ (level)** là một **khoá học**. Quy trình:
+
+`Xem khoá học (/courses) → Đăng ký mua (form) → Chuyển khoản → Admin xác nhận thanh toán → Cấp quyền cho email → Đăng nhập → Chỉ thấy khoá đã được cấp → Học`
+
+- **Công khai (không cần đăng nhập)**: `/courses` (danh sách), `/courses/:id` (giới thiệu, học phí, lộ trình - chỉ tiêu đề bài, không lộ nội dung), `/order/:mã` (hướng dẫn chuyển khoản + theo dõi trạng thái). API: `GET /api/courses`, `GET /api/courses/:id`, `POST /api/orders`, `GET /api/orders/lookup/:code`.
+- **Không còn đăng ký tài khoản tự do.** Tài khoản học viên chỉ được tạo khi admin xác nhận đơn (hoặc cấp quyền thủ công). Học viên tự đặt mật khẩu ngay ở form đăng ký; nếu admin cấp thủ công cho email mới, hệ thống sinh mật khẩu tạm hiển thị **một lần** cho admin gửi lại.
+- **Đăng nhập**: học viên chỉ đăng nhập được khi email có ít nhất 1 quyền khoá học đang hiệu lực; thu hồi khoá cuối cùng sẽ đăng xuất mọi thiết bị ngay.
+- **Trạng thái học viên theo từng khoá**: `purchased` (đã mua) → `learning` (đang học, tự chuyển khi lần đầu mở nội dung) → `completed` (hoàn thành, admin đặt) hoặc `revoked` (thu hồi). Ba trạng thái đầu đều có quyền truy cập; `revoked` thì mất quyền.
+- **Bảo vệ nội dung ở backend** (`backend/src/utils/access.js`): mọi API nội dung (từ vựng, ngữ pháp, câu, hội thoại, chữ Hán, bài tập, flashcard, tiến độ, đề thi thử, bài giảng PPT/PDF, `/lessons/:id/full`...) kiểm tra quyền theo khoá; danh sách tự lọc chỉ còn khoá được cấp, truy cập khoá khác trả `403`. Admin/giáo viên không bị giới hạn. Frontend chỉ thêm lớp thông báo (`CourseGate`), không phải lớp bảo mật.
+- **Quản trị** (`/admin/students`, chỉ admin): tab *Đơn đăng ký / thanh toán* (xác nhận / từ chối), tab *Học viên theo khoá* (cấp quyền thủ công theo email, đổi trạng thái, thu hồi). Trang sửa cấp độ có thêm học phí, thời lượng, đối tượng, giới thiệu, kết quả đạt được, ẩn/hiện. Chỉ cấp độ **đã đặt học phí** mới hiện ở trang công khai. Trang *Người dùng* có nút "Cấp lại MK".
+- **Thông tin chuyển khoản** cấu hình qua `BANK_NAME`, `BANK_ACCOUNT`, `BANK_ACCOUNT_NAME`, `PAYMENT_NOTE` trong `backend/.env` (xem `.env.example`). Xác nhận thanh toán hiện là **thủ công** (admin đối chiếu sao kê); chưa tích hợp cổng thanh toán/webhook, chưa gửi email tự động.
+- **Migration một lần** (`backend/src/migrate.js`, chạy khi backend khởi động): học viên đã có từ trước được cấp quyền mọi khoá hiện có (để không bị khoá ngoài), và các khoá HSK có từ 5 bài trở lên được gán học phí **mẫu** (HSK1 499k, HSK2 599k, HSK3 699k...) - hãy sửa lại ở trang chỉnh sửa cấp độ.
+
+## Ảnh bìa khoá học
+
+Mỗi khoá học (cấp độ) có 1 ảnh bìa dạng bìa sách, hiện ở trang chủ, danh sách khoá học và trang chi tiết.
+
+- **Admin đổi ảnh** ở trang chỉnh sửa cấp độ (`/admin/levels/:id` → Sửa thông tin cấp độ): tải lên JPG/PNG/WEBP/GIF, tối đa 15MB, nên dùng ảnh dọc tỉ lệ ~4:5. Lưu ngay khi chọn file, không cần bấm "Lưu thay đổi". Có nút xoá ảnh (quay về khung màu + mã cấp độ).
+- Ảnh lưu qua cùng lớp `storage` với ảnh minh hoạ khác (`saveCover`) - ở chế độ `local` lưu vào `backend/uploads/covers/` và phục vụ **công khai** (không cần đăng nhập, khác với `/uploads/media` yêu cầu đăng nhập) vì trang danh sách khoá học là trang công khai; ở chế độ R2 dùng chung bucket media.
+- **Ảnh mặc định có sẵn**: `backend/seed-assets/covers/<MÃ CẤP ĐỘ>.<đuôi>` (vd. `HSK1.jpg`) là bìa sách giáo trình chuẩn HSK/YCT/HSKK và các đầu sách giao tiếp tương ứng, tải về từ nhasachtiengtrung.com để demo. Migration `level-covers-v1` (trong `migrate.js`, chạy 1 lần) tự nạp ảnh này cho cấp độ chưa có `coverUrl`. Xoá cả file trong `seed-assets/covers/` nếu muốn tự cung cấp bộ ảnh khác trước lần chạy đầu.
+
 ## Kiến trúc dạng bài dùng chung (mục 15 đặc tả)
 
 Giáo viên/Admin chỉ nhập **dữ liệu gốc** (từ vựng, câu, ngữ pháp) qua trang Quản trị (`/admin`). Từ cùng một bộ dữ liệu, backend (`backend/src/utils/exerciseGenerator.js`) tự sinh nhiều dạng bài: Trung→Việt, Việt→Trung, Pinyin→Hán tự, Nghe→chọn, Ghép đôi, Memory, Sắp xếp câu, Xây câu... Frontend dùng lại 2 engine chung: `ExerciseRunner` (trắc nghiệm) và `TokenSentenceGame` (ghép câu) cho toàn bộ HSK/YCT thay vì code riêng từng bài.

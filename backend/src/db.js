@@ -9,7 +9,8 @@ const COLLECTIONS = [
   'users', 'levels', 'lessons', 'topics', 'words', 'grammarPoints',
   'sentences', 'characters', 'dialogues', 'speakingScenarios', 'fillExercises',
   'images', 'slides', 'slideProgress', 'songs', 'videos', 'examPapers',
-  'progress', 'flashcardStatus', 'activityLogs', 'instructors'
+  'progress', 'flashcardStatus', 'activityLogs', 'instructors',
+  'enrollments', 'orders', 'migrations'
 ];
 
 function emptyDb() {

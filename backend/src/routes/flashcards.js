@@ -1,10 +1,11 @@
 const express = require('express');
 const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
+const access = require('../utils/access');
 
 const router = express.Router();
 
-router.get('/:lessonId', requireAuth, (req, res) => {
+router.get('/:lessonId', requireAuth, access.requireLessonAccess(), (req, res) => {
   const words = db.findWhere('words', (w) => w.lessonId === req.params.lessonId);
   const statuses = db.findWhere('flashcardStatus', (f) => f.userId === req.user.id);
   const items = words.map((w) => {
@@ -17,6 +18,9 @@ router.get('/:lessonId', requireAuth, (req, res) => {
 router.post('/:wordId/status', requireAuth, (req, res) => {
   const { status } = req.body;
   if (!['known', 'half', 'unknown'].includes(status)) return res.status(400).json({ error: 'Trạng thái không hợp lệ' });
+  const targetWord = db.find('words', req.params.wordId);
+  if (!targetWord) return res.status(404).json({ error: 'Không tìm thấy từ' });
+  if (!access.canAccessLesson(req.user, targetWord.lessonId)) return access.deny(res);
   const doc = db.upsertFlashcard(req.user.id, req.params.wordId, status);
 
   const word = db.find('words', req.params.wordId);

@@ -2,11 +2,13 @@ const express = require('express');
 const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
 const gen = require('../utils/exerciseGenerator');
+const access = require('../utils/access');
+const { requireLessonAccess } = access;
 
 const router = express.Router();
 
 // Sinh động các dạng bài tập từ dữ liệu gốc của bài học (mục 15 - kiến trúc dùng chung)
-router.get('/:lessonId/:type', requireAuth, (req, res) => {
+router.get('/:lessonId/:type', requireAuth, requireLessonAccess(), (req, res) => {
   const { lessonId, type } = req.params;
   const count = Math.min(parseInt(req.query.count, 10) || 8, 20);
   const words = db.findWhere('words', (w) => w.lessonId === lessonId);
@@ -32,6 +34,7 @@ router.get('/:lessonId/:type', requireAuth, (req, res) => {
 router.post('/submit', requireAuth, (req, res) => {
   const { lessonId, module: moduleName, itemId, itemType, correct } = req.body;
   if (!lessonId || !moduleName) return res.status(400).json({ error: 'Thiếu lessonId hoặc module' });
+  if (!access.canAccessLesson(req.user, lessonId)) return access.deny(res);
   const prog = db.recordResult(req.user.id, lessonId, moduleName, itemId, itemType, !!correct);
   res.json(prog);
 });

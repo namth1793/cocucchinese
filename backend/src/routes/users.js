@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const db = require('../db');
 const { requireAuth, requireRole } = require('../middleware/auth');
+const svc = require('../services/enrollmentService');
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.get('/', requireAuth, requireRole('admin'), (req, res) => {
 router.post('/', requireAuth, requireRole('admin'), (req, res) => {
   const { name, email, password, role } = req.body;
   if (!name || !email) return res.status(400).json({ error: 'Thiếu thông tin' });
-  if (db.findWhere('users', (u) => u.email === email)[0]) return res.status(409).json({ error: 'Email đã tồn tại' });
+  if (svc.findUserByEmail(email)) return res.status(409).json({ error: 'Email đã tồn tại' });
   const user = db.insert('users', {
     name, email,
     passwordHash: bcrypt.hashSync(password || '123456', 10),
@@ -35,6 +36,16 @@ router.put('/:id/status', requireAuth, requireRole('admin'), (req, res) => {
   if (!user) return res.status(404).json({ error: 'Không tìm thấy' });
   db.logActivity(req.user.id, 'user_status_change', { targetUser: req.params.id, status });
   res.json({ id: user.id, name: user.name, email: user.email, role: user.role, status: user.status });
+});
+
+// Cấp lại mật khẩu tạm (học viên quên mật khẩu) - trả về 1 lần để admin gửi cho học viên.
+router.post('/:id/reset-password', requireAuth, requireRole('admin'), (req, res) => {
+  const target = db.find('users', req.params.id);
+  if (!target) return res.status(404).json({ error: 'Không tìm thấy' });
+  const tempPassword = svc.randomPassword();
+  db.update('users', target.id, { passwordHash: bcrypt.hashSync(tempPassword, 10), activeSessions: [] });
+  db.logActivity(req.user.id, 'user_reset_password', { targetUser: target.id });
+  res.json({ email: target.email, tempPassword });
 });
 
 router.get('/logs/all', requireAuth, requireRole('admin'), (req, res) => {

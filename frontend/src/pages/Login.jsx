@@ -52,7 +52,7 @@ export default function Login() {
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
               </div>
               {showForgotNote && (
-                <p className="auth-forgot-note">Vui lòng liên hệ giáo viên hoặc quản trị viên lớp học để được cấp lại mật khẩu.</p>
+                <p className="auth-forgot-note">Vui lòng liên hệ quản trị viên để được cấp lại mật khẩu. Chỉ email đã được cấp quyền khoá học mới đăng nhập được.</p>
               )}
               <button type="submit" className="btn-primary btn-block" disabled={loading}>
                 <LogIn size={17} />
@@ -60,7 +60,7 @@ export default function Login() {
               </button>
             </form>
             <p className="auth-footer-link">
-              Chưa có tài khoản? <Link to="/register">Đăng ký ngay</Link>
+              Chưa có khoá học? <Link to="/courses">Xem các khoá học</Link>
             </p>
             <div className="auth-demo">
               <b>Tài khoản demo</b><br />

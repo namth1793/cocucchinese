@@ -26,6 +26,13 @@ export default function AdminUsers() {
     }
   };
 
+  const resetPassword = async (u) => {
+    if (!window.confirm(`Cấp lại mật khẩu tạm cho ${u.email}? Mật khẩu cũ sẽ không dùng được nữa và mọi thiết bị sẽ bị đăng xuất.`)) return;
+    const { data } = await api.post(`/users/${u.id}/reset-password`);
+    window.prompt(`Mật khẩu tạm cho ${data.email} (sao chép và gửi cho người dùng):`, data.tempPassword);
+    loadUsers();
+  };
+
   const toggleStatus = async (u) => {
     await api.put(`/users/${u.id}/status`, { status: u.status === 'locked' ? 'active' : 'locked' });
     loadUsers();
@@ -77,7 +84,8 @@ export default function AdminUsers() {
                   <td>
                     <button type="button" className={u.status === 'locked' ? 'btn-secondary' : 'btn-danger'} onClick={() => toggleStatus(u)}>
                       {u.status === 'locked' ? 'Mở khoá' : 'Khoá'}
-                    </button>
+                    </button>{' '}
+                    <button type="button" className="btn-secondary" style={{ padding: '8px 12px', fontSize: 13 }} onClick={() => resetPassword(u)}>Cấp lại MK</button>
                   </td>
                 </tr>
               ))}

@@ -4,7 +4,11 @@ import { RequireAuth, RequireStaff } from './components/RequireAuth';
 import { useAuth } from './context/AuthContext';
 
 import Login from './pages/Login';
-import Register from './pages/Register';
+import Courses from './pages/Courses';
+import CourseDetail from './pages/CourseDetail';
+import OrderStatus from './pages/OrderStatus';
+import PublicLayout from './components/PublicLayout';
+import { LessonGate, LevelGate } from './components/CourseGate';
 import Dashboard from './pages/Dashboard';
 import LevelLessons from './pages/LevelLessons';
 import LessonHome from './pages/LessonHome';
@@ -40,6 +44,7 @@ import AdminLevelDetail from './pages/admin/AdminLevelDetail';
 import AdminLessonEditor from './pages/admin/AdminLessonEditor';
 import AdminInstructors from './pages/admin/AdminInstructors';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminStudents from './pages/admin/AdminStudents';
 import AdminGuide from './pages/admin/AdminGuide';
 
 /** Admin/giáo viên đăng nhập vào thẳng trang quản trị, không thấy dashboard học sinh. */
@@ -49,19 +54,42 @@ function RoleHome() {
   return <Dashboard />;
 }
 
+/** "/" là trang khoá học công khai với khách, là trang học viên (hoặc quản trị) sau khi đăng nhập. */
+function RootShell() {
+  const { user } = useAuth();
+  return user ? <Layout /> : <PublicLayout />;
+}
+
+function RootIndex() {
+  const { user } = useAuth();
+  return user ? <RoleHome /> : <Courses />;
+}
+
 export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/register" element={<Navigate to="/courses" replace />} />
+
+      <Route element={<PublicLayout />}>
+        <Route path="/courses" element={<Courses />} />
+        <Route path="/courses/:courseId" element={<CourseDetail />} />
+        <Route path="/order/:code" element={<OrderStatus />} />
+      </Route>
+
+      <Route path="/" element={<RootShell />}>
+        <Route index element={<RootIndex />} />
+      </Route>
 
       <Route element={<RequireAuth />}>
         <Route path="/exam/:paperId" element={<ExamViewer />} />
         <Route element={<Layout />}>
-          <Route path="/" element={<RoleHome />} />
           <Route path="/review" element={<Review />} />
           <Route path="/instructors" element={<Instructors />} />
-          <Route path="/levels/:levelId" element={<LevelLessons />} />
+          <Route element={<LevelGate />}>
+            <Route path="/levels/:levelId" element={<LevelLessons />} />
+          </Route>
+          <Route element={<LessonGate />}>
           <Route path="/lessons/:lessonId" element={<LessonHome />} />
           <Route path="/lessons/:lessonId/ppt" element={<SlideViewer />} />
           <Route path="/lessons/:lessonId/vocab" element={<Vocabulary />} />
@@ -85,6 +113,7 @@ export default function App() {
           <Route path="/lessons/:lessonId/video" element={<VideoLearning />} />
           <Route path="/lessons/:lessonId/song" element={<Navigate to="video" replace />} />
           <Route path="/lessons/:lessonId/result" element={<LessonResult />} />
+          </Route>
         </Route>
 
         <Route element={<RequireStaff />}>
@@ -95,6 +124,7 @@ export default function App() {
             <Route path="levels/:levelId/lessons/:lessonId" element={<AdminLessonEditor />} />
             <Route path="instructors" element={<AdminInstructors />} />
             <Route path="users" element={<AdminUsers />} />
+            <Route path="students" element={<AdminStudents />} />
             <Route path="guide" element={<AdminGuide />} />
           </Route>
         </Route>

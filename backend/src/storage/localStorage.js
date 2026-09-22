@@ -27,6 +27,15 @@ async function saveMedia(buffer, originalname) {
   return { url: `/uploads/media/${filename}`, key: filename };
 }
 
+/** Ảnh bìa khoá học - lưu riêng thư mục covers vì được phục vụ công khai (trang danh sách khoá học không cần đăng nhập). */
+async function saveCover(buffer, originalname) {
+  const dir = path.join(UPLOAD_ROOT, 'covers');
+  ensureDir(dir);
+  const filename = randomName('cover-', originalname);
+  fs.writeFileSync(path.join(dir, filename), buffer);
+  return { url: `/uploads/covers/${filename}`, key: filename };
+}
+
 /** File lớn (đề thi thử...) - nhận đường dẫn file tạm trên đĩa, tránh giữ hết trong RAM. */
 async function saveExamFile(tmpFilePath, originalname) {
   const dir = path.join(UPLOAD_ROOT, 'media');
@@ -89,4 +98,4 @@ async function deleteSlideDeck(slideId) {
   fs.rmSync(dir, { recursive: true, force: true });
 }
 
-module.exports = { mode: 'local', saveMedia, saveExamFile, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource, deleteSlideDeck };
+module.exports = { mode: 'local', saveMedia, saveCover, saveExamFile, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource, deleteSlideDeck };

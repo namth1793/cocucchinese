@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Flame, BookOpen, Layers3, ListChecks, GraduationCap, RotateCcw, ArrowRight } from 'lucide-react';
+import StatusBadge from '../components/StatusBadge';
+import ProgressBar from '../components/ProgressBar';
+import CourseCover from '../components/CourseCover';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 
-const BAND_COLORS = ['#DC2626', '#059669', '#D97706', '#2563EB', '#7C3AED', '#DB2777'];
-const bandFor = (index) => BAND_COLORS[index % BAND_COLORS.length];
 const WEEKDAY_LABELS = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 const SAMPLE_CARDS = [
   { hanzi: '你好', pinyin: 'nǐ hǎo' },
@@ -13,34 +14,18 @@ const SAMPLE_CARDS = [
   { hanzi: '学习', pinyin: 'xuéxí' }
 ];
 
-const CATEGORY_ORDER = { hsk_hskk: 0, kids: 1, conversation: 2 };
-const GROUP_ORDER = { 'HSK 3.0': 0, HSKK: 1 };
-function levelSubtitle(lv) {
-  if (lv.type === 'HSK') return 'Hán ngữ tiêu chuẩn';
-  if (lv.type === 'HSKK') return 'Khẩu ngữ HSK';
-  if (lv.category === 'kids') return 'Tiếng Trung trẻ em';
-  if (lv.category === 'conversation') return 'Giao tiếp thực tế';
-  return lv.type || '';
-}
-
 export default function Dashboard() {
   const { user } = useAuth();
-  const [levels, setLevels] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(null);
   const [stats, setStats] = useState(null);
   const [reviewCounts, setReviewCounts] = useState(null);
 
   useEffect(() => {
-    api.get('/levels').then((res) => {
-      const sorted = [...res.data].sort((a, b) => {
-        const catDiff = (CATEGORY_ORDER[a.category] ?? 9) - (CATEGORY_ORDER[b.category] ?? 9);
-        if (catDiff !== 0) return catDiff;
-        const groupDiff = (GROUP_ORDER[a.group] ?? 9) - (GROUP_ORDER[b.group] ?? 9);
-        if (groupDiff !== 0) return groupDiff;
-        return a.order - b.order;
-      });
-      setLevels(sorted);
+    api.get('/courses/mine/list').then((res) => {
+      const order = { learning: 0, purchased: 1, completed: 2 };
+      setCourses([...res.data].sort((x, y) => (order[x.status] ?? 9) - (order[y.status] ?? 9) || (x.course.name > y.course.name ? 1 : -1)));
     }).finally(() => setLoading(false));
     api.get('/progress/streak').then((res) => setStreak(res.data));
     api.get('/stats/overview').then((res) => setStats(res.data));
@@ -48,7 +33,7 @@ export default function Dashboard() {
   }, []);
 
   const todayIndex = (new Date().getDay() + 6) % 7;
-  const firstLevel = levels[0];
+  const firstLevel = courses[0]?.course;
   const reviewTotal = reviewCounts ? reviewCounts.words + reviewCounts.sentences : 0;
 
   return (
@@ -57,7 +42,7 @@ export default function Dashboard() {
         <div className="hero-banner">
           <div className="hero-banner-text">
             <h1>Kiên trì mỗi ngày,<br /><em>giỏi tiếng Trung nhanh hơn</em></h1>
-            <p>Chọn một cấp độ bên dưới và tiếp tục hành trình chinh phục HSK/YCT của bạn.</p>
+            <p>Chọn một khoá học bên dưới và tiếp tục hành trình chinh phục HSK/YCT của bạn.</p>
             {firstLevel && (
               <Link to={`/levels/${firstLevel.id}`} className="btn-primary">
                 Bắt đầu học ngay <ArrowRight size={16} />
@@ -119,24 +104,24 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <h2 className="page-title" style={{ fontSize: 17 }}>Các cấp độ</h2>
-      <p className="page-sub">HSK / YCT → Bài → Chủ đề → Dạng bài</p>
+      <h2 className="page-title" style={{ fontSize: 17 }}>Khoá học của tôi</h2>
+      <p className="page-sub">Chỉ hiển thị các khoá học email của bạn đã được cấp quyền.</p>
 
       {loading && <p className="empty-state">Đang tải...</p>}
-      <div className="level-grid" style={{ marginBottom: 24 }}>
-        {levels.map((lv, i) => (
-          <Link to={`/levels/${lv.id}`} key={lv.id} className="level-card">
-            <span className="level-card-band" style={{ background: bandFor(i) }}>
-              <span className="level-card-band-label">{lv.code}</span>
-            </span>
+      <div className="level-grid" style={{ marginBottom: 12 }}>
+        {courses.map((c, i) => (
+          <Link to={`/levels/${c.course.id}`} key={c.enrollmentId} className="level-card">
+            <CourseCover course={c.course} colorIndex={i} />
             <span className="level-card-body">
-              <span className="level-card-name">{lv.name}</span>
-              <span className="level-card-sub">{levelSubtitle(lv)}</span>
+              <span className="level-card-name">{c.course.name}</span>
+              <span style={{ display: 'flex' }}><StatusBadge status={c.status} /></span>
+              <ProgressBar percent={c.progressPercent} />
             </span>
           </Link>
         ))}
       </div>
-      {!loading && levels.length === 0 && <p className="empty-state">Chưa có cấp độ nào. Vui lòng liên hệ giáo viên/quản trị.</p>}
+      {!loading && courses.length === 0 && <p className="empty-state">Bạn chưa có khoá học nào.</p>}
+      <p style={{ marginBottom: 24 }}><Link to="/courses" className="btn-secondary">Khám phá thêm khoá học</Link></p>
 
       {reviewCounts && reviewTotal > 0 && (
         <div className="card suggest-card">

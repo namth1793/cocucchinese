@@ -8,6 +8,7 @@ const db = require('../db');
 const { requireAuth, requireRole, JWT_SECRET } = require('../middleware/auth');
 const { slideUpload, sourceFileUpload } = require('../middleware/upload');
 const storage = require('../storage');
+const access = require('../utils/access');
 
 const router = express.Router();
 
@@ -48,6 +49,7 @@ async function waitForCloudConvertJob(jobId, { intervalMs = 5000, maxWaitMs = 30
 router.get('/', requireAuth, (req, res) => {
   let items = db.all('slides');
   if (req.query.lessonId) items = items.filter((s) => s.lessonId === req.query.lessonId);
+  if (!access.isStaff(req.user)) items = items.filter((s) => access.canAccessLesson(req.user, s.lessonId));
   const isStaff = req.user.role === 'admin' || req.user.role === 'teacher';
   res.json(items.map((s) => ({
     id: s.id, lessonId: s.lessonId, title: s.title, pageCount: s.pages.length, version: s.version,
@@ -209,6 +211,7 @@ router.get('/:id/source', requireAuth, requireRole('admin', 'teacher'), async (r
 router.get('/:id/token', requireAuth, (req, res) => {
   const slide = db.find('slides', req.params.id);
   if (!slide) return res.status(404).json({ error: 'Không tìm thấy' });
+  if (!access.canAccessLesson(req.user, slide.lessonId)) return access.deny(res);
   const token = jwt.sign({ sub: req.user.id, slideId: slide.id, jti: req.jti }, JWT_SECRET, { expiresIn: '5m' });
   res.json({ token, expiresIn: 300, pageCount: slide.pages.length, title: slide.title });
 });
@@ -230,6 +233,10 @@ router.get('/:id/page/:n', async (req, res) => {
   if (!user || !session) return res.status(401).json({ error: 'Phiên đăng nhập không còn hiệu lực' });
 
   const slide = db.find('slides', req.params.id);
+  // Kiểm tra lại quyền tại thời điểm xem trang (token 5 phút có thể còn hạn sau khi quyền bị thu hồi).
+  if (slide && !access.isStaff(user) && !access.canAccessLesson(user, slide.lessonId)) {
+    return res.status(403).json({ error: 'Bạn chưa được cấp quyền truy cập khoá học này.' });
+  }
   const page = slide && slide.pages.find((p) => p.pageNum === parseInt(req.params.n, 10));
   if (!page) return res.status(404).json({ error: 'Không tìm thấy trang' });
 
@@ -261,6 +268,9 @@ router.delete('/:id', requireAuth, requireRole('admin', 'teacher'), async (req, 
 
 router.post('/:id/progress', requireAuth, (req, res) => {
   const { page, percent } = req.body;
+  const slide = db.find('slides', req.params.id);
+  if (!slide) return res.status(404).json({ error: 'Không tìm thấy' });
+  if (!access.canAccessLesson(req.user, slide.lessonId)) return access.deny(res);
   res.json(db.upsertSlideProgress(req.user.id, req.params.id, page, percent));
 });
 
