@@ -148,8 +148,9 @@ input, select, textarea { font-family: inherit; }
 
   .sidebar-brand {
     margin-bottom: 24px;
-    padding: 2px 4px;
-    display: flex; align-items: center;
+    padding: 10px 14px;
+    background: #fff; border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
   }
 
   .sidebar-nav { display: flex; flex-direction: column; gap: 2px; flex: 1; overflow-y: auto; min-height: 0; }
