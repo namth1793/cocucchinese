@@ -5,9 +5,9 @@ const access = require('../utils/access');
 
 const { ENROLLMENT_STATUS } = access;
 
-function findUserByEmail(email) {
+async function findUserByEmail(email) {
   const wanted = access.normalizeEmail(email);
-  return db.findWhere('users', (u) => access.normalizeEmail(u.email) === wanted)[0] || null;
+  return (await db.findWhere('users', (u) => access.normalizeEmail(u.email) === wanted))[0] || null;
 }
 
 function randomPassword() {
@@ -24,8 +24,8 @@ function randomPassword() {
  * - Không có: sinh mật khẩu tạm và trả về `tempPassword` (chỉ lộ đúng 1 lần cho admin).
  * Email đã thuộc tài khoản khác thì giữ nguyên tài khoản đó, không đổi mật khẩu.
  */
-function ensureStudent({ name, email, passwordHash }) {
-  const existing = findUserByEmail(email);
+async function ensureStudent({ name, email, passwordHash }) {
+  const existing = await findUserByEmail(email);
   if (existing) return { user: existing, created: false, tempPassword: null };
   let tempPassword = null;
   let hash = passwordHash;
@@ -33,7 +33,7 @@ function ensureStudent({ name, email, passwordHash }) {
     tempPassword = randomPassword();
     hash = bcrypt.hashSync(tempPassword, 10);
   }
-  const user = db.insert('users', {
+  const user = await db.insert('users', {
     name: name || access.normalizeEmail(email).split('@')[0],
     email: access.normalizeEmail(email),
     passwordHash: hash,
@@ -43,8 +43,8 @@ function ensureStudent({ name, email, passwordHash }) {
 }
 
 /** Cấp (hoặc cấp lại) quyền truy cập 1 khoá cho 1 học viên. */
-function grantEnrollment({ user, levelId, orderId = null, grantedBy = null, note = '' }) {
-  const existing = db.findWhere('enrollments', (e) => e.userId === user.id && e.levelId === levelId)[0];
+async function grantEnrollment({ user, levelId, orderId = null, grantedBy = null, note = '' }) {
+  const existing = (await db.findWhere('enrollments', (e) => e.userId === user.id && e.levelId === levelId))[0];
   const now = new Date().toISOString();
   if (existing) {
     if (access.ACTIVE_STATUSES.includes(existing.status)) return existing;

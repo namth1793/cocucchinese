@@ -107,6 +107,25 @@ Toàn bộ việc đọc/ghi file đi qua một lớp trừu tượng (`backend/
 - Vì vậy, phần tốn tài nguyên nhất (truyền file ảnh/PPT cho nhiều người xem cùng lúc) được **đẩy hoàn toàn ra khỏi server ứng dụng**, sang hạ tầng CDN của Cloudflare — đây là điều giúp chịu tải lớn với chi phí thấp.
 - Không có tài khoản R2 hoặc thiếu biến môi trường → tự động rơi về chế độ `local`, ứng dụng vẫn chạy bình thường như trước.
 
+## Cơ sở dữ liệu: file JSON hay PostgreSQL
+
+Cùng nguyên tắc "chọn engine theo biến môi trường, không đổi code" như phần lưu trữ file ở trên (`backend/src/db/`):
+
+- **`json`** (mặc định) — lưu vào `backend/data/db.json`. Không cần cài gì, phù hợp dev/demo. **Không phù hợp khi có nhiều học viên hoạt động đồng thời**: mỗi lần có ai đăng nhập, nộp bài, admin sửa nội dung... server phải ghi lại **toàn bộ file** xuống đĩa; càng nhiều dữ liệu, mỗi lần ghi càng chậm. Cũng không dùng được nếu sau này chạy nhiều server song song (mỗi server giữ 1 bản cache riêng, dữ liệu sẽ lệch nhau).
+- **`postgres`** — tự động bật khi khai báo `DATABASE_URL` trong `backend/.env` (chuỗi kết nối chuẩn `postgresql://user:pass@host:5432/dbname`, lấy từ Railway/DigitalOcean/Supabase hoặc bất kỳ PostgreSQL nào). Mỗi collection là 1 bảng, dữ liệu lưu dạng JSONB - giữ nguyên mô hình linh hoạt hiện tại (không phải khai báo cột cứng cho từng loại nội dung), nên toàn bộ route/logic hiện tại không cần sửa gì.
+
+### Chuyển dữ liệu cũ từ file JSON sang PostgreSQL
+
+Áp dụng khi đã chạy `local` một thời gian (có dữ liệu thật) và muốn nâng lên PostgreSQL:
+
+1. Tạo database PostgreSQL (Railway: New → Database → PostgreSQL là nhanh nhất; hoặc DigitalOcean Managed Database, Supabase...), lấy connection string.
+2. Khai báo `DATABASE_URL=...` vào `backend/.env` (**chưa** khởi động lại backend vội).
+3. Chạy `npm run migrate:postgres` (thư mục `backend/`) — script đọc `backend/data/db.json` và nhập vào PostgreSQL. An toàn chạy lại nhiều lần (bỏ qua bản ghi đã có, không tạo trùng).
+4. Kiểm tra log "Hoàn tất", đối chiếu số bản ghi mỗi collection.
+5. Khởi động lại backend bình thường (`npm start`) — từ giờ backend đọc/ghi thẳng PostgreSQL. File `db.json` cũ giữ nguyên như một bản sao lưu, không còn được backend dùng tới nữa.
+
+Không cần đổi `DATABASE_URL` để "tắt" Postgres quay lại JSON - chỉ cần xoá/comment biến này trong `.env`, backend sẽ tự dùng lại `db.json` (lưu ý: dữ liệu ghi vào Postgres sau khi chuyển sẽ **không** tự động đồng bộ ngược lại file JSON).
+
 ## Phạm vi đã triển khai theo mức ưu tiên
 
 - **P0 – Bắt buộc**: tài khoản học sinh/giáo viên/admin, cấu trúc HSK/YCT → Bài, từ vựng, audio (Web Speech API 🔊), bài tập chấm đúng/sai + lưu lỗi sai, tiến độ, PPT/PDF bảo mật. ✅
@@ -117,4 +136,4 @@ Toàn bộ việc đọc/ghi file đi qua một lớp trừu tượng (`backend/
 
 - Phát âm 🔊 dùng Web Speech API (`speechSynthesis`, giọng `zh-CN`) thay vì phải quản lý file audio riêng cho từng từ/câu — hoạt động trên hầu hết trình duyệt Chrome/Edge hiện đại.
 - Shadowing dùng `MediaRecorder` để thu âm học sinh và phát lại so sánh với giọng mẫu (TTS); chưa có chấm điểm AI (đúng như đặc tả phiên bản 1).
-- Dữ liệu lưu ở file JSON (`backend/data/db.json`) — phù hợp để demo/triển khai nhỏ, không cần cài đặt database ngoài. Có thể thay bằng PostgreSQL/MongoDB sau này mà không đổi API vì toàn bộ truy cập dữ liệu đã tập trung qua `backend/src/db.js`.
+- Dữ liệu lưu ở file JSON (`backend/data/db.json`) theo mặc định, hoặc PostgreSQL khi khai báo `DATABASE_URL` — xem mục "Cơ sở dữ liệu" ở trên. Toàn bộ route/logic đi qua `backend/src/db/` (không gọi thẳng file/DB), nên đổi engine không cần sửa API.

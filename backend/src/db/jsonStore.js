@@ -2,7 +2,16 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
+/**
+ * Engine lưu trữ dạng file JSON - dùng khi KHÔNG khai báo DATABASE_URL (mặc định,
+ * phù hợp máy dev chưa cài PostgreSQL). Toàn bộ hàm bên dưới trả về Promise dù xử
+ * lý bên trong vẫn đồng bộ, để có cùng chữ ký gọi (`await db.xxx(...)`) như
+ * `postgresStore.js` - route/middleware không cần biết đang chạy engine nào.
+ *
+ * Xem README mục "Cơ sở dữ liệu" - engine này chỉ phù hợp demo/dự án nhỏ vì mỗi
+ * lần ghi phải lưu lại toàn bộ file xuống đĩa.
+ */
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', '..', 'data');
 const DATA_FILE = path.join(DATA_DIR, 'db.json');
 
 const COLLECTIONS = [
@@ -43,19 +52,21 @@ function newId() {
   return crypto.randomUUID();
 }
 
-function all(collection) {
+async function ensureSchema() { /* không cần - file JSON không có schema */ }
+
+async function all(collection) {
   return ensureLoaded()[collection];
 }
 
-function find(collection, id) {
+async function find(collection, id) {
   return ensureLoaded()[collection].find((x) => x.id === id) || null;
 }
 
-function findWhere(collection, predicate) {
+async function findWhere(collection, predicate) {
   return ensureLoaded()[collection].filter(predicate);
 }
 
-function insert(collection, obj) {
+async function insert(collection, obj) {
   const db = ensureLoaded();
   const item = { id: newId(), createdAt: new Date().toISOString(), ...obj };
   db[collection].push(item);
@@ -63,7 +74,7 @@ function insert(collection, obj) {
   return item;
 }
 
-function update(collection, id, patch) {
+async function update(collection, id, patch) {
   const db = ensureLoaded();
   const idx = db[collection].findIndex((x) => x.id === id);
   if (idx === -1) return null;
@@ -72,7 +83,7 @@ function update(collection, id, patch) {
   return db[collection][idx];
 }
 
-function remove(collection, id) {
+async function remove(collection, id) {
   const db = ensureLoaded();
   const idx = db[collection].findIndex((x) => x.id === id);
   if (idx === -1) return false;
@@ -81,18 +92,18 @@ function remove(collection, id) {
   return true;
 }
 
-function logActivity(userId, type, meta) {
+async function logActivity(userId, type, meta) {
   return insert('activityLogs', { userId, type, meta: meta || {} });
 }
 
-function getOrCreateProgress(userId, lessonId) {
-  let doc = findWhere('progress', (p) => p.userId === userId && p.lessonId === lessonId)[0];
-  if (!doc) doc = insert('progress', { userId, lessonId, modules: {}, wrongItems: [] });
+async function getOrCreateProgress(userId, lessonId) {
+  let doc = (await findWhere('progress', (p) => p.userId === userId && p.lessonId === lessonId))[0];
+  if (!doc) doc = await insert('progress', { userId, lessonId, modules: {}, wrongItems: [] });
   return doc;
 }
 
-function recordResult(userId, lessonId, moduleName, itemId, itemType, correct) {
-  const prog = getOrCreateProgress(userId, lessonId);
+async function recordResult(userId, lessonId, moduleName, itemId, itemType, correct) {
+  const prog = await getOrCreateProgress(userId, lessonId);
   const modules = { ...prog.modules };
   const current = modules[moduleName] || { attempts: 0, correct: 0 };
   current.attempts += 1;
@@ -110,20 +121,21 @@ function recordResult(userId, lessonId, moduleName, itemId, itemType, correct) {
   return update('progress', prog.id, { modules, wrongItems });
 }
 
-function upsertFlashcard(userId, wordId, status) {
-  const existing = findWhere('flashcardStatus', (f) => f.userId === userId && f.wordId === wordId)[0];
+async function upsertFlashcard(userId, wordId, status) {
+  const existing = (await findWhere('flashcardStatus', (f) => f.userId === userId && f.wordId === wordId))[0];
   if (existing) return update('flashcardStatus', existing.id, { status });
   return insert('flashcardStatus', { userId, wordId, status });
 }
 
-function upsertSlideProgress(userId, slideId, page, percent) {
-  const existing = findWhere('slideProgress', (d) => d.userId === userId && d.slideId === slideId)[0];
+async function upsertSlideProgress(userId, slideId, page, percent) {
+  const existing = (await findWhere('slideProgress', (d) => d.userId === userId && d.slideId === slideId))[0];
   const patch = { lastPage: page, percent };
   if (existing) return update('slideProgress', existing.id, patch);
   return insert('slideProgress', { userId, slideId, ...patch });
 }
 
 module.exports = {
+  mode: 'json', COLLECTIONS, ensureSchema,
   all, find, findWhere, insert, update, remove,
   logActivity, getOrCreateProgress, recordResult,
   upsertFlashcard, upsertSlideProgress

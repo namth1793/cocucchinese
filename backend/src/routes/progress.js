@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
 const access = require('../utils/access');
+const asyncHandler = require('../utils/asyncHandler');
 
 const router = express.Router();
 
@@ -18,8 +19,8 @@ function dateKey(d) {
 
 // Chuỗi ngày học liên tiếp + các ngày đã học trong tuần này (T2-CN), tính từ
 // nhật ký hoạt động thật (đăng nhập, làm bài...) - không phải số giả lập.
-router.get('/streak', requireAuth, (req, res) => {
-  const logs = db.findWhere('activityLogs', (l) => l.userId === req.user.id);
+router.get('/streak', requireAuth, asyncHandler(async (req, res) => {
+  const logs = await db.findWhere('activityLogs', (l) => l.userId === req.user.id);
   const activeDates = new Set(logs.map((l) => dateKey(new Date(l.createdAt))));
 
   let currentStreak = 0;
@@ -41,36 +42,40 @@ router.get('/streak', requireAuth, (req, res) => {
   }
 
   res.json({ currentStreak, activeDays });
-});
+}));
 
-router.get('/review/all', requireAuth, (req, res) => {
+router.get('/review/all', requireAuth, asyncHandler(async (req, res) => {
   // Chỉ ôn tập từ/câu thuộc các khoá còn quyền truy cập.
-  const progs = db.findWhere('progress', (p) => p.userId === req.user.id && access.canAccessLesson(req.user, p.lessonId));
+  const own = await db.findWhere('progress', (p) => p.userId === req.user.id);
+  const progs = await access.filterAsync(own, (p) => access.canAccessLesson(req.user, p.lessonId));
   const words = [];
   const sentences = [];
-  progs.forEach((p) => (p.wrongItems || []).forEach((w) => {
-    if (w.itemType === 'word') {
-      const word = db.find('words', w.itemId);
-      if (word && !words.find((x) => x.id === word.id)) words.push(word);
-    } else if (w.itemType === 'sentence') {
-      const sentence = db.find('sentences', w.itemId);
-      if (sentence && !sentences.find((x) => x.id === sentence.id)) sentences.push(sentence);
+  for (const p of progs) {
+    for (const w of (p.wrongItems || [])) {
+      if (w.itemType === 'word') {
+        const word = await db.find('words', w.itemId);
+        if (word && !words.find((x) => x.id === word.id)) words.push(word);
+      } else if (w.itemType === 'sentence') {
+        const sentence = await db.find('sentences', w.itemId);
+        if (sentence && !sentences.find((x) => x.id === sentence.id)) sentences.push(sentence);
+      }
     }
-  }));
+  }
   res.json({ words, sentences });
-});
+}));
 
-router.delete('/review/:itemId', requireAuth, (req, res) => {
-  const progs = db.findWhere('progress', (p) => p.userId === req.user.id);
-  progs.forEach((p) => {
+router.delete('/review/:itemId', requireAuth, asyncHandler(async (req, res) => {
+  const progs = await db.findWhere('progress', (p) => p.userId === req.user.id);
+  await Promise.all(progs.map((p) => {
     const wrongItems = (p.wrongItems || []).filter((w) => w.itemId !== req.params.itemId);
-    if (wrongItems.length !== (p.wrongItems || []).length) db.update('progress', p.id, { wrongItems });
-  });
+    if (wrongItems.length !== (p.wrongItems || []).length) return db.update('progress', p.id, { wrongItems });
+    return null;
+  }));
   res.json({ success: true });
-});
+}));
 
-router.get('/:lessonId/summary', requireAuth, access.requireLessonAccess(), (req, res) => {
-  const prog = db.getOrCreateProgress(req.user.id, req.params.lessonId);
+router.get('/:lessonId/summary', requireAuth, access.requireLessonAccess(), asyncHandler(async (req, res) => {
+  const prog = await db.getOrCreateProgress(req.user.id, req.params.lessonId);
   const scores = {};
   Object.keys(prog.modules || {}).forEach((key) => { scores[key] = moduleScore(prog.modules[key]); });
   const numeric = Object.values(scores).filter((v) => typeof v === 'number');
@@ -82,17 +87,17 @@ router.get('/:lessonId/summary', requireAuth, access.requireLessonAccess(), (req
     wrongWordsCount: (prog.wrongItems || []).filter((w) => w.itemType === 'word').length,
     wrongSentencesCount: (prog.wrongItems || []).filter((w) => w.itemType === 'sentence').length
   });
-});
+}));
 
-router.post('/:lessonId/complete-module', requireAuth, access.requireLessonAccess(), (req, res) => {
+router.post('/:lessonId/complete-module', requireAuth, access.requireLessonAccess(), asyncHandler(async (req, res) => {
   const { module: moduleName } = req.body;
-  const prog = db.getOrCreateProgress(req.user.id, req.params.lessonId);
+  const prog = await db.getOrCreateProgress(req.user.id, req.params.lessonId);
   const modules = { ...prog.modules, [moduleName]: { completed: true } };
-  res.json(db.update('progress', prog.id, { modules }));
-});
+  res.json(await db.update('progress', prog.id, { modules }));
+}));
 
-router.get('/:lessonId', requireAuth, access.requireLessonAccess(), (req, res) => {
-  res.json(db.getOrCreateProgress(req.user.id, req.params.lessonId));
-});
+router.get('/:lessonId', requireAuth, access.requireLessonAccess(), asyncHandler(async (req, res) => {
+  res.json(await db.getOrCreateProgress(req.user.id, req.params.lessonId));
+}));
 
 module.exports = router;

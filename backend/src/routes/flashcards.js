@@ -2,41 +2,39 @@ const express = require('express');
 const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
 const access = require('../utils/access');
+const asyncHandler = require('../utils/asyncHandler');
 
 const router = express.Router();
 
-router.get('/:lessonId', requireAuth, access.requireLessonAccess(), (req, res) => {
-  const words = db.findWhere('words', (w) => w.lessonId === req.params.lessonId);
-  const statuses = db.findWhere('flashcardStatus', (f) => f.userId === req.user.id);
+router.get('/:lessonId', requireAuth, access.requireLessonAccess(), asyncHandler(async (req, res) => {
+  const words = await db.findWhere('words', (w) => w.lessonId === req.params.lessonId);
+  const statuses = await db.findWhere('flashcardStatus', (f) => f.userId === req.user.id);
   const items = words.map((w) => {
     const st = statuses.find((s) => s.wordId === w.id);
     return { ...w, flashcardStatus: st ? st.status : null };
   });
   res.json(items);
-});
+}));
 
-router.post('/:wordId/status', requireAuth, (req, res) => {
+router.post('/:wordId/status', requireAuth, asyncHandler(async (req, res) => {
   const { status } = req.body;
   if (!['known', 'half', 'unknown'].includes(status)) return res.status(400).json({ error: 'Trạng thái không hợp lệ' });
-  const targetWord = db.find('words', req.params.wordId);
-  if (!targetWord) return res.status(404).json({ error: 'Không tìm thấy từ' });
-  if (!access.canAccessLesson(req.user, targetWord.lessonId)) return access.deny(res);
-  const doc = db.upsertFlashcard(req.user.id, req.params.wordId, status);
+  const word = await db.find('words', req.params.wordId);
+  if (!word) return res.status(404).json({ error: 'Không tìm thấy từ' });
+  if (!(await access.canAccessLesson(req.user, word.lessonId))) return access.deny(res);
+  const doc = await db.upsertFlashcard(req.user.id, req.params.wordId, status);
 
-  const word = db.find('words', req.params.wordId);
-  if (word) {
-    const prog = db.getOrCreateProgress(req.user.id, word.lessonId);
-    let wrongItems = prog.wrongItems || [];
-    if (status === 'unknown') {
-      if (!wrongItems.find((w) => w.itemId === word.id)) {
-        wrongItems = [...wrongItems, { itemId: word.id, itemType: 'word', lessonId: word.lessonId, addedAt: new Date().toISOString() }];
-      }
-    } else {
-      wrongItems = wrongItems.filter((w) => w.itemId !== word.id);
+  const prog = await db.getOrCreateProgress(req.user.id, word.lessonId);
+  let wrongItems = prog.wrongItems || [];
+  if (status === 'unknown') {
+    if (!wrongItems.find((w) => w.itemId === word.id)) {
+      wrongItems = [...wrongItems, { itemId: word.id, itemType: 'word', lessonId: word.lessonId, addedAt: new Date().toISOString() }];
     }
-    db.update('progress', prog.id, { wrongItems });
+  } else {
+    wrongItems = wrongItems.filter((w) => w.itemId !== word.id);
   }
+  await db.update('progress', prog.id, { wrongItems });
   res.json(doc);
-});
+}));
 
 module.exports = router;

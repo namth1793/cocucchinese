@@ -3,16 +3,17 @@ const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
 const gen = require('../utils/exerciseGenerator');
 const access = require('../utils/access');
+const asyncHandler = require('../utils/asyncHandler');
 const { requireLessonAccess } = access;
 
 const router = express.Router();
 
 // Sinh động các dạng bài tập từ dữ liệu gốc của bài học (mục 15 - kiến trúc dùng chung)
-router.get('/:lessonId/:type', requireAuth, requireLessonAccess(), (req, res) => {
+router.get('/:lessonId/:type', requireAuth, requireLessonAccess(), asyncHandler(async (req, res) => {
   const { lessonId, type } = req.params;
   const count = Math.min(parseInt(req.query.count, 10) || 8, 20);
-  const words = db.findWhere('words', (w) => w.lessonId === lessonId);
-  const sentences = db.findWhere('sentences', (s) => s.lessonId === lessonId);
+  const words = await db.findWhere('words', (w) => w.lessonId === lessonId);
+  const sentences = await db.findWhere('sentences', (s) => s.lessonId === lessonId);
   const category = req.query.category;
   const sentencePool = category ? sentences.filter((s) => s.category === category) : sentences;
 
@@ -29,14 +30,14 @@ router.get('/:lessonId/:type', requireAuth, requireLessonAccess(), (req, res) =>
     default: return res.status(400).json({ error: 'Loại bài tập không hợp lệ' });
   }
   res.json({ lessonId, type, items });
-});
+}));
 
-router.post('/submit', requireAuth, (req, res) => {
+router.post('/submit', requireAuth, asyncHandler(async (req, res) => {
   const { lessonId, module: moduleName, itemId, itemType, correct } = req.body;
   if (!lessonId || !moduleName) return res.status(400).json({ error: 'Thiếu lessonId hoặc module' });
-  if (!access.canAccessLesson(req.user, lessonId)) return access.deny(res);
-  const prog = db.recordResult(req.user.id, lessonId, moduleName, itemId, itemType, !!correct);
+  if (!(await access.canAccessLesson(req.user, lessonId))) return access.deny(res);
+  const prog = await db.recordResult(req.user.id, lessonId, moduleName, itemId, itemType, !!correct);
   res.json(prog);
-});
+}));
 
 module.exports = router;

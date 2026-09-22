@@ -21,44 +21,44 @@ function writeSvg(relPath, { bg, text, sub }) {
   fs.writeFileSync(full, svg, 'utf-8');
 }
 
-function seedIfEmpty() {
-  if (db.all('users').length > 0) return;
+async function seedIfEmpty() {
+  if ((await db.all('users')).length > 0) return;
   console.log('Đang khởi tạo dữ liệu mẫu...');
 
-  db.insert('users', { name: 'Quản trị viên', email: 'admin@hsk360.vn', passwordHash: bcrypt.hashSync('admin123', 10), role: 'admin', status: 'active', activeSessions: [] });
-  db.insert('users', { name: 'Cô Lan', email: 'teacher@hsk360.vn', passwordHash: bcrypt.hashSync('teacher123', 10), role: 'teacher', status: 'active', activeSessions: [] });
-  db.insert('users', { name: 'Học sinh Demo', email: 'student@hsk360.vn', passwordHash: bcrypt.hashSync('student123', 10), role: 'student', status: 'active', activeSessions: [] });
+  await db.insert('users', { name: 'Quản trị viên', email: 'admin@hsk360.vn', passwordHash: bcrypt.hashSync('admin123', 10), role: 'admin', status: 'active', activeSessions: [] });
+  await db.insert('users', { name: 'Cô Lan', email: 'teacher@hsk360.vn', passwordHash: bcrypt.hashSync('teacher123', 10), role: 'teacher', status: 'active', activeSessions: [] });
+  await db.insert('users', { name: 'Học sinh Demo', email: 'student@hsk360.vn', passwordHash: bcrypt.hashSync('student123', 10), role: 'student', status: 'active', activeSessions: [] });
 
-  const hsk1 = db.insert('levels', { code: 'HSK1', name: 'HSK 1', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 1 });
-  const hsk2 = db.insert('levels', { code: 'HSK2', name: 'HSK 2', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 2 });
-  const hsk3 = db.insert('levels', { code: 'HSK3', name: 'HSK 3', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 3 });
-  const hsk4 = db.insert('levels', { code: 'HSK4', name: 'HSK 4', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 4 });
-  const hsk5 = db.insert('levels', { code: 'HSK5', name: 'HSK 5', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 5 });
-  const hsk6 = db.insert('levels', { code: 'HSK6', name: 'HSK 6', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 6 });
+  const hsk1 = await db.insert('levels', { code: 'HSK1', name: 'HSK 1', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 1 });
+  const hsk2 = await db.insert('levels', { code: 'HSK2', name: 'HSK 2', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 2 });
+  const hsk3 = await db.insert('levels', { code: 'HSK3', name: 'HSK 3', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 3 });
+  const hsk4 = await db.insert('levels', { code: 'HSK4', name: 'HSK 4', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 4 });
+  const hsk5 = await db.insert('levels', { code: 'HSK5', name: 'HSK 5', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 5 });
+  const hsk6 = await db.insert('levels', { code: 'HSK6', name: 'HSK 6', type: 'HSK', category: 'hsk_hskk', group: 'HSK 3.0', order: 6 });
 
-  const hskkSc = db.insert('levels', { code: 'HSKK-SC', name: 'HSKK Sơ cấp', type: 'HSKK', category: 'hsk_hskk', group: 'HSKK', order: 1 });
-  const hskkTc = db.insert('levels', { code: 'HSKK-TC', name: 'HSKK Trung cấp', type: 'HSKK', category: 'hsk_hskk', group: 'HSKK', order: 2 });
-  const hskkCc = db.insert('levels', { code: 'HSKK-CC', name: 'HSKK Cao cấp', type: 'HSKK', category: 'hsk_hskk', group: 'HSKK', order: 3 });
+  const hskkSc = await db.insert('levels', { code: 'HSKK-SC', name: 'HSKK Sơ cấp', type: 'HSKK', category: 'hsk_hskk', group: 'HSKK', order: 1 });
+  const hskkTc = await db.insert('levels', { code: 'HSKK-TC', name: 'HSKK Trung cấp', type: 'HSKK', category: 'hsk_hskk', group: 'HSKK', order: 2 });
+  const hskkCc = await db.insert('levels', { code: 'HSKK-CC', name: 'HSKK Cao cấp', type: 'HSKK', category: 'hsk_hskk', group: 'HSKK', order: 3 });
 
-  const yct1 = db.insert('levels', { code: 'YCT1', name: 'YCT 1', type: 'YCT', category: 'kids', order: 1 });
-  const yct2 = db.insert('levels', { code: 'YCT2', name: 'YCT 2', type: 'YCT', category: 'kids', order: 2 });
-  const yct3 = db.insert('levels', { code: 'YCT3', name: 'YCT 3', type: 'YCT', category: 'kids', order: 3 });
-  const yct4 = db.insert('levels', { code: 'YCT4', name: 'YCT 4', type: 'YCT', category: 'kids', order: 4 });
-  const kidsFlashcard = db.insert('levels', { code: 'KIDS-FLASHCARD', name: 'Flashcard theo chủ đề', type: 'KIDS', category: 'kids', order: 5 });
-  const kidsLittlefox = db.insert('levels', { code: 'KIDS-LITTLEFOX', name: 'Little Fox Chinese', type: 'KIDS', category: 'kids', order: 6 });
-  const kidsStory = db.insert('levels', { code: 'KIDS-STORY', name: 'Truyện tiếng Trung', type: 'KIDS', category: 'kids', order: 7 });
-  const kidsSong = db.insert('levels', { code: 'KIDS-SONG', name: 'Bài hát tiếng Trung', type: 'KIDS', category: 'kids', order: 8 });
+  const yct1 = await db.insert('levels', { code: 'YCT1', name: 'YCT 1', type: 'YCT', category: 'kids', order: 1 });
+  const yct2 = await db.insert('levels', { code: 'YCT2', name: 'YCT 2', type: 'YCT', category: 'kids', order: 2 });
+  const yct3 = await db.insert('levels', { code: 'YCT3', name: 'YCT 3', type: 'YCT', category: 'kids', order: 3 });
+  const yct4 = await db.insert('levels', { code: 'YCT4', name: 'YCT 4', type: 'YCT', category: 'kids', order: 4 });
+  const kidsFlashcard = await db.insert('levels', { code: 'KIDS-FLASHCARD', name: 'Flashcard theo chủ đề', type: 'KIDS', category: 'kids', order: 5 });
+  const kidsLittlefox = await db.insert('levels', { code: 'KIDS-LITTLEFOX', name: 'Little Fox Chinese', type: 'KIDS', category: 'kids', order: 6 });
+  const kidsStory = await db.insert('levels', { code: 'KIDS-STORY', name: 'Truyện tiếng Trung', type: 'KIDS', category: 'kids', order: 7 });
+  const kidsSong = await db.insert('levels', { code: 'KIDS-SONG', name: 'Bài hát tiếng Trung', type: 'KIDS', category: 'kids', order: 8 });
 
-  const convoBasic = db.insert('levels', { code: 'CONVO-BASIC', name: 'Giao tiếp cơ bản', type: 'CONVO', category: 'conversation', order: 1 });
-  const convoDaily = db.insert('levels', { code: 'CONVO-DAILY', name: 'Giao tiếp hằng ngày', type: 'CONVO', category: 'conversation', order: 2 });
-  const convoTravel = db.insert('levels', { code: 'CONVO-TRAVEL', name: 'Tiếng Trung du lịch', type: 'CONVO', category: 'conversation', order: 3 });
-  const convoWork = db.insert('levels', { code: 'CONVO-WORK', name: 'Tiếng Trung công việc', type: 'CONVO', category: 'conversation', order: 4 });
-  const convoOffice = db.insert('levels', { code: 'CONVO-OFFICE', name: 'Tiếng Trung công sở', type: 'CONVO', category: 'conversation', order: 5 });
+  const convoBasic = await db.insert('levels', { code: 'CONVO-BASIC', name: 'Giao tiếp cơ bản', type: 'CONVO', category: 'conversation', order: 1 });
+  const convoDaily = await db.insert('levels', { code: 'CONVO-DAILY', name: 'Giao tiếp hằng ngày', type: 'CONVO', category: 'conversation', order: 2 });
+  const convoTravel = await db.insert('levels', { code: 'CONVO-TRAVEL', name: 'Tiếng Trung du lịch', type: 'CONVO', category: 'conversation', order: 3 });
+  const convoWork = await db.insert('levels', { code: 'CONVO-WORK', name: 'Tiếng Trung công việc', type: 'CONVO', category: 'conversation', order: 4 });
+  const convoOffice = await db.insert('levels', { code: 'CONVO-OFFICE', name: 'Tiếng Trung công sở', type: 'CONVO', category: 'conversation', order: 5 });
 
-  const lesson1 = db.insert('lessons', { levelId: hsk1.id, order: 1, title: 'Bài 1: 你好 - Xin chào', description: 'Chào hỏi cơ bản', published: true });
-  db.insert('lessons', { levelId: hsk1.id, order: 2, title: 'Bài 2: 谢谢 - Cảm ơn', description: 'Cảm ơn và xin lỗi', published: true });
+  const lesson1 = await db.insert('lessons', { levelId: hsk1.id, order: 1, title: 'Bài 1: 你好 - Xin chào', description: 'Chào hỏi cơ bản', published: true });
+  await db.insert('lessons', { levelId: hsk1.id, order: 2, title: 'Bài 2: 谢谢 - Cảm ơn', description: 'Cảm ơn và xin lỗi', published: true });
 
-  const topic1 = db.insert('topics', { lessonId: lesson1.id, name: 'Chào hỏi' });
+  const topic1 = await db.insert('topics', { lessonId: lesson1.id, name: 'Chào hỏi' });
 
   const wordData = [
     ['你好', 'nǐ hǎo', 'Xin chào'],
@@ -71,17 +71,17 @@ function seedIfEmpty() {
     ['苹果', 'píngguǒ', 'Quả táo']
   ];
 
-  wordData.forEach(([hanzi, pinyin, vi]) => {
-    db.insert('words', {
+  for (const [hanzi, pinyin, vi] of wordData) {
+    await db.insert('words', {
       lessonId: lesson1.id, topicId: topic1.id, hanzi, pinyin, meaningVi: vi,
       type: 'Danh từ/Đại từ',
       example: { hanzi: `${hanzi}！`, pinyin: `${pinyin}!`, vi },
       imageUrl: null,
       audioUrl: null, strokeOrderUrl: null
     });
-  });
+  }
 
-  db.insert('grammarPoints', {
+  await db.insert('grammarPoints', {
     lessonId: lesson1.id,
     structure: 'A + 是 + B',
     usageVi: 'Dùng để giới thiệu A chính là B, thường dùng khi giới thiệu tên, nghề nghiệp, danh tính.',
@@ -98,16 +98,18 @@ function seedIfEmpty() {
     { hanzi: '谢谢老师。', pinyin: 'Xièxiè lǎoshī.', vi: 'Cảm ơn cô giáo.', category: 'listening' },
     { hanzi: '再见，老师。', pinyin: 'Zàijiàn, lǎoshī.', vi: 'Tạm biệt cô giáo.', category: 'reading' }
   ];
-  sentenceData.forEach((s, idx) => db.insert('sentences', {
-    lessonId: lesson1.id, ...s, order: idx + 1,
-    questions: [{ q: `Câu "${s.hanzi}" có nghĩa là gì?`, options: [s.vi, 'Tạm biệt bạn', 'Chào buổi sáng'], answerIndex: 0, explanation: `${s.hanzi} (${s.pinyin}) = ${s.vi}` }]
-  }));
+  for (const [idx, sd] of sentenceData.entries()) {
+    await db.insert('sentences', {
+      lessonId: lesson1.id, ...sd, order: idx + 1,
+      questions: [{ q: `Câu "${sd.hanzi}" có nghĩa là gì?`, options: [sd.vi, 'Tạm biệt bạn', 'Chào buổi sáng'], answerIndex: 0, explanation: `${sd.hanzi} (${sd.pinyin}) = ${sd.vi}` }]
+    });
+  }
 
-  const slideDeck = db.insert('slides', { lessonId: lesson1.id, title: 'PPT Bài 1: 你好', pages: [], version: 1 });
+  const slideDeck = await db.insert('slides', { lessonId: lesson1.id, title: 'PPT Bài 1: 你好', pages: [], version: 1 });
   if (storage.mode === 'local') {
     writeSvg(`slides/${slideDeck.id}/page-1.svg`, { bg: '#DC2626', text: '你好', sub: 'Bài 1 - HSK1' });
     writeSvg(`slides/${slideDeck.id}/page-2.svg`, { bg: '#059669', text: '你好 谢谢 再见', sub: 'Từ vựng bài 1' });
-    db.update('slides', slideDeck.id, {
+    await db.update('slides', slideDeck.id, {
       pages: [
         { pageNum: 1, fileName: 'page-1.svg' },
         { pageNum: 2, fileName: 'page-2.svg' }
@@ -115,7 +117,7 @@ function seedIfEmpty() {
     });
   }
 
-  db.insert('songs', {
+  await db.insert('songs', {
     lessonId: lesson1.id, title: '你好歌 (Bài hát chào hỏi)', mediaUrl: '',
     lines: [
       { start: 0, end: 3, hanzi: '你好你好', pinyin: 'nǐ hǎo nǐ hǎo', vi: 'Xin chào, xin chào' },
@@ -125,12 +127,12 @@ function seedIfEmpty() {
     grammarNotes: 'Bài hát lặp lại các từ chào hỏi đã học trong bài 1. Giáo viên có thể cập nhật link nhạc thật qua trang Quản trị.'
   });
 
-  db.insert('videos', {
+  await db.insert('videos', {
     lessonId: lesson1.id, title: 'Tình huống: Chào hỏi ở lớp học',
     url: '', description: 'Giáo viên cập nhật link video thực tế qua trang Quản trị.'
   });
 
-  db.insert('instructors', {
+  await db.insert('instructors', {
     name: 'Cô Lan', title: 'Giáo viên', avatarUrl: null, order: 1,
     bio: 'Thông tin giới thiệu (kinh nghiệm, bằng cấp, ảnh...) sẽ được admin/giáo viên cập nhật qua trang Quản trị.'
   });
@@ -141,21 +143,21 @@ function seedIfEmpty() {
    * trơn. Giáo viên/admin chỉnh sửa hoặc thay thế bằng nội dung thật qua trang
    * Quản trị bất cứ lúc nào.
    */
-  function addDemoLesson(level, { title, description, topicName, words, grammar }) {
-    const lesson = db.insert('lessons', { levelId: level.id, order: 1, title, description, published: true });
-    const topic = db.insert('topics', { lessonId: lesson.id, name: topicName });
-    words.forEach(([hanzi, pinyin, vi]) => {
-      db.insert('words', {
+  async function addDemoLesson(level, { title, description, topicName, words, grammar }) {
+    const lesson = await db.insert('lessons', { levelId: level.id, order: 1, title, description, published: true });
+    const topic = await db.insert('topics', { lessonId: lesson.id, name: topicName });
+    for (const [hanzi, pinyin, vi] of words) {
+      await db.insert('words', {
         lessonId: lesson.id, topicId: topic.id, hanzi, pinyin, meaningVi: vi,
         type: 'Từ vựng', example: { hanzi: `${hanzi}。`, pinyin: `${pinyin}.`, vi }, imageUrl: null,
         audioUrl: null, strokeOrderUrl: null
       });
-    });
-    if (grammar) db.insert('grammarPoints', { lessonId: lesson.id, ...grammar });
+    }
+    if (grammar) await db.insert('grammarPoints', { lessonId: lesson.id, ...grammar });
     return lesson;
   }
 
-  addDemoLesson(hsk2, {
+  await addDemoLesson(hsk2, {
     title: 'Bài 1: 你叫什么名字 - Hỏi tên',
     description: 'Hỏi và trả lời tên, tuổi',
     topicName: 'Làm quen',
@@ -175,7 +177,7 @@ function seedIfEmpty() {
     }
   });
 
-  addDemoLesson(hsk3, {
+  await addDemoLesson(hsk3, {
     title: 'Bài 1: 你在哪儿工作 - Hỏi nơi làm việc',
     description: 'Hỏi và trả lời về công việc, nơi làm việc',
     topicName: 'Công việc',
@@ -195,7 +197,7 @@ function seedIfEmpty() {
     }
   });
 
-  addDemoLesson(yct1, {
+  await addDemoLesson(yct1, {
     title: 'Bài 1: 数字 - Số đếm',
     description: 'Học đếm số từ 1 đến 5 (dành cho thiếu nhi)',
     topicName: 'Số đếm',
@@ -208,7 +210,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(hskkSc, {
+  await addDemoLesson(hskkSc, {
     title: 'Bài 1: Tự giới thiệu bản thân',
     description: 'Luyện khẩu ngữ giới thiệu bản thân trước lớp',
     topicName: 'Khẩu ngữ giới thiệu',
@@ -220,7 +222,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(kidsSong, {
+  await addDemoLesson(kidsSong, {
     title: 'Bài 1: 两只老虎 - Hai chú hổ',
     description: 'Bài hát thiếu nhi kinh điển, giai điệu quen thuộc',
     topicName: 'Từ vựng trong bài hát',
@@ -233,7 +235,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(convoBasic, {
+  await addDemoLesson(convoBasic, {
     title: 'Bài 1: Xin phép & cảm ơn trong giao tiếp',
     description: 'Các mẫu câu lịch sự dùng hằng ngày',
     topicName: 'Giao tiếp lịch sự',
@@ -246,7 +248,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(hsk4, {
+  await addDemoLesson(hsk4, {
     title: 'Bài 1: 周末你打算做什么 - Dự định cuối tuần',
     description: 'Nói về dự định, kế hoạch trong tương lai gần',
     topicName: 'Dự định & kế hoạch',
@@ -268,7 +270,7 @@ function seedIfEmpty() {
     }
   });
 
-  addDemoLesson(hsk5, {
+  await addDemoLesson(hsk5, {
     title: 'Bài 1: 逐渐适应新环境 - Dần thích nghi môi trường mới',
     description: 'Diễn đạt sự thay đổi, thích nghi theo thời gian',
     topicName: 'Thích nghi & thay đổi',
@@ -290,7 +292,7 @@ function seedIfEmpty() {
     }
   });
 
-  addDemoLesson(hsk6, {
+  await addDemoLesson(hsk6, {
     title: 'Bài 1: 毫无疑问 - Diễn đạt học thuật & thành ngữ',
     description: 'Từ vựng và cấu trúc dùng trong văn viết, tranh luận học thuật',
     topicName: 'Diễn đạt học thuật',
@@ -312,7 +314,7 @@ function seedIfEmpty() {
     }
   });
 
-  addDemoLesson(hskkTc, {
+  await addDemoLesson(hskkTc, {
     title: 'Bài 1: 谈谈你的爱好 - Nói về sở thích',
     description: 'Luyện khẩu ngữ trình bày về sở thích cá nhân',
     topicName: 'Khẩu ngữ trung cấp',
@@ -325,7 +327,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(hskkCc, {
+  await addDemoLesson(hskkCc, {
     title: 'Bài 1: 对这个问题的看法 - Nêu quan điểm về một vấn đề',
     description: 'Luyện khẩu ngữ trình bày, tranh luận quan điểm ở trình độ cao cấp',
     topicName: 'Khẩu ngữ cao cấp',
@@ -339,7 +341,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(yct2, {
+  await addDemoLesson(yct2, {
     title: 'Bài 1: 颜色 - Màu sắc',
     description: 'Học tên các màu sắc cơ bản (dành cho thiếu nhi)',
     topicName: 'Màu sắc',
@@ -353,7 +355,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(yct3, {
+  await addDemoLesson(yct3, {
     title: 'Bài 1: 动物朋友 - Những người bạn động vật',
     description: 'Học tên các con vật quen thuộc (dành cho thiếu nhi)',
     topicName: 'Động vật',
@@ -367,7 +369,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(yct4, {
+  await addDemoLesson(yct4, {
     title: 'Bài 1: 我的一天 - Một ngày của tôi',
     description: 'Mô tả các hoạt động thường ngày (dành cho thiếu nhi)',
     topicName: 'Sinh hoạt hằng ngày',
@@ -381,7 +383,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(kidsFlashcard, {
+  await addDemoLesson(kidsFlashcard, {
     title: 'Bộ thẻ 1: 水果 - Trái cây',
     description: 'Flashcard theo chủ đề, dùng để học và ôn nhanh từ vựng theo nhóm',
     topicName: 'Chủ đề: Trái cây',
@@ -395,7 +397,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(kidsLittlefox, {
+  await addDemoLesson(kidsLittlefox, {
     title: 'Bài 1: 小狐狸的故事 - Câu chuyện chú cáo nhỏ',
     description: 'Học từ vựng qua câu chuyện ngắn, phong cách Little Fox',
     topicName: 'Từ vựng trong truyện',
@@ -409,7 +411,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(kidsStory, {
+  await addDemoLesson(kidsStory, {
     title: 'Bài 1: 龟兔赛跑 - Rùa và Thỏ',
     description: 'Truyện ngụ ngôn kinh điển, học từ vựng qua tình tiết câu chuyện',
     topicName: 'Từ vựng trong truyện',
@@ -423,7 +425,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(convoDaily, {
+  await addDemoLesson(convoDaily, {
     title: 'Bài 1: Hỏi thăm sức khoẻ & thời tiết',
     description: 'Mẫu câu hỏi thăm, trò chuyện thường ngày',
     topicName: 'Trò chuyện hằng ngày',
@@ -436,7 +438,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(convoTravel, {
+  await addDemoLesson(convoTravel, {
     title: 'Bài 1: Đặt phòng khách sạn & hỏi đường',
     description: 'Các mẫu câu cần thiết khi đi du lịch',
     topicName: 'Giao tiếp du lịch',
@@ -450,7 +452,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(convoWork, {
+  await addDemoLesson(convoWork, {
     title: 'Bài 1: Giới thiệu công việc & trao đổi email',
     description: 'Từ vựng và mẫu câu giao tiếp trong môi trường làm việc',
     topicName: 'Giao tiếp công việc',
@@ -464,7 +466,7 @@ function seedIfEmpty() {
     ]
   });
 
-  addDemoLesson(convoOffice, {
+  await addDemoLesson(convoOffice, {
     title: 'Bài 1: Giao tiếp nơi công sở',
     description: 'Từ vựng và mẫu câu dùng phổ biến chốn công sở',
     topicName: 'Giao tiếp công sở',

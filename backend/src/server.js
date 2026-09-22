@@ -8,6 +8,7 @@ const path = require('path');
 const morgan = require('morgan');
 
 const { requireAuth } = require('./middleware/auth');
+const db = require('./db');
 const { seedIfEmpty } = require('./seed');
 const { runMigrations, applyDefaultCovers } = require('./migrate');
 const storage = require('./storage');
@@ -38,6 +39,7 @@ if (storage.mode === 'local') {
   }));
 }
 console.log(`Chế độ lưu trữ file: ${storage.mode === 'r2' ? 'Cloudflare R2' : 'ổ đĩa cục bộ (local)'}`);
+console.log(`Chế độ cơ sở dữ liệu: ${db.mode === 'postgres' ? 'PostgreSQL' : 'file JSON (local)'}`);
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/courses', require('./routes/courses'));
@@ -66,7 +68,7 @@ app.use('/api/videos', require('./routes/videos'));
 app.use('/api/instructors', require('./routes/instructors'));
 app.use('/api/users', require('./routes/users'));
 
-app.get('/api/health', (req, res) => res.json({ ok: true }));
+app.get('/api/health', (req, res) => res.json({ ok: true, db: db.mode, storage: storage.mode }));
 
 app.use((req, res) => res.status(404).json({ error: 'Không tìm thấy endpoint' }));
 // eslint-disable-next-line no-unused-vars
@@ -81,7 +83,23 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Lỗi hệ thống' });
 });
 
-seedIfEmpty();
-runMigrations();
-applyDefaultCovers().catch((e) => console.error('[migrate] nạp ảnh bìa lỗi:', e));
-app.listen(PORT, () => console.log(`Backend học tiếng Trung chạy tại http://localhost:${PORT}`));
+/**
+ * Khởi động tuần tự: tạo bảng (nếu chạy Postgres) -> seed dữ liệu mẫu (chỉ khi
+ * DB trống) -> các migration nội bộ -> mới mở cổng lắng nghe. Nếu bước nào lỗi
+ * (vd. sai DATABASE_URL) thì dừng hẳn tiến trình thay vì mở cổng với 1 backend
+ * không kết nối được dữ liệu.
+ */
+async function start() {
+  try {
+    await db.ensureSchema();
+    await seedIfEmpty();
+    await runMigrations();
+    await applyDefaultCovers();
+  } catch (e) {
+    console.error('Khởi động thất bại (không thể chuẩn bị dữ liệu):', e);
+    process.exit(1);
+  }
+  app.listen(PORT, () => console.log(`Backend học tiếng Trung chạy tại http://localhost:${PORT}`));
+}
+
+start();
