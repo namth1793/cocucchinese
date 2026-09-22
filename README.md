@@ -26,14 +26,7 @@ npm run dev
 
 Mở `http://localhost:5173`.
 
-### Tài khoản demo (được tạo tự động khi seed)
-| Vai trò | Email | Mật khẩu |
-|---|---|---|
-| Quản trị | admin@hsk360.vn | admin123 |
-| Giáo viên | teacher@hsk360.vn | teacher123 |
-| Học sinh | student@hsk360.vn | student123 |
-
-Dữ liệu mẫu gồm 1 bài học đầy đủ (HSK1 – Bài 1: 你好) để test toàn bộ các module.
+Dữ liệu mẫu gồm 1 bài học đầy đủ (HSK1 – Bài 1: 你好) để test toàn bộ các module. Backend tự tạo 3 tài khoản mẫu (quản trị/giáo viên/học sinh) ở lần chạy đầu tiên khi database còn trống — xem `backend/src/seed.js` để biết email/mật khẩu, **đổi ngay mật khẩu các tài khoản này (hoặc khoá/xoá nếu không cần) trước khi triển khai thật**, không để lộ trong tài liệu công khai.
 
 ## Mua khoá học & phân quyền theo email
 

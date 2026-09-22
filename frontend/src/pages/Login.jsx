@@ -8,8 +8,8 @@ import AuthSidePanel from '../components/AuthSidePanel';
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('student@hsk360.vn');
-  const [password, setPassword] = useState('student123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showForgotNote, setShowForgotNote] = useState(false);
@@ -62,12 +62,6 @@ export default function Login() {
             <p className="auth-footer-link">
               Chưa có khoá học? <Link to="/courses">Xem các khoá học</Link>
             </p>
-            <div className="auth-demo">
-              <b>Tài khoản demo</b><br />
-              Học sinh: student@hsk360.vn / student123<br />
-              Giáo viên: teacher@hsk360.vn / teacher123<br />
-              Quản trị: admin@hsk360.vn / admin123
-            </div>
           </div>
         </div>
       </div>
