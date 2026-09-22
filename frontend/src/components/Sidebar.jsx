@@ -1,4 +1,4 @@
-import { ChevronRight, GraduationCap, Home, LogOut, RotateCcw, ShieldCheck, UserRound } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import api from '../api/client';
@@ -6,15 +6,12 @@ import { useAuth } from '../context/AuthContext';
 import { COURSE_CATEGORIES } from '../constants/courseCategories';
 import Logo from './Logo';
 
-const LEVEL_DOT_COLORS = ['#DC2626', '#059669', '#D97706', '#2563EB', '#7C3AED', '#DB2777'];
-
 function LevelLinks({ items }) {
   if (items.length === 0) {
-    return <span className="sidebar-sublink" style={{ opacity: 0.6 }}>Chưa có khoá nào.</span>;
+    return <span className="sidebar-sublink sidebar-sublink-empty">Chưa có khoá nào</span>;
   }
-  return items.map((lv, i) => (
+  return items.map((lv) => (
     <NavLink key={lv.id} to={`/levels/${lv.id}`} className={({ isActive }) => `sidebar-sublink ${isActive ? 'active' : ''}`}>
-      <span className="sidebar-sublink-dot" style={{ background: LEVEL_DOT_COLORS[i % LEVEL_DOT_COLORS.length] }} />
       {lv.name}
     </NavLink>
   ));
@@ -56,8 +53,8 @@ function CourseTree() {
     return (
       <div key={cat.key}>
         <button type="button" className={`sidebar-group-header ${catOpen ? 'open' : ''}`} onClick={() => toggleCat(cat.key)}>
-          <span aria-hidden="true">{cat.emoji}</span> {cat.label}
-          <ChevronRight size={16} className="chevron" />
+          {cat.label}
+          <ChevronRight size={15} className="chevron" />
         </button>
         {catOpen && (
           <div className="sidebar-group-items">
@@ -71,8 +68,8 @@ function CourseTree() {
                     className={`sidebar-group-header sidebar-subgroup-header ${groupOpen ? 'open' : ''}`}
                     onClick={() => toggleGroup(groupKey)}
                   >
-                    <span aria-hidden="true">{g.emoji}</span> {g.label}
-                    <ChevronRight size={14} className="chevron" />
+                    {g.label}
+                    <ChevronRight size={13} className="chevron" />
                   </button>
                   {groupOpen && (
                     <div className="sidebar-group-items sidebar-group-items-nested">
@@ -109,34 +106,34 @@ export default function Sidebar() {
 
       <nav className="sidebar-nav">
         <NavLink to="/" end className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-          <Home size={18} /> Trang chủ
+          Trang chủ
         </NavLink>
 
         <div className="sidebar-section-label">Khoá học của tôi</div>
         <CourseTree />
         <NavLink to="/courses" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-          <GraduationCap size={18} /> Khám phá khoá học
+          Khám phá khoá học
         </NavLink>
 
         <div className="sidebar-section-label">Học tập</div>
         <NavLink to="/review" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-          <RotateCcw size={18} /> Ôn tập
+          Ôn tập
         </NavLink>
 
         <NavLink to="/instructors" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-          <UserRound size={18} /> Giới thiệu giảng viên
+          Giới thiệu giảng viên
         </NavLink>
 
         {(user.role === 'admin' || user.role === 'teacher') && (
           <NavLink to="/admin" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <ShieldCheck size={18} /> Quản trị
+            Quản trị
           </NavLink>
         )}
       </nav>
 
       <div className="sidebar-footer">
         <div className="sidebar-user">
-          <span className="navbar-avatar">{initial}</span>
+          <span className="sidebar-avatar">{initial}</span>
           <div className="sidebar-user-info">
             <span className="sidebar-user-name">{user.name}</span>
             <span className="sidebar-user-role">
@@ -145,7 +142,7 @@ export default function Sidebar() {
           </div>
         </div>
         <button type="button" className="sidebar-logout" onClick={async () => { await logout(); navigate('/login'); }}>
-          <LogOut size={16} /> Đăng xuất
+          Đăng xuất
         </button>
       </div>
     </aside>

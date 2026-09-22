@@ -1,20 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, UserRound, X } from 'lucide-react';
+import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/client';
 import { COURSE_CATEGORIES, LEVEL_TYPE_OPTIONS } from '../../constants/courseCategories';
 import Logo from '../../components/Logo';
 
-const LEVEL_DOT_COLORS = ['#DC2626', '#059669', '#D97706', '#2563EB', '#7C3AED', '#DB2777'];
 const EMPTY_LEVEL_FORM = { code: '', name: '', type: 'HSK', order: 1 };
 
 function AdminLevelLinks({ items, onDelete }) {
-  if (items.length === 0) return <span className="sidebar-sublink" style={{ opacity: 0.5, fontSize: 12 }}>Trống</span>;
-  return items.map((lv, i) => (
+  if (items.length === 0) return <span className="sidebar-sublink sidebar-sublink-empty">Trống</span>;
+  return items.map((lv) => (
     <NavLink key={lv.id} to={`/admin/levels/${lv.id}`} className={({ isActive }) => `sidebar-sublink admin-level-link ${isActive ? 'active' : ''}`}>
-      <span className="sidebar-sublink-dot" style={{ background: LEVEL_DOT_COLORS[i % LEVEL_DOT_COLORS.length] }} />
-      <span style={{ flex: 1 }}>{lv.code} — {lv.name}</span>
+      <span className="admin-level-link-label">{lv.code} — {lv.name}</span>
       <button type="button" className="admin-level-delete" title="Xoá cấp độ" onClick={(e) => onDelete(e, lv)}>
         <Trash2 size={13} />
       </button>
@@ -62,8 +60,8 @@ function AdminLevelsNav() {
         return (
           <div key={cat.key}>
             <button type="button" className={`sidebar-group-header ${catOpen ? 'open' : ''}`} onClick={() => toggleCat(cat.key)}>
-              <span aria-hidden="true">{cat.emoji}</span> {cat.label}
-              <ChevronRight size={16} className="chevron" />
+              {cat.label}
+              <ChevronRight size={15} className="chevron" />
             </button>
             {catOpen && (
               <div className="sidebar-group-items">
@@ -77,8 +75,8 @@ function AdminLevelsNav() {
                         className={`sidebar-group-header sidebar-subgroup-header ${groupOpen ? 'open' : ''}`}
                         onClick={() => toggleGroup(groupKey)}
                       >
-                        <span aria-hidden="true">{g.emoji}</span> {g.label}
-                        <ChevronRight size={14} className="chevron" />
+                        {g.label}
+                        <ChevronRight size={13} className="chevron" />
                       </button>
                       {groupOpen && (
                         <div className="sidebar-group-items sidebar-group-items-nested">
@@ -136,33 +134,33 @@ export default function AdminLayout() {
 
           <div className="sidebar-section-label">Khác</div>
           <NavLink to="/admin/guide" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <BookOpen size={18} /> Hướng dẫn sử dụng
+            Hướng dẫn sử dụng
           </NavLink>
           <NavLink to="/admin/instructors" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <UserRound size={18} /> Giảng viên
+            Giảng viên
           </NavLink>
           {user.role === 'admin' && (
             <NavLink to="/admin/students" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-              <ReceiptText size={18} /> Học viên & thanh toán
+              Học viên &amp; thanh toán
             </NavLink>
           )}
           {user.role === 'admin' && (
             <NavLink to="/admin/users" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-              <ShieldCheck size={18} /> Người dùng
+              Người dùng
             </NavLink>
           )}
         </nav>
 
         <div className="sidebar-footer">
           <div className="sidebar-user">
-            <span className="navbar-avatar">{initial}</span>
+            <span className="sidebar-avatar">{initial}</span>
             <div className="sidebar-user-info">
               <span className="sidebar-user-name">{user.name}</span>
               <span className="sidebar-user-role">{user.role === 'admin' ? 'Quản trị viên' : 'Giáo viên'}</span>
             </div>
           </div>
           <button type="button" className="sidebar-logout" onClick={doLogout}>
-            <LogOut size={16} /> Đăng xuất
+            Đăng xuất
           </button>
         </div>
       </aside>
