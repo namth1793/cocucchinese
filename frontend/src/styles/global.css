@@ -1871,3 +1871,5 @@ td.sort-cell button + button { margin-left: 4px; }
 .typo-preview-text { margin-bottom: 12px; }
 .dialogue-line-preview { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 12px 14px; }
 .typo-actions { display: flex; justify-content: flex-end; align-items: center; gap: 10px; flex-wrap: wrap; }
+.auth-home-link { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+.auth-home-link:hover { text-decoration: underline; }

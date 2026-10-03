@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogIn, Sparkles } from 'lucide-react';
+import { ArrowLeft, LogIn, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Logo from '../components/Logo';
 import AuthSidePanel from '../components/AuthSidePanel';
@@ -60,7 +60,7 @@ export default function Login() {
               </button>
             </form>
             <p className="auth-footer-link">
-              Chưa có khoá học? <Link to="/courses">Xem các khoá học</Link>
+              <Link to="/" className="auth-home-link"><ArrowLeft size={15} /> Quay lại trang chủ</Link>
             </p>
           </div>
         </div>
