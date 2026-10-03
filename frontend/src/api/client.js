@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { registerAudioFromData } from '../utils/speak';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 export const API_ORIGIN = API_BASE.replace(/\/api\/?$/, '');
@@ -12,7 +13,11 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    // Ghi nhận file nghe giáo viên đã tải lên để speak() phát file thật thay cho giọng đọc máy.
+    if (res.data && typeof res.data === 'object') registerAudioFromData(res.data);
+    return res;
+  },
   (err) => {
     if (err.response && err.response.status === 401 && window.location.pathname !== '/login') {
       localStorage.removeItem('cocuc_token');

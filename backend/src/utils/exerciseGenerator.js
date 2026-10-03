@@ -60,6 +60,7 @@ function listenChoose(words) {
       id: word.id,
       type: 'listen-choose',
       tts: word.hanzi,
+      audioUrl: word.audioUrl || null,
       options,
       answerId: word.id,
       explanation: `${word.hanzi} (${word.pinyin}) = ${word.meaningVi}`

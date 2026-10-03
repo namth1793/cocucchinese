@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { PinyinProvider } from './context/PinyinContext.jsx';
+import { TypographyProvider } from './context/TypographyContext.jsx';
 import './styles/global.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -11,7 +12,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <AuthProvider>
         <PinyinProvider>
-          <App />
+          <TypographyProvider>
+            <App />
+          </TypographyProvider>
         </PinyinProvider>
       </AuthProvider>
     </BrowserRouter>

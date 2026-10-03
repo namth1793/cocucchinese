@@ -24,17 +24,15 @@ export default function AdminSentences({ lessonId: lockedLessonId }) {
     { name: 'pinyin', label: 'Pinyin', required: true },
     { name: 'vi', label: 'Nghĩa tiếng Việt', required: true },
     { name: 'order', label: 'Thứ tự', type: 'number' },
-    {
-      name: 'questions', label: 'Câu hỏi (JSON mảng)', type: 'json',
-      default: [],
-      hint: 'VD: [{"q":"Câu này nghĩa là gì?","options":["Đáp án đúng","Sai 1","Sai 2"],"answerIndex":0,"explanation":"..."}]'
-    }
+    { name: 'audioUrl', label: 'File nghe (thay cho giọng đọc máy)', type: 'audio', hint: 'Sau khi bấm "Dùng file này", nhớ bấm "Lưu thay đổi" để áp dụng.' },
+    { name: 'questions', label: 'Câu hỏi trắc nghiệm', type: 'questions', questionKey: 'q' }
   ];
 
   const columns = [
     { key: 'hanzi', label: '汉字' },
     { key: 'vi', label: 'Nghĩa' },
-    { key: 'category', label: 'Mục' }
+    { key: 'category', label: 'Mục' },
+    { key: 'audioUrl', label: 'File nghe', render: (item) => (item.audioUrl ? 'File tải lên' : 'Giọng máy') }
   ];
 
   if (!lockedLessonId && lessons.length === 0) return <p className="empty-state">Đang tải danh sách bài học...</p>;
@@ -50,6 +48,7 @@ export default function AdminSentences({ lessonId: lockedLessonId }) {
       onFilterChange={lockedLessonId ? undefined : setLessonId}
       fixedValues={lockedLessonId ? { lessonId: lockedLessonId } : undefined}
       listColumns={columns}
+      sortable
     />
   );
 }

@@ -51,6 +51,20 @@ Mỗi khoá học (cấp độ) có 1 ảnh bìa dạng bìa sách, hiện ở t
 - Ảnh lưu qua cùng lớp `storage` với ảnh minh hoạ khác (`saveCover`) - ở chế độ `local` lưu vào `backend/uploads/covers/` và phục vụ **công khai** (không cần đăng nhập, khác với `/uploads/media` yêu cầu đăng nhập) vì trang danh sách khoá học là trang công khai; ở chế độ R2 dùng chung bucket media.
 - **Ảnh mặc định có sẵn**: `backend/seed-assets/covers/<MÃ CẤP ĐỘ>.<đuôi>` (vd. `HSK1.jpg`) là bìa sách giáo trình chuẩn HSK/YCT/HSKK và các đầu sách giao tiếp tương ứng, tải về từ nhasachtiengtrung.com để demo. Migration `level-covers-v1` (trong `migrate.js`, chạy 1 lần) tự nạp ảnh này cho cấp độ chưa có `coverUrl`. Xoá cả file trong `seed-assets/covers/` nếu muốn tự cung cấp bộ ảnh khác trước lần chạy đầu.
 
+## Tự soạn & cập nhật bài học (không cần sửa code)
+
+Vào **Quản trị → chọn cấp độ → "Nội dung"** trên bài học. Các tab:
+
+- **Thông tin & bố cục**: tên, thứ tự, mô tả, *nội dung giới thiệu* (hiện đầu trang bài), xuất bản; **sắp xếp thứ tự các phần trong bài** (Từ vựng, Ngữ pháp, Luyện nghe...) và ẩn/hiện từng phần - lưu ở `lesson.sections`, trang học tự theo.
+- **Bài học HTML**: kéo thả/tải nhiều file `.html` tự chứa (mỗi file = 1 bài), đổi tên tại chỗ, ↑↓ sắp xếp, ẩn/hiện, **Thay file** (học viên thấy bản mới ngay, bản cũ tự xoá), xoá, *Xem thử* như học viên. File lưu riêng (`uploads/html/` hoặc bucket slide private trên R2), chỉ xem được qua token 5 phút + kiểm tra quyền khoá học (`/api/html-pages`). Học viên xem toàn màn hình trong iframe sandbox, chuyển phần trước/sau.
+- **Từ vựng / Câu / Bài khoá**: có cột/ô **File nghe** - chọn file → *nghe thử ngay trên máy* → "Dùng file này" mới tải lên; thay/xoá được. Có file nghe thì mọi nút 🔊 / bài nghe dùng file thật thay giọng đọc máy (tự nhận theo chữ Hán, xem `utils/speak.js`).
+- **Ngữ pháp / Câu (đọc/nghe) / Điền từ / Bài khoá**: bài tập trắc nghiệm, ví dụ, câu thoại, đáp án được nhập bằng form (không còn gõ JSON); ↑↓ để sắp xếp.
+- **Tài liệu**: PDF, Word, Excel, PPT, ảnh, audio, zip (≤100MB) - học viên mở ở mục "Tài liệu đính kèm".
+
+Danh sách bài học trong cấp độ cũng có ↑↓ để đổi thứ tự.
+
+**Font chữ & hiển thị** (`/admin/typography`, chỉ admin): font chữ Hán (Song/Hei/Kai/XiaoWei) và tiếng Việt, độ đậm, cỡ chữ Hán (riêng cho điện thoại), cỡ pinyin, cỡ dịch nghĩa, cỡ chữ chung, khoảng cách dòng, màu chữ - xem trước dạng máy tính/điện thoại trước khi lưu. Lưu ở collection `settings` (id `typography`), áp dụng qua biến CSS toàn site (`context/TypographyContext.jsx`). Không áp dụng vào bên trong file bài học HTML (file tự quyết định kiểu chữ của nó).
+
 ## Kiến trúc dạng bài dùng chung (mục 15 đặc tả)
 
 Giáo viên/Admin chỉ nhập **dữ liệu gốc** (từ vựng, câu, ngữ pháp) qua trang Quản trị (`/admin`). Từ cùng một bộ dữ liệu, backend (`backend/src/utils/exerciseGenerator.js`) tự sinh nhiều dạng bài: Trung→Việt, Việt→Trung, Pinyin→Hán tự, Nghe→chọn, Ghép đôi, Memory, Sắp xếp câu, Xây câu... Frontend dùng lại 2 engine chung: `ExerciseRunner` (trắc nghiệm) và `TokenSentenceGame` (ghép câu) cho toàn bộ HSK/YCT thay vì code riêng từng bài.

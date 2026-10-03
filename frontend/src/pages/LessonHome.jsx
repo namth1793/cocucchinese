@@ -1,37 +1,27 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import {
-  Presentation, BookOpen, Layers, GraduationCap, Gamepad2, Headphones,
-  BookText, Mic2, Repeat, PenLine, ChevronRight, Trophy,
-  MessagesSquare, PenTool
-} from 'lucide-react';
+import { ChevronRight, Trophy } from 'lucide-react';
 import api from '../api/client';
 import ProgressBar from '../components/ProgressBar';
-
-const MODULES = [
-  { key: 'ppt', icon: Presentation, label: 'PPT / Bài giảng', path: 'ppt', color: '#B91C1C' },
-  { key: 'vocab', icon: BookOpen, label: 'Từ vựng', path: 'vocab', color: '#DC2626' },
-  { key: 'hanzi', icon: PenTool, label: 'Chữ Hán', path: 'hanzi', color: '#6B21A8' },
-  { key: 'flashcard', icon: Layers, label: 'Flashcard', path: 'flashcards', color: '#D97706' },
-  { key: 'text', icon: MessagesSquare, label: 'Bài khoá', path: 'text', color: '#0D7377' },
-  { key: 'grammar', icon: GraduationCap, label: 'Ngữ pháp', path: 'grammar', color: '#2563EB' },
-  { key: 'games', icon: Gamepad2, label: 'Game ôn tập', path: 'games', color: '#7C3AED' },
-  { key: 'listening', icon: Headphones, label: 'Luyện nghe', path: 'listening', color: '#059669' },
-  { key: 'reading', icon: BookText, label: 'Luyện đọc', path: 'reading', color: '#0D9488' },
-  { key: 'speaking', icon: Mic2, label: 'Luyện nói', path: 'speaking', color: '#EA580C' },
-  { key: 'translate', icon: Repeat, label: 'Luyện dịch', path: 'translate', color: '#DB2777' },
-  { key: 'writing', icon: PenLine, label: 'Luyện viết', path: 'writing', color: '#9D174D' }
-];
+import { resolveSections } from '../constants/lessonModules';
 
 export default function LessonHome() {
   const { lessonId } = useParams();
-  const [lesson, setLesson] = useState(null);
+  const [data, setData] = useState(null);
   const [summary, setSummary] = useState(null);
 
   useEffect(() => {
-    api.get(`/lessons/${lessonId}/full`).then((res) => setLesson(res.data.lesson));
+    api.get(`/lessons/${lessonId}/full`).then((res) => setData(res.data));
     api.get(`/progress/${lessonId}/summary`).then((res) => setSummary(res.data));
   }, [lessonId]);
+
+  const lesson = data?.lesson;
+  // "html"/"docs" chỉ hiện khi bài thực sự có nội dung tương ứng; thứ tự + ẩn/hiện theo cấu hình admin.
+  const counts = { html: data?.htmlPages?.length || 0, docs: data?.documents?.length || 0 };
+  const modules = data
+    ? resolveSections(lesson.sections).filter((m) => m.visible && (!m.onlyWhenContent || counts[m.key] > 0))
+    : [];
+  const htmlTarget = counts.html === 1 ? `html/${data.htmlPages[0].id}` : 'html';
 
   return (
     <div>
@@ -39,14 +29,18 @@ export default function LessonHome() {
       <h1 className="page-title">{lesson ? lesson.title : '...'}</h1>
       {summary && <ProgressBar percent={summary.overallPercent} label="Tiến độ tổng" />}
 
+      {lesson?.content && <div className="card lesson-intro">{lesson.content}</div>}
+
       <div className="module-list" style={{ marginTop: 18 }}>
-        {MODULES.map((m) => {
+        {modules.map((m) => {
           const Icon = m.icon;
+          const path = m.key === 'html' ? htmlTarget : m.path;
           return (
-            <Link to={`/lessons/${lessonId}/${m.path}`} key={m.key} className="module-row">
+            <Link to={`/lessons/${lessonId}/${path}`} key={m.key} className="module-row">
               <span className="module-row-icon" style={{ background: m.color }}><Icon size={20} /></span>
               <span className="module-row-body">
                 <span className="module-row-label">{m.label}</span>
+                {counts[m.key] > 1 && <span className="module-row-sub">{counts[m.key]} mục</span>}
               </span>
               <ChevronRight size={18} className="module-row-chevron" />
             </Link>

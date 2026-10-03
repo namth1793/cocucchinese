@@ -4,6 +4,7 @@ import { RequireAuth, RequireStaff } from './components/RequireAuth';
 import { useAuth } from './context/AuthContext';
 
 import Login from './pages/Login';
+import Home from './pages/Home';
 import Courses from './pages/Courses';
 import CourseDetail from './pages/CourseDetail';
 import OrderStatus from './pages/OrderStatus';
@@ -46,6 +47,9 @@ import AdminInstructors from './pages/admin/AdminInstructors';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminStudents from './pages/admin/AdminStudents';
 import AdminGuide from './pages/admin/AdminGuide';
+import AdminTypography from './pages/admin/AdminTypography';
+import HtmlLessonViewer, { HtmlLessonList } from './pages/HtmlLesson';
+import LessonDocuments from './pages/LessonDocuments';
 
 /** Admin/giáo viên đăng nhập vào thẳng trang quản trị, không thấy dashboard học sinh. */
 function RoleHome() {
@@ -54,7 +58,7 @@ function RoleHome() {
   return <Dashboard />;
 }
 
-/** "/" là trang khoá học công khai với khách, là trang học viên (hoặc quản trị) sau khi đăng nhập. */
+/** "/" là trang chủ công khai với khách, là trang học viên (hoặc quản trị) sau khi đăng nhập. */
 function RootShell() {
   const { user } = useAuth();
   return user ? <Layout /> : <PublicLayout />;
@@ -62,7 +66,7 @@ function RootShell() {
 
 function RootIndex() {
   const { user } = useAuth();
-  return user ? <RoleHome /> : <Courses />;
+  return user ? <RoleHome /> : <Home />;
 }
 
 export default function App() {
@@ -83,6 +87,10 @@ export default function App() {
 
       <Route element={<RequireAuth />}>
         <Route path="/exam/:paperId" element={<ExamViewer />} />
+        {/* Bài học HTML xem toàn màn hình (ngoài khung Layout), vẫn qua cổng kiểm tra quyền khoá học */}
+        <Route element={<LessonGate />}>
+          <Route path="/lessons/:lessonId/html/:pageId" element={<HtmlLessonViewer />} />
+        </Route>
         <Route element={<Layout />}>
           <Route path="/review" element={<Review />} />
           <Route path="/instructors" element={<Instructors />} />
@@ -113,6 +121,8 @@ export default function App() {
           <Route path="/lessons/:lessonId/video" element={<VideoLearning />} />
           <Route path="/lessons/:lessonId/song" element={<Navigate to="video" replace />} />
           <Route path="/lessons/:lessonId/result" element={<LessonResult />} />
+          <Route path="/lessons/:lessonId/html" element={<HtmlLessonList />} />
+          <Route path="/lessons/:lessonId/docs" element={<LessonDocuments />} />
           </Route>
         </Route>
 
@@ -126,6 +136,7 @@ export default function App() {
             <Route path="users" element={<AdminUsers />} />
             <Route path="students" element={<AdminStudents />} />
             <Route path="guide" element={<AdminGuide />} />
+            <Route path="typography" element={<AdminTypography />} />
           </Route>
         </Route>
       </Route>

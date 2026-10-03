@@ -64,6 +64,62 @@ async function saveExamFile(tmpFilePath, originalname, mimetype) {
   return { url: `${MEDIA_PUBLIC_BASE}/${key}` };
 }
 
+/** File đính kèm bài học (audio, tài liệu) - bucket media (công khai qua CDN), giống ảnh minh hoạ. */
+async function saveFile(tmpFilePath, originalname, mimetype) {
+  const key = randomName('media/file-', originalname);
+  await client.send(new PutObjectCommand({
+    Bucket: MEDIA_BUCKET,
+    Key: key,
+    Body: fs.createReadStream(tmpFilePath),
+    ContentType: mimetype || 'application/octet-stream',
+    ContentLength: fs.statSync(tmpFilePath).size,
+    CacheControl: 'public, max-age=31536000, immutable'
+  }));
+  return { url: `${MEDIA_PUBLIC_BASE}/${key}` };
+}
+
+/**
+ * Bài học HTML - lưu ở bucket slide (private) như trang PPT, chỉ xem được qua
+ * URL ký ngắn hạn do server phát hành sau khi kiểm tra token + quyền khoá học.
+ */
+async function saveHtmlPage(pageId, tmpFilePath, originalname) {
+  const filename = randomName('page-', originalname || 'bai-hoc.html');
+  await client.send(new PutObjectCommand({
+    Bucket: SLIDES_BUCKET,
+    Key: `html/${pageId}/${filename}`,
+    Body: fs.createReadStream(tmpFilePath),
+    ContentType: 'text/html; charset=utf-8',
+    ContentLength: fs.statSync(tmpFilePath).size
+  }));
+  return { key: filename };
+}
+
+async function sendHtmlPage(res, pageId, key) {
+  const url = await getSignedUrl(
+    client,
+    new GetObjectCommand({
+      Bucket: SLIDES_BUCKET,
+      Key: `html/${pageId}/${key}`,
+      ResponseContentType: 'text/html; charset=utf-8',
+      ResponseCacheControl: 'no-store'
+    }),
+    { expiresIn: SLIDE_URL_TTL_SECONDS }
+  );
+  res.set('Cache-Control', 'no-store');
+  res.redirect(302, url);
+  return true;
+}
+
+async function deleteHtmlPage(pageId, key) {
+  if (key) {
+    await client.send(new DeleteObjectsCommand({ Bucket: SLIDES_BUCKET, Delete: { Objects: [{ Key: `html/${pageId}/${key}` }] } }));
+    return;
+  }
+  const list = await client.send(new ListObjectsV2Command({ Bucket: SLIDES_BUCKET, Prefix: `html/${pageId}/` }));
+  const objects = (list.Contents || []).map((o) => ({ Key: o.Key }));
+  if (objects.length > 0) await client.send(new DeleteObjectsCommand({ Bucket: SLIDES_BUCKET, Delete: { Objects: objects } }));
+}
+
 async function saveSlidePage(slideId, buffer, originalname, mimetype) {
   const filename = randomName('page-', originalname);
   await client.send(new PutObjectCommand({
@@ -140,4 +196,4 @@ async function deleteSlideDeck(slideId) {
 // Bucket media đã công khai qua CDN nên ảnh bìa dùng chung cách lưu với ảnh minh hoạ.
 const saveCover = saveMedia;
 
-module.exports = { mode: 'r2', saveMedia, saveCover, saveExamFile, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource, deleteSlideDeck };
+module.exports = { mode: 'r2', saveMedia, saveCover, saveExamFile, saveFile, saveHtmlPage, sendHtmlPage, deleteHtmlPage, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource, deleteSlideDeck };

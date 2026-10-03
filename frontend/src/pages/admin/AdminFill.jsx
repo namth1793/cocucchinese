@@ -17,11 +17,7 @@ export default function AdminFill({ lessonId: lockedLessonId }) {
     { name: 'blank', label: 'Từ cần điền (đáp án đúng)', required: true },
     { name: 'post', label: 'Đoạn sau chỗ trống' },
     { name: 'hint', label: 'Gợi ý (nghĩa tiếng Việt)' },
-    {
-      name: 'alts', label: 'Các đáp án được chấp nhận (JSON mảng)', type: 'json', required: true,
-      default: [],
-      hint: 'VD: ["你好"] — có thể thêm nhiều biến thể đúng khác nhau'
-    }
+    { name: 'alts', label: 'Các đáp án được chấp nhận (mỗi dòng 1 đáp án)', type: 'list', required: true, rows: 3, hint: 'VD: 你好 - có thể thêm nhiều cách viết đúng, mỗi cách 1 dòng.' }
   ];
 
   const columns = [
@@ -43,6 +39,7 @@ export default function AdminFill({ lessonId: lockedLessonId }) {
       onFilterChange={lockedLessonId ? undefined : setLessonId}
       fixedValues={lockedLessonId ? { lessonId: lockedLessonId } : undefined}
       listColumns={columns}
+      sortable
     />
   );
 }

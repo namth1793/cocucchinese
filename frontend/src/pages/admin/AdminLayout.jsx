@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, X } from 'lucide-react';
+import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, X, Type } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/client';
 import { COURSE_CATEGORIES, LEVEL_TYPE_OPTIONS } from '../../constants/courseCategories';
@@ -149,6 +149,11 @@ export default function AdminLayout() {
               Người dùng
             </NavLink>
           )}
+          {user.role === 'admin' && (
+            <NavLink to="/admin/typography" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+              Font chữ &amp; hiển thị
+            </NavLink>
+          )}
         </nav>
 
         <div className="sidebar-footer">
@@ -195,6 +200,11 @@ export default function AdminLayout() {
           {user.role === 'admin' && (
             <NavLink to="/admin/users" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
               <ShieldCheck size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Người dùng
+            </NavLink>
+          )}
+          {user.role === 'admin' && (
+            <NavLink to="/admin/typography" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+              <Type size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Font chữ
             </NavLink>
           )}
         </nav>

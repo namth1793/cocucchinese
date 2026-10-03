@@ -1,4 +1,4 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import { GraduationCap, LogIn } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Logo from './Logo';
@@ -6,11 +6,13 @@ import Logo from './Logo';
 /** Khung cho các trang công khai (danh sách khoá học, chi tiết, đăng ký mua) - không cần đăng nhập. */
 export default function PublicLayout() {
   const { user } = useAuth();
+  // Trang chủ tự chia các dải nền tràn viền nên không bị giới hạn bề rộng như các trang khác.
+  const isHome = useLocation().pathname === '/';
   const isStaff = user && (user.role === 'admin' || user.role === 'teacher');
   return (
     <div className="pub-shell">
       <header className="pub-header">
-        <Link to="/courses" className="pub-brand"><Logo size="sm" /></Link>
+        <Link to="/" className="pub-brand"><Logo size="sm" /></Link>
         <nav className="pub-nav">
           <Link to="/courses" className="pub-nav-link"><GraduationCap size={15} /> Khoá học</Link>
           {user ? (
@@ -20,7 +22,7 @@ export default function PublicLayout() {
           )}
         </nav>
       </header>
-      <main className="pub-main">
+      <main className={isHome ? 'pub-main-home' : 'pub-main'}>
         <Outlet />
       </main>
       <footer className="pub-footer">HSK 360 · Học tiếng Trung HSK / YCT</footer>

@@ -1,55 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
-import { Upload, Volume2, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import api from '../../api/client';
 import AdminCrud from '../../components/AdminCrud';
-import useAuthMedia from '../../utils/useAuthMedia';
-
-/** Ô tải/nghe thử/xoá file mp3 thay cho giọng đọc máy của 1 bài khoá. */
-function DialogueAudioCell({ dialogue, onChanged }) {
-  const fileRef = useRef(null);
-  const [uploading, setUploading] = useState(false);
-  const previewUrl = useAuthMedia(dialogue.audioUrl);
-
-  const upload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setUploading(true);
-    const fd = new FormData();
-    fd.append('file', file);
-    try {
-      await api.post(`/dialogues/${dialogue.id}/audio`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-      onChanged();
-    } finally {
-      setUploading(false);
-      e.target.value = '';
-    }
-  };
-
-  const remove = async () => {
-    if (!window.confirm('Xoá file nghe đã tải lên? Bài khoá sẽ quay lại dùng giọng đọc máy.')) return;
-    await api.delete(`/dialogues/${dialogue.id}/audio`);
-    onChanged();
-  };
-
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-      {dialogue.audioUrl ? (
-        <>
-          {previewUrl && <audio controls src={previewUrl} style={{ height: 28, width: 140 }} />}
-          <button type="button" className="btn-secondary" title="Xoá file nghe" onClick={remove}><X size={13} /></button>
-        </>
-      ) : (
-        <span style={{ fontSize: 12, color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
-          <Volume2 size={13} /> Giọng đọc máy
-        </span>
-      )}
-      <button type="button" className="btn-secondary" disabled={uploading} onClick={() => fileRef.current?.click()}>
-        <Upload size={13} style={{ verticalAlign: -2 }} /> {uploading ? 'Đang tải...' : dialogue.audioUrl ? 'Thay file' : 'Tải mp3'}
-      </button>
-      <input ref={fileRef} type="file" accept="audio/*" hidden onChange={upload} />
-    </div>
-  );
-}
+import AudioField from '../../components/AudioField';
 
 export default function AdminDialogues({ lessonId: lockedLessonId }) {
   const [lessons, setLessons] = useState([]);
@@ -68,14 +20,18 @@ export default function AdminDialogues({ lessonId: lockedLessonId }) {
     { name: 'contextHanzi', label: 'Bối cảnh (chữ Hán)', type: 'textarea' },
     { name: 'contextEn', label: 'Bối cảnh (tiếng Anh)', type: 'textarea' },
     {
-      name: 'tip', label: 'Chú thích thêm (JSON, có thể để trống)', type: 'json',
-      default: null,
-      hint: 'VD: {"hanzi":"您，敬称...","en":"\\"您\\" is an honorific..."} hoặc để trống là null'
+      name: 'tip', label: 'Chú thích thêm (không bắt buộc)', type: 'example', nullable: true,
+      keys: [['hanzi', 'Chú thích (chữ Hán)'], ['en', 'Chú thích (tiếng Anh/Việt)']]
     },
     {
-      name: 'lines', label: 'Các câu thoại (JSON mảng)', type: 'json', required: true,
-      default: [],
-      hint: 'VD: [{"speaker":"Wáng Yīfēi","hanzi":"你好！","pinyin":"Nǐ hǎo!","vi":"Xin chào!","en":"Hello!"}]'
+      name: 'lines', label: 'Các câu thoại', type: 'rows', addLabel: 'Thêm câu thoại',
+      columns: [
+        { key: 'speaker', label: 'Người nói' },
+        { key: 'hanzi', label: '汉字', cn: true, wide: true },
+        { key: 'pinyin', label: 'Pinyin', wide: true },
+        { key: 'vi', label: 'Nghĩa tiếng Việt', wide: true },
+        { key: 'en', label: 'Tiếng Anh (không bắt buộc)' }
+      ]
     }
   ];
 
@@ -85,7 +41,13 @@ export default function AdminDialogues({ lessonId: lockedLessonId }) {
     { key: 'lines', label: 'Số câu thoại', render: (item) => (item.lines || []).length },
     {
       key: 'audio', label: 'File nghe',
-      render: (item) => <DialogueAudioCell dialogue={item} onChanged={() => setRefreshKey((k) => k + 1)} />
+      render: (item) => (
+        <AudioField
+          compact
+          value={item.audioUrl}
+          onChange={async (url) => { await api.put(`/dialogues/${item.id}`, { audioUrl: url }); setRefreshKey((k) => k + 1); }}
+        />
+      )
     }
   ];
 
@@ -103,7 +65,8 @@ export default function AdminDialogues({ lessonId: lockedLessonId }) {
       fixedValues={lockedLessonId ? { lessonId: lockedLessonId } : undefined}
       listColumns={columns}
       reloadToken={refreshKey}
-      hint="Mặc định bài khoá đọc bằng giọng máy (TTS). Tải file mp3 lên để dùng giọng đọc thật thay thế."
+      sortable
+      hint="Mặc định bài khoá đọc bằng giọng máy. Tải file nghe ở cột File nghe (được nghe thử trước khi lưu) để dùng giọng đọc thật."
     />
   );
 }

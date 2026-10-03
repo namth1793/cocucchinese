@@ -14,22 +14,15 @@ export default function AdminGrammar({ lessonId: lockedLessonId }) {
     ...(lockedLessonId ? [] : [{ name: 'lessonId', label: 'Thuộc bài học', type: 'select', options: lessonOptions, required: true }]),
     { name: 'structure', label: 'Cấu trúc (VD: A + 是 + B)', required: true },
     { name: 'usageVi', label: 'Cách dùng (giải thích tiếng Việt)', type: 'textarea', required: true },
-    {
-      name: 'example', label: 'Ví dụ (JSON)', type: 'json',
-      default: { hanzi: '', pinyin: '', vi: '' },
-      hint: 'Định dạng: {"hanzi":"我是学生。","pinyin":"Wǒ shì xuéshēng.","vi":"Tôi là học sinh."}'
-    },
+    { name: 'example', label: 'Ví dụ', type: 'example' },
     { name: 'notes', label: 'Lưu ý / lỗi thường gặp', type: 'textarea' },
-    {
-      name: 'exercises', label: 'Bài tập (JSON mảng)', type: 'json',
-      default: [],
-      hint: 'Mảng object: [{"type":"mcq","question":"...","options":["A","B","C"],"answerIndex":0,"explanation":"..."}]'
-    }
+    { name: 'exercises', label: 'Bài tập trắc nghiệm', type: 'questions', questionKey: 'question', questionExtra: { type: 'mcq' } }
   ];
 
   const columns = [
     { key: 'structure', label: 'Cấu trúc' },
-    { key: 'usageVi', label: 'Cách dùng' }
+    { key: 'usageVi', label: 'Cách dùng' },
+    { key: 'exercises', label: 'Bài tập', render: (item) => `${(item.exercises || []).length} câu` }
   ];
 
   if (!lockedLessonId && lessons.length === 0) return <p className="empty-state">Đang tải danh sách bài học...</p>;

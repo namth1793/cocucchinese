@@ -31,6 +31,19 @@ router.get('/', asyncHandler(async (req, res) => {
   res.json(items);
 }));
 
+// Danh mục cho trang chủ công khai: mọi cấp độ không bị ẩn (kể cả chưa đặt học phí -
+// hiện "Sắp mở", không có link đăng ký) + số liệu tổng. Chỉ thông tin giới thiệu, không lộ nội dung.
+router.get('/catalog', asyncHandler(async (req, res) => {
+  const levels = (await db.all('levels')).filter((l) => l.listed !== false)
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+  const courses = await Promise.all(levels.map(async (l) => ({ ...(await publicCourse(l)), forSale: isListed(l) })));
+  const [lessons, words, sentences] = await Promise.all([db.all('lessons'), db.all('words'), db.all('sentences')]);
+  res.json({
+    courses,
+    stats: { courses: courses.length, lessons: lessons.length, words: words.length, sentences: sentences.length }
+  });
+}));
+
 // Học viên: các khoá của tôi + trạng thái + tiến độ. Phải khai báo trước '/:id'.
 router.get('/mine/list', requireAuth, asyncHandler(async (req, res) => {
   const enrollments = await db.findWhere('enrollments', (e) => e.userId === req.user.id && access.ACTIVE_STATUSES.includes(e.status));

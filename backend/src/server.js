@@ -67,6 +67,10 @@ app.use('/api/songs', require('./routes/songs'));
 app.use('/api/videos', require('./routes/videos'));
 app.use('/api/instructors', require('./routes/instructors'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/html-pages', require('./routes/htmlPages'));
+app.use('/api/lesson-documents', require('./routes/lessonDocuments'));
+app.use('/api/media', require('./routes/media'));
+app.use('/api/settings', require('./routes/settings'));
 
 app.get('/api/health', (req, res) => res.json({ ok: true, db: db.mode, storage: storage.mode }));
 

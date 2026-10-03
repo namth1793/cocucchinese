@@ -45,6 +45,41 @@ async function saveExamFile(tmpFilePath, originalname) {
   return { url: `/uploads/media/${filename}` };
 }
 
+/** File đính kèm bài học (audio, tài liệu PDF/Word...) - nhận file tạm trên đĩa như saveExamFile. */
+async function saveFile(tmpFilePath, originalname) {
+  const dir = path.join(UPLOAD_ROOT, 'media');
+  ensureDir(dir);
+  const filename = randomName('file-', originalname);
+  fs.copyFileSync(tmpFilePath, path.join(dir, filename));
+  return { url: `/uploads/media/${filename}` };
+}
+
+/**
+ * Bài học dạng HTML tự chứa - lưu riêng thư mục html/<pageId>/ (KHÔNG nằm trong
+ * /uploads/media) vì chỉ được xem qua route có token ngắn hạn + kiểm tra quyền khoá học.
+ */
+async function saveHtmlPage(pageId, tmpFilePath, originalname) {
+  const dir = path.join(UPLOAD_ROOT, 'html', pageId);
+  ensureDir(dir);
+  const filename = randomName('page-', originalname || 'bai-hoc.html');
+  fs.copyFileSync(tmpFilePath, path.join(dir, filename));
+  return { key: filename };
+}
+
+async function sendHtmlPage(res, pageId, key) {
+  const filePath = path.join(UPLOAD_ROOT, 'html', pageId, key);
+  if (!fs.existsSync(filePath)) return false;
+  res.set({ 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store, private' });
+  res.sendFile(filePath);
+  return true;
+}
+
+/** Xoá 1 phiên bản file (key) hoặc cả thư mục của trang HTML (không truyền key). */
+async function deleteHtmlPage(pageId, key) {
+  const dir = path.join(UPLOAD_ROOT, 'html', pageId);
+  fs.rmSync(key ? path.join(dir, key) : dir, { recursive: true, force: true });
+}
+
 async function saveSlidePage(slideId, buffer, originalname) {
   const dir = path.join(UPLOAD_ROOT, 'slides', slideId);
   ensureDir(dir);
@@ -98,4 +133,4 @@ async function deleteSlideDeck(slideId) {
   fs.rmSync(dir, { recursive: true, force: true });
 }
 
-module.exports = { mode: 'local', saveMedia, saveCover, saveExamFile, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource, deleteSlideDeck };
+module.exports = { mode: 'local', saveMedia, saveCover, saveExamFile, saveFile, saveHtmlPage, sendHtmlPage, deleteHtmlPage, saveSlidePage, sendSlidePage, saveSlideSource, sendSlideSource, deleteSlideDeck };

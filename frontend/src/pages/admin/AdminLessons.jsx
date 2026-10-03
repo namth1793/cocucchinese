@@ -22,7 +22,6 @@ export default function AdminLessons({ levelId: lockedLevelId }) {
   ];
 
   const columns = [
-    { key: 'order', label: 'TT' },
     { key: 'title', label: 'Tiêu đề' },
     ...(lockedLevelId ? [] : [{ key: 'levelId', label: 'Cấp độ', render: (item) => levelName(item.levelId) }]),
     { key: 'published', label: 'Xuất bản', render: (item) => (item.published ? 'Có' : 'Không') }
@@ -38,6 +37,7 @@ export default function AdminLessons({ levelId: lockedLevelId }) {
       filterKey={lockedLevelId ? undefined : undefined}
       fixedValues={lockedLevelId ? { levelId: lockedLevelId } : undefined}
       listColumns={columns}
+      sortable={!!lockedLevelId}
       renderRowExtra={lockedLevelId ? (item) => (
         <Link to={`/admin/levels/${lockedLevelId}/lessons/${item.id}`} className="btn-secondary">
           <PenSquare size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Nội dung

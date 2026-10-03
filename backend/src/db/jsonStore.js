@@ -19,7 +19,8 @@ const COLLECTIONS = [
   'sentences', 'characters', 'dialogues', 'speakingScenarios', 'fillExercises',
   'images', 'slides', 'slideProgress', 'songs', 'videos', 'examPapers',
   'progress', 'flashcardStatus', 'activityLogs', 'instructors',
-  'enrollments', 'orders', 'migrations'
+  'enrollments', 'orders', 'migrations',
+  'htmlPages', 'lessonDocuments', 'settings'
 ];
 
 function emptyDb() {
