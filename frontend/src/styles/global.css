@@ -1365,6 +1365,28 @@ input, select, textarea { font-family: inherit; }
 .pub-order-price { font-family: var(--font-display); font-weight: 800; font-size: 28px; color: var(--primary-dark); }
 .pub-order-hint { font-size: 13px; color: var(--ink-soft); margin: 4px 0 14px; }
 .pub-field-note { font-size: 12px; color: var(--ink-soft); }
+.pub-mobile-buy {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 14px 0 4px; padding: 12px 12px 12px 16px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+}
+.pub-mobile-buy-price { font-family: var(--font-display); font-weight: 800; font-size: 22px; color: var(--primary-dark); }
+.pub-mobile-buy .btn-primary { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+#dang-ky-khoa { scroll-margin-top: 16px; }
+
+@media (max-width: 719px) {
+  /* Danh sách khoá học: 2 cột cho đỡ phải cuộn */
+  .pub-course-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pub-course-body { padding: 10px 12px 12px; gap: 6px; }
+  .pub-course-name { font-size: 15px; }
+  .pub-course-desc { font-size: 12.5px; -webkit-line-clamp: 2; }
+  .pub-course-price { font-size: 16px; }
+  .pub-hero { padding: 20px 18px; }
+  .pub-hero h1 { font-size: 22px; }
+  .pub-hero p { font-size: 14px; }
+  .cover-detail { max-width: 200px; }
+  .pub-order-card { position: static; }
+  .top-back-link { display: inline-block; padding: 8px 0; }
+}
 
 @media (min-width: 720px) {
   .pub-course-grid { grid-template-columns: 1fr 1fr; }
@@ -1372,6 +1394,7 @@ input, select, textarea { font-family: inherit; }
 @media (min-width: 960px) {
   .pub-course-grid { grid-template-columns: repeat(3, 1fr); }
   .pub-detail-grid { grid-template-columns: minmax(0, 1fr) 360px; align-items: start; }
+  .pub-mobile-buy { display: none; }
   .pub-hero { padding: 34px 32px; }
   .pub-hero h1 { font-size: 30px; }
 }

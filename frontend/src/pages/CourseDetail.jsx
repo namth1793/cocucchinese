@@ -31,7 +31,7 @@ function OrderForm({ course }) {
   };
 
   return (
-    <form className="card pub-order-card" onSubmit={submit}>
+    <form className="card pub-order-card" id="dang-ky-khoa" onSubmit={submit}>
       <div className="pub-order-price">{formatVnd(course.price)}</div>
       <p className="pub-order-hint">Đăng ký → chuyển khoản → nhận quyền học bằng email bạn nhập bên dưới.</p>
       {error && <div className="form-error">{error}</div>}
@@ -107,6 +107,19 @@ export default function CourseDetail() {
             <div className="pub-stat"><BookOpen size={16} /><b>{course.stats.grammarPoints}</b> điểm ngữ pháp</div>
             <div className="pub-stat"><ListChecks size={16} /><b>{course.stats.sentences}</b> câu ví dụ</div>
           </div>
+
+          {/* Điện thoại: form đăng ký nằm cuối trang (sau lộ trình) nên đưa giá + nút nhảy tới form lên đầu */}
+          {!isStaff && !owned && (
+            <div className="pub-mobile-buy">
+              <span className="pub-mobile-buy-price">{formatVnd(course.price)}</span>
+              <button
+                type="button" className="btn-primary"
+                onClick={() => document.getElementById('dang-ky-khoa')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              >
+                <ShoppingCart size={17} /> Đăng ký ngay
+              </button>
+            </div>
+          )}
 
           {course.outcomes.length > 0 && (
             <>

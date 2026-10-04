@@ -73,11 +73,12 @@ function useScrollState() {
  * Nút Zalo + gọi điện nổi góc dưới bên trái, rung lắc theo nhịp kèm vòng sóng lan toả.
  * Chưa nhập hotline/Zalo thì cả hai nút dẫn tới form đăng ký tư vấn.
  */
-function FloatingContact({ contact }) {
+function FloatingContact({ contact, children }) {
   const zalo = zaloLink(contact);
   const phone = contact.hotline ? telHref(contact.hotline) : '';
   return (
     <div className="fc" role="complementary" aria-label="Liên hệ nhanh">
+      {children}
       <SmartLink to={zalo || '#dang-ky'} className="fc-btn fc-zalo" aria-label="Chat Zalo">
         <span className="fc-circle">
           <span className="fc-wave" /><span className="fc-wave w2" />
@@ -274,13 +275,14 @@ export default function PublicLayout() {
         </div>
       </footer>
 
-      <FloatingContact contact={contact} />
-      <button
-        type="button" className={`site-totop ${scrolled ? 'show' : ''}`} aria-label="Lên đầu trang"
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      >
-        <ArrowUp size={20} />
-      </button>
+      <FloatingContact contact={contact}>
+        <button
+          type="button" className={`site-totop ${scrolled ? 'show' : ''}`} aria-label="Lên đầu trang"
+          tabIndex={scrolled ? 0 : -1} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          <ArrowUp size={20} />
+        </button>
+      </FloatingContact>
     </div>
   );
 }
