@@ -17,23 +17,23 @@ const DEFAULTS = {
     hotline: '', email: '', address: '', hours: '',
     facebook: '', youtube: '', tiktok: '', zalo: ''
   },
-  topbar: { slogan: 'HSK 360 – HỌC TIẾNG TRUNG BÀI BẢN THEO CHUẨN HSK / YCT' },
+  topbar: { slogan: 'HSK 360 – học tiếng Trung bài bản theo chuẩn HSK / YCT' },
   hero: {
-    title1: 'HỌC LÀ NHỚ',
-    title2: 'NÓI LÀ HAY',
-    subtitle: 'TIẾNG TRUNG CƠ BẢN ĐẾN NÂNG CAO',
-    promo: 'HỌC MỌI LÚC – MỌI NƠI – MỌI THIẾT BỊ',
-    tagline: 'BÁM SÁT GIÁO TRÌNH CHUẨN HSK / YCT',
+    title1: 'Học là nhớ,',
+    title2: 'nói là hay.',
+    subtitle: 'Tiếng Trung cơ bản đến nâng cao',
+    promo: 'Học mọi lúc, mọi nơi, trên mọi thiết bị – theo đúng lộ trình giáo trình chuẩn HSK / YCT.',
+    tagline: 'Bám sát giáo trình chuẩn HSK / YCT',
     imageUrl: ''
   },
-  activity: { caption: 'HỌC TIẾNG TRUNG MỖI NGÀY CÙNG HSK 360', imageUrl: '' },
+  activity: { caption: 'Học tiếng Trung mỗi ngày cùng HSK 360', imageUrl: '' },
   quickLinks: [
     { label: 'Khoá học đang mở', url: '/courses' },
     { label: 'Đăng ký tư vấn', url: '#dang-ky' },
     { label: 'Đăng nhập vào học', url: '/login' }
   ],
   why: {
-    title: 'TẠI SAO NÊN CHỌN HSK 360',
+    title: 'Tại sao nên chọn HSK 360',
     items: [
       'Bám sát giáo trình chuẩn HSK / YCT, chia bài rõ ràng theo cấp độ',
       'Đủ kỹ năng trong một bài: từ vựng, ngữ pháp, hội thoại, nghe, đọc, viết',
@@ -47,7 +47,7 @@ const DEFAULTS = {
     buttonUrl: '/courses'
   },
   courses: {
-    title: 'THÔNG TIN KHÓA HỌC VÀ LỘ TRÌNH HỌC TẬP',
+    title: 'Khoá học và lộ trình học tập',
     desc: 'Từ chưa biết gì đến tự tin giao tiếp và thi đỗ HSK – mỗi cấp độ là một khoá học riêng, học đúng lộ trình.'
   },
   news: [],
@@ -55,7 +55,7 @@ const DEFAULTS = {
   teachers: [],
   testimonials: [],
   consult: {
-    eyebrow: 'ĐĂNG KÝ NHẬN TƯ VẤN MIỄN PHÍ',
+    eyebrow: 'Đăng ký nhận tư vấn miễn phí',
     title: 'Học tiếng Trung',
     highlight: 'Online mọi lúc, mọi nơi',
     desc: 'Để lại thông tin, HSK 360 sẽ liên hệ tư vấn lộ trình và khoá học phù hợp với mục tiêu của bạn.',

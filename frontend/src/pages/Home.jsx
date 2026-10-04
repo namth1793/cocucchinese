@@ -1,32 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import {
-  CalendarDays, Check, ChevronRight, Clock, GraduationCap, Heart, Lightbulb, MapPin, Phone, Play, Star,
-  Tag, Trophy, X
-} from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Clock, MapPin, Phone, Play, Trophy, X } from 'lucide-react';
 import api from '../api/client';
 import { assetUrl } from '../utils/assetUrl';
 import { COURSE_CATEGORIES } from '../constants/courseCategories';
 import CourseCover from '../components/CourseCover';
 import SocialIcon from '../components/SocialIcon';
-import { SmartLink, scrollToId, telHref, usePublicSite, useReveal, youtubeId } from '../utils/publicSite';
+import { SmartLink, scrollToId, softCase, telHref, usePublicSite, useReveal, youtubeId } from '../utils/publicSite';
 
-const TILE_ICONS = [CalendarDays, GraduationCap, Tag];
 const CATEGORY_LABEL = Object.fromEntries(COURSE_CATEGORIES.map((c) => [c.key, c.label]));
+const pad2 = (n) => String(n).padStart(2, '0');
+const fmtNum = (n) => Number(n || 0).toLocaleString('vi-VN');
 
-function Eyebrow({ children, heart = false, muted = false }) {
+function Eyebrow({ children, align = 'center' }) {
   return (
-    <div className={`hp-eyebrow ${muted ? 'muted' : ''}`} data-reveal="fade-up">
-      <span className="hp-eyebrow-line" />
-      {heart && <Heart size={14} fill="currentColor" />}
-      <span>{children}</span>
-      <span className="hp-eyebrow-line" />
-    </div>
+    <p className={`hp-eyebrow hp-eyebrow-${align}`} data-reveal="fade-up">
+      <span className="hp-eyebrow-rule" aria-hidden="true" />
+      {children}
+    </p>
   );
-}
-
-function Stars() {
-  return <span className="hp-stars">{[0, 1, 2, 3, 4].map((i) => <Star key={i} size={14} fill="currentColor" />)}</span>;
 }
 
 function HeroVisual({ hero, courses }) {
@@ -51,18 +43,20 @@ function CourseTile({ course, index }) {
   const subtitle = [course.group || CATEGORY_LABEL[course.category], `${course.lessonCount} bài học`].filter(Boolean).join(' · ');
   const inner = (
     <>
-      {course.coverUrl
-        ? <img src={assetUrl(course.coverUrl)} alt="" loading="lazy" className="hp-course-bg" />
-        : <span className="hp-course-bg hp-course-bg-empty" aria-hidden="true">{course.code}</span>}
-      <span className="hp-course-shade" />
-      <span className={`hp-course-badge ${course.forSale ? '' : 'soon'}`}>{course.forSale ? 'ĐANG MỞ ĐĂNG KÝ' : 'SẮP MỞ'}</span>
+      <span className="hp-course-media">
+        {course.coverUrl
+          ? <img src={assetUrl(course.coverUrl)} alt="" loading="lazy" className="hp-course-bg" />
+          : <span className="hp-course-bg hp-course-bg-empty" aria-hidden="true">{course.code}</span>}
+        <span className={`hp-course-badge ${course.forSale ? '' : 'soon'}`}>{course.forSale ? 'Đang mở đăng ký' : 'Sắp mở'}</span>
+      </span>
       <span className="hp-course-text">
+        <span className="hp-course-index">{pad2(index + 1)}</span>
         <span className="hp-course-name">{course.name}</span>
         <span className="hp-course-sub">{subtitle}</span>
       </span>
     </>
   );
-  const props = { className: 'hp-course', 'data-reveal': 'zoom-in', style: { '--d': `${(index % 4) * 80}ms` } };
+  const props = { className: `hp-course ${course.forSale ? '' : 'is-soon'}`, 'data-reveal': 'fade-up', style: { '--d': `${(index % 4) * 70}ms` } };
   return course.forSale
     ? <Link to={`/courses/${course.id}`} {...props}>{inner}</Link>
     : <div {...props}>{inner}</div>;
@@ -107,14 +101,25 @@ function ConsultForm() {
   };
 
   return (
-    <form className="hp-form" onSubmit={submit} data-reveal="fade-left">
-      <input required value={form.name} onChange={set('name')} placeholder="Tên bạn" maxLength={100} />
-      <input type="email" value={form.email} onChange={set('email')} placeholder="Email" maxLength={120} />
-      <input required type="tel" value={form.phone} onChange={set('phone')} placeholder="Số điện thoại" maxLength={20} />
+    <form className="hp-form" onSubmit={submit} data-reveal="fade-up">
+      <div className="hp-form-row">
+        <label className="hp-field">
+          <span>Họ và tên</span>
+          <input required value={form.name} onChange={set('name')} placeholder="Nguyễn Văn A" maxLength={100} />
+        </label>
+        <label className="hp-field">
+          <span>Số điện thoại</span>
+          <input required type="tel" value={form.phone} onChange={set('phone')} placeholder="09xx xxx xxx" maxLength={20} />
+        </label>
+      </div>
+      <label className="hp-field">
+        <span>Email <small>(không bắt buộc)</small></span>
+        <input type="email" value={form.email} onChange={set('email')} placeholder="ban@email.com" maxLength={120} />
+      </label>
       <fieldset>
-        <legend>Phương thức liên lạc qua (Zalo, Facebook)</legend>
+        <legend>Liên lạc với bạn qua</legend>
         {[['zalo', 'Zalo'], ['facebook', 'Facebook'], ['phone', 'Gọi điện']].map(([v, l]) => (
-          <label key={v} className="hp-radio">
+          <label key={v} className="hp-chip">
             <input type="radio" name="contactVia" value={v} checked={form.contactVia === v} onChange={set('contactVia')} />
             <span>{l}</span>
           </label>
@@ -123,17 +128,20 @@ function ConsultForm() {
       <fieldset>
         <legend>Khoá học quan tâm</legend>
         {interests.map((l) => (
-          <label key={l} className="hp-radio">
+          <label key={l} className="hp-chip">
             <input type="radio" name="interest" value={l} checked={form.interest === l} onChange={set('interest')} />
             <span>{l}</span>
           </label>
         ))}
       </fieldset>
-      <textarea value={form.message} onChange={set('message')} placeholder="Nội dung yêu cầu" rows={4} maxLength={1000} />
+      <label className="hp-field">
+        <span>Bạn muốn hỏi thêm điều gì?</span>
+        <textarea value={form.message} onChange={set('message')} placeholder="Mục tiêu học, thời gian rảnh, trình độ hiện tại…" rows={3} maxLength={1000} />
+      </label>
       {state.error && <p className="hp-form-msg error">{state.error}</p>}
-      {state.done && <p className="hp-form-msg ok">Đã gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.</p>}
+      {state.done && <p className="hp-form-msg ok">Đã gửi thành công. Chúng tôi sẽ liên hệ với bạn sớm nhất.</p>}
       <button type="submit" className="hp-form-submit" disabled={state.sending}>
-        {state.sending ? 'ĐANG GỬI...' : 'GỬI YÊU CẦU TƯ VẤN'}
+        {state.sending ? 'Đang gửi…' : <>Gửi yêu cầu tư vấn <ArrowRight size={18} /></>}
       </button>
     </form>
   );
@@ -164,36 +172,42 @@ export default function Home() {
   if (!content) return <div className="hp-loading"><span /></div>;
 
   const { hero, activity, quickLinks, why, contact, consult } = content;
-  // Các dải nội dung sau phần giới thiệu xen kẽ nền xám/trắng, tính theo mục thực sự hiển thị.
+  const sc = (t) => softCase(t, [why.brandName]);
+  const stats = catalog?.stats || {};
+  const heroStats = [
+    [stats.courses, 'khoá học'], [stats.lessons, 'bài học'], [stats.words, 'từ vựng có phát âm']
+  ].filter(([n]) => n > 0);
+  // Các dải nội dung sau phần giới thiệu xen kẽ nền giấy/trắng, tính theo mục thực sự hiển thị.
   const bands = ['courses', content.news.length && 'news', content.videos.length && 'videos',
     content.teachers.length && 'teachers', content.testimonials.length && 'testimonials'].filter(Boolean);
-  const bandClass = (key) => (bands.indexOf(key) % 2 === 0 ? 'hp-band hp-band-gray' : 'hp-band');
+  const bandClass = (key) => (bands.indexOf(key) % 2 === 0 ? 'hp-band hp-band-paper' : 'hp-band');
 
   return (
     <div className="hp">
       {/* ---------- Hero ---------- */}
       <section className="hp-hero">
-        <span className="hp-deco hp-deco-ring" aria-hidden="true" />
-        <span className="hp-deco hp-deco-pct hp-deco-pct-a" aria-hidden="true">%</span>
-        <span className="hp-deco hp-deco-pct hp-deco-pct-b" aria-hidden="true">%</span>
-        <span className="hp-deco hp-deco-ring-sm" aria-hidden="true" />
         <div className="site-wrap hp-hero-grid">
           <div className="hp-hero-text">
-            <h1 data-reveal="fade-right">
-              <span className="hp-hero-dot" aria-hidden="true" />
-              <span>{hero.title1}</span>
-              <span>{hero.title2}</span>
+            {hero.subtitle && <p className="hp-kicker" data-reveal="fade-up">{sc(hero.subtitle)}</p>}
+            <h1 data-reveal="fade-up" style={{ '--d': '80ms' }}>
+              <span>{sc(hero.title1)}</span>
+              {hero.title2 && <em>{sc(hero.title2)}</em>}
             </h1>
-            {hero.subtitle && <p className="hp-hero-sub" data-reveal="fade-right" style={{ '--d': '120ms' }}>{hero.subtitle}</p>}
-            {hero.promo && <div className="hp-hero-promo" data-reveal="fade-right" style={{ '--d': '200ms' }}><span>{hero.promo}</span></div>}
-            <div className="hp-hero-dots" aria-hidden="true"><i /><i /><i /></div>
-            {hero.tagline && <p className="hp-hero-tag" data-reveal="fade-right" style={{ '--d': '280ms' }}>{hero.tagline}</p>}
-            <div className="hp-hero-actions" data-reveal="fade-up" style={{ '--d': '340ms' }}>
-              <SmartLink to="#dang-ky" className="hp-btn hp-btn-solid">ĐĂNG KÝ TƯ VẤN</SmartLink>
-              <SmartLink to="#khoa-hoc" className="hp-btn hp-btn-outline">XEM KHÓA HỌC</SmartLink>
+            {hero.promo && <p className="hp-hero-lead" data-reveal="fade-up" style={{ '--d': '160ms' }}>{sc(hero.promo)}</p>}
+            <div className="hp-hero-actions" data-reveal="fade-up" style={{ '--d': '240ms' }}>
+              <SmartLink to="#dang-ky" className="hp-btn hp-btn-solid">Đăng ký tư vấn <ArrowRight size={18} /></SmartLink>
+              <SmartLink to="#khoa-hoc" className="hp-btn hp-btn-ghost">Xem khoá học</SmartLink>
             </div>
+            {heroStats.length > 0 && (
+              <dl className="hp-hero-stats" data-reveal="fade-up" style={{ '--d': '320ms' }}>
+                {heroStats.map(([n, label]) => (
+                  <div key={label}><dt>{fmtNum(n)}</dt><dd>{label}</dd></div>
+                ))}
+              </dl>
+            )}
+            {hero.tagline && <p className="hp-hero-note" data-reveal="fade-up" style={{ '--d': '380ms' }}>{sc(hero.tagline)}</p>}
           </div>
-          <div className="hp-hero-visual" data-reveal="fade-left">
+          <div className="hp-hero-visual" data-reveal="fade-up" style={{ '--d': '120ms' }}>
             <HeroVisual hero={hero} courses={courses} />
           </div>
         </div>
@@ -205,53 +219,53 @@ export default function Home() {
           {activity.imageUrl
             ? <img src={assetUrl(activity.imageUrl)} alt="" loading="lazy" />
             : <span className="hp-activity-empty" aria-hidden="true">学而时习之</span>}
-          <span className="hp-activity-cap">{activity.caption}</span>
+          <span className="hp-activity-cap">{sc(activity.caption)}</span>
         </SmartLink>
-        <div className="hp-tiles">
-          {quickLinks.map((l, i) => {
-            const Icon = TILE_ICONS[i] || Tag;
-            return (
-              <SmartLink key={i} to={l.url} className={`hp-tile hp-tile-${i}`} data-reveal="zoom-in" style={{ '--d': `${i * 120}ms` }}>
-                <Icon size={30} strokeWidth={1.6} />
-                <span>{l.label}</span>
-              </SmartLink>
-            );
-          })}
-        </div>
+        <nav className="hp-tiles" aria-label="Lối tắt">
+          {quickLinks.map((l, i) => (
+            <SmartLink key={i} to={l.url} className="hp-tile" data-reveal="fade-up" style={{ '--d': `${i * 90}ms` }}>
+              <span className="hp-tile-num">{pad2(i + 1)}</span>
+              <span className="hp-tile-label">{sc(l.label)}</span>
+              <ArrowUpRight size={22} strokeWidth={1.5} className="hp-tile-arrow" />
+            </SmartLink>
+          ))}
+        </nav>
       </section>
 
       {/* ---------- Vì sao chọn ---------- */}
       <section className="site-wrap hp-why" id="gioi-thieu">
         <div className="hp-why-left">
-          <h2 className="hp-why-title" data-reveal="fade-right"><span className="hp-why-check"><Check size={14} strokeWidth={3} /></span>{why.title}</h2>
+          <Eyebrow align="left">Giới thiệu</Eyebrow>
+          <h2 className="hp-why-title" data-reveal="fade-up">{sc(why.title)}</h2>
           <ol className="hp-why-list">
             {why.items.map((t, i) => (
-              <li key={i} data-reveal="fade-right" style={{ '--d': `${i * 90}ms` }}><span>{i + 1}</span>{t}</li>
+              <li key={i} data-reveal="fade-up" style={{ '--d': `${i * 70}ms` }}><span>{pad2(i + 1)}</span><p>{t}</p></li>
             ))}
           </ol>
         </div>
-        <div className="hp-why-card" data-reveal="fade-up">
-          <div className="hp-seal">
-            <span className="hp-seal-tab" />
-            <span className="hp-seal-box"><img src="/logo.png" alt={why.brandName} /></span>
-          </div>
+        <aside className="hp-why-card" data-reveal="fade-up">
+          <span className="hp-why-seal"><img src="/logo.png" alt={why.brandName} /></span>
           <h3>{why.brandName}</h3>
           <p>{why.brandTagline}</p>
-          {why.buttonLabel && <SmartLink to={why.buttonUrl || '/courses'} className="hp-why-btn">{why.buttonLabel} <ChevronRight size={16} /></SmartLink>}
-        </div>
+          {why.buttonLabel && <SmartLink to={why.buttonUrl || '/courses'} className="hp-link-btn">{why.buttonLabel} <ArrowRight size={16} /></SmartLink>}
+          <span className="hp-why-card-hanzi" aria-hidden="true">学</span>
+        </aside>
       </section>
 
       {/* ---------- Khoá học ---------- */}
       <section className={bandClass('courses')} id="khoa-hoc">
         <div className="site-wrap">
-          <div className="hp-pill-head" data-reveal="fade-up"><Lightbulb size={16} fill="currentColor" /> {content.courses.title}</div>
-          {content.courses.desc && <p className="hp-courses-desc" data-reveal="fade-up">{content.courses.desc}</p>}
+          <div className="hp-head">
+            <Eyebrow align="left">Khoá học</Eyebrow>
+            <h2 className="hp-title" data-reveal="fade-up">{sc(content.courses.title)}</h2>
+            {content.courses.desc && <p className="hp-head-desc" data-reveal="fade-up">{content.courses.desc}</p>}
+          </div>
           <div className="hp-course-grid">
             {courses.slice(0, 8).map((c, i) => <CourseTile key={c.id} course={c} index={i} />)}
           </div>
           {catalog && courses.length === 0 && <p className="empty-state">Chưa có khoá học nào.</p>}
           <div className="hp-center" data-reveal="fade-up">
-            <SmartLink to="#dang-ky" className="hp-btn hp-btn-solid hp-btn-wide">ĐĂNG KÝ TƯ VẤN MIỄN PHÍ →</SmartLink>
+            <SmartLink to="#dang-ky" className="hp-btn hp-btn-solid">Nhận tư vấn lộ trình miễn phí <ArrowRight size={18} /></SmartLink>
           </div>
         </div>
       </section>
@@ -260,11 +274,13 @@ export default function Home() {
       {content.news.length > 0 && (
         <section className={bandClass('news')} id="tin-tuc">
           <div className="site-wrap">
-            <Eyebrow heart>THÔNG TIN HỮU ÍCH</Eyebrow>
-            <h2 className="hp-title" data-reveal="fade-up">TIN TỨC &amp; BÀI VIẾT</h2>
+            <div className="hp-head">
+              <Eyebrow align="left">Thông tin hữu ích</Eyebrow>
+              <h2 className="hp-title" data-reveal="fade-up">Tin tức &amp; bài viết</h2>
+            </div>
             <div className="hp-grid-3">
               {content.news.map((n, i) => (
-                <article key={i} className="hp-card hp-news" data-reveal="fade-up" style={{ '--d': `${(i % 3) * 100}ms` }}>
+                <article key={i} className="hp-card hp-news" data-reveal="fade-up" style={{ '--d': `${(i % 3) * 90}ms` }}>
                   <SmartLink to={n.link} className="hp-news-img">
                     {n.imageUrl ? <img src={assetUrl(n.imageUrl)} alt="" loading="lazy" /> : <span className="hp-img-empty">文</span>}
                   </SmartLink>
@@ -272,7 +288,7 @@ export default function Home() {
                     {n.date && <span className="hp-news-date">{n.date}</span>}
                     <h3><SmartLink to={n.link}>{n.title}</SmartLink></h3>
                     {n.excerpt && <p>{n.excerpt}</p>}
-                    {n.link && <SmartLink to={n.link} className="hp-more">XEM THÊM <ChevronRight size={15} /></SmartLink>}
+                    {n.link && <SmartLink to={n.link} className="hp-link-btn">Đọc tiếp <ArrowRight size={15} /></SmartLink>}
                   </div>
                 </article>
               ))}
@@ -285,17 +301,19 @@ export default function Home() {
       {content.videos.length > 0 && (
         <section className={bandClass('videos')} id="video">
           <div className="site-wrap">
-            <Eyebrow muted>BÀI GIẢNG THỰC TUYẾN</Eyebrow>
-            <h2 className="hp-title hp-title-soft" data-reveal="fade-up">VIDEO HỌC TIẾNG TRUNG MIỄN PHÍ</h2>
+            <div className="hp-head">
+              <Eyebrow align="left">Bài giảng miễn phí</Eyebrow>
+              <h2 className="hp-title" data-reveal="fade-up">Video học tiếng Trung</h2>
+            </div>
             <div className="hp-grid-3">
               {content.videos.map((v, i) => {
                 const id = youtubeId(v.youtubeUrl);
                 if (!id) return null;
                 return (
-                  <button key={i} type="button" className="hp-card hp-video" onClick={() => setVideo(id)} data-reveal="fade-up" style={{ '--d': `${(i % 3) * 100}ms` }}>
+                  <button key={i} type="button" className="hp-card hp-video" onClick={() => setVideo(id)} data-reveal="fade-up" style={{ '--d': `${(i % 3) * 90}ms` }}>
                     <span className="hp-video-thumb">
                       <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" />
-                      <span className="hp-play"><Play size={26} fill="currentColor" /></span>
+                      <span className="hp-play"><Play size={20} fill="currentColor" /></span>
                     </span>
                     <span className="hp-video-body">
                       <span className="hp-video-title">{v.title}</span>
@@ -313,22 +331,24 @@ export default function Home() {
       {content.teachers.length > 0 && (
         <section className={bandClass('teachers')} id="giang-vien">
           <div className="site-wrap">
-            <Eyebrow>ĐỘI NGŨ GIẢNG VIÊN TẠI {why.brandName.toUpperCase()}</Eyebrow>
+            <div className="hp-head">
+              <Eyebrow align="left">Đội ngũ</Eyebrow>
+              <h2 className="hp-title" data-reveal="fade-up">Giảng viên tại {why.brandName}</h2>
+            </div>
             <div className="hp-grid-3 hp-teachers">
               {content.teachers.map((t, i) => {
                 const rows = [['Đơn vị công tác', t.workplace], ['Học vị', t.degree], ['Chuyên ngành', t.major], ['Đơn vị đào tạo', t.school]]
                   .filter(([, v]) => v);
                 return (
-                  <article key={i} className="hp-card hp-teacher" data-reveal="fade-up" style={{ '--d': `${(i % 3) * 100}ms` }}>
+                  <article key={i} className="hp-card hp-teacher" data-reveal="fade-up" style={{ '--d': `${(i % 3) * 90}ms` }}>
                     <div className="hp-teacher-img">
                       {t.imageUrl ? <img src={assetUrl(t.imageUrl)} alt={t.name} loading="lazy" /> : <span className="hp-img-empty">{t.name?.[0] || '师'}</span>}
-                      <Stars />
                     </div>
                     <div className="hp-teacher-body">
                       <h3>{t.name}</h3>
                       {t.title && <p className="hp-teacher-role">{t.title}</p>}
                       {rows.length > 0 && (
-                        <ul>{rows.map(([k, v]) => <li key={k}><b>{k}:</b> {v}</li>)}</ul>
+                        <dl>{rows.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
                       )}
                       {t.experience && <span className="hp-teacher-exp"><Clock size={14} /> {t.experience}</span>}
                     </div>
@@ -344,31 +364,30 @@ export default function Home() {
       {content.testimonials.length > 0 && (
         <section className={bandClass('testimonials')} id="cam-nhan">
           <div className="site-wrap">
-            <Eyebrow heart>CẢM NHẬN CỦA HỌC VIÊN</Eyebrow>
-            <h2 className="hp-title" data-reveal="fade-up">HỌC VIÊN NÓI GÌ VỀ CHÚNG TÔI?</h2>
+            <div className="hp-head">
+              <Eyebrow align="left">Cảm nhận của học viên</Eyebrow>
+              <h2 className="hp-title" data-reveal="fade-up">Học viên nói gì về chúng tôi</h2>
+            </div>
             <div className="hp-grid-3">
               {content.testimonials.map((t, i) => (
-                <article key={i} className="hp-card hp-review" data-reveal="fade-up" style={{ '--d': `${(i % 3) * 100}ms` }}>
-                  <div className="hp-review-main">
-                    <div className="hp-review-head">
-                      {t.avatarUrl
-                        ? <img src={assetUrl(t.avatarUrl)} alt="" className="hp-review-avatar" loading="lazy" />
-                        : <span className="hp-review-avatar hp-review-avatar-empty">{t.name?.[0] || '?'}</span>}
-                      <span className="hp-review-who">
-                        <b>{t.name}</b>
-                        <span><Stars /> đã đánh giá</span>
-                      </span>
-                      {t.link && (
-                        <a href={t.link} target="_blank" rel="noopener noreferrer" className="hp-review-fb" aria-label="Xem đánh giá gốc">
-                          <SocialIcon name="facebook" size={20} />
-                        </a>
-                      )}
-                    </div>
-                    <p className="hp-review-quote">"{t.content}"</p>
-                    {t.achievement && <p className="hp-review-award"><Trophy size={15} /> <span>{t.achievement}</span></p>}
-                  </div>
-                  {t.course && <div className="hp-review-course">Khóa học: <b>{t.course}</b></div>}
-                </article>
+                <figure key={i} className="hp-card hp-review" data-reveal="fade-up" style={{ '--d': `${(i % 3) * 90}ms` }}>
+                  <blockquote className="hp-review-quote">{t.content}</blockquote>
+                  {t.achievement && <p className="hp-review-award"><Trophy size={15} /> <span>{t.achievement}</span></p>}
+                  <figcaption className="hp-review-head">
+                    {t.avatarUrl
+                      ? <img src={assetUrl(t.avatarUrl)} alt="" className="hp-review-avatar" loading="lazy" />
+                      : <span className="hp-review-avatar hp-review-avatar-empty">{t.name?.[0] || '?'}</span>}
+                    <span className="hp-review-who">
+                      <b>{t.name}</b>
+                      {t.course && <span>{t.course}</span>}
+                    </span>
+                    {t.link && (
+                      <a href={t.link} target="_blank" rel="noopener noreferrer" className="hp-review-fb" aria-label="Xem đánh giá gốc">
+                        <SocialIcon name="facebook" size={18} />
+                      </a>
+                    )}
+                  </figcaption>
+                </figure>
               ))}
             </div>
           </div>
@@ -377,17 +396,23 @@ export default function Home() {
 
       {/* ---------- Đăng ký tư vấn ---------- */}
       <section className="hp-consult" id="dang-ky">
-        <Eyebrow muted>{consult.eyebrow}</Eyebrow>
-        <div className="hp-consult-grid">
-          <div className="hp-consult-visual" data-reveal="fade-right">
-            <span className="hp-consult-back" />
-            <div className="hp-consult-panel" style={consult.imageUrl ? { '--hp-photo': `url("${assetUrl(consult.imageUrl)}")` } : undefined}>
-              <h2>{consult.title}</h2>
-              {consult.highlight && <p className="hp-consult-hl">{consult.highlight}</p>}
-              {consult.desc && <p className="hp-consult-desc">{consult.desc}</p>}
-              {contact.hotline && <a href={telHref(contact.hotline)} className="hp-consult-line hp-consult-phone"><Phone size={18} /> {contact.hotline}</a>}
-              {contact.address && <span className="hp-consult-line"><MapPin size={18} /> {contact.address}</span>}
-            </div>
+        <div className="site-wrap hp-consult-grid">
+          <div
+            className="hp-consult-panel" data-reveal="fade-up"
+            style={consult.imageUrl ? { '--hp-photo': `url("${assetUrl(consult.imageUrl)}")` } : undefined}
+          >
+            <p className="hp-kicker hp-kicker-light">{sc(consult.eyebrow)}</p>
+            <h2>
+              {consult.title}
+              {consult.highlight && <em>{consult.highlight}</em>}
+            </h2>
+            {consult.desc && <p className="hp-consult-desc">{consult.desc}</p>}
+            {(contact.hotline || contact.address) && (
+              <div className="hp-consult-contact">
+                {contact.hotline && <a href={telHref(contact.hotline)} className="hp-consult-line hp-consult-phone"><Phone size={17} /> {contact.hotline}</a>}
+                {contact.address && <span className="hp-consult-line"><MapPin size={17} /> {contact.address}</span>}
+              </div>
+            )}
           </div>
           <ConsultForm />
         </div>

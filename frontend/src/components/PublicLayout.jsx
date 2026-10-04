@@ -4,7 +4,7 @@ import {
   ChevronDown, ChevronRight, Clock, Mail, MapPin, Menu, MessageCircleMore, Phone, Search, SquarePen, CalendarCheck, X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { SmartLink, telHref, usePublicSite } from '../utils/publicSite';
+import { SmartLink, softCase, telHref, usePublicSite } from '../utils/publicSite';
 import SocialIcon, { SOCIAL_KEYS } from './SocialIcon';
 
 function Socials({ contact, className }) {
@@ -73,7 +73,7 @@ export default function PublicLayout() {
     <div className="pub-shell site">
       <div className="site-topbar">
         <div className="site-wrap site-topbar-inner">
-          <span className="site-topbar-slogan">{content?.topbar?.slogan}</span>
+          <span className="site-topbar-slogan">{softCase(content?.topbar?.slogan, [brand])}</span>
           <span className="site-topbar-right">
             <Link to="/">Trang chủ</Link>
             <Link to="/courses">Khoá học</Link>
@@ -93,9 +93,9 @@ export default function PublicLayout() {
             <button type="submit" aria-label="Tìm kiếm"><Search size={16} /></button>
           </form>
           <div className="site-header-cta">
-            <SmartLink to="#dang-ky" className="site-pill-btn"><CalendarCheck size={16} /> ĐĂNG KÝ TƯ VẤN</SmartLink>
+            <SmartLink to="#dang-ky" className="site-pill-btn"><CalendarCheck size={16} /> Đăng ký tư vấn</SmartLink>
             {contact.hotline && (
-              <a href={telHref(contact.hotline)} className="site-pill-btn"><Phone size={15} /> {contact.hotline}</a>
+              <a href={telHref(contact.hotline)} className="site-pill-btn site-pill-ghost"><Phone size={15} /> {contact.hotline}</a>
             )}
           </div>
           <button type="button" className="site-burger" aria-label="Mở menu" onClick={() => setDrawer(true)}><Menu size={24} /></button>

@@ -99,3 +99,22 @@ export function youtubeId(url) {
   const m = String(url || '').match(/(?:youtu\.be\/|v=|\/shorts\/|\/embed\/|\/live\/)([\w-]{11})/);
   return m ? m[1] : '';
 }
+
+const KEEP_UPPER = new Set(['HSK', 'HSKK', 'YCT']);
+const PROPER_NOUNS = { trung: 'Trung', việt: 'Việt', hán: 'Hán' };
+
+/**
+ * Chữ admin gõ IN HOA TOÀN BỘ → dạng câu thường ("HỌC LÀ NHỚ" → "Học là nhớ") để tiêu đề dễ đọc, bớt "la hét".
+ * Giữ nguyên viết tắt (HSK, YCT...), từ có chữ số và các từ trong `keep` (vd. tên thương hiệu).
+ * Chuỗi đã có chữ thường nghĩa là admin chủ động chọn cách viết → để nguyên.
+ */
+export function softCase(text, keep = []) {
+  if (!text || /\p{Ll}/u.test(text)) return text;
+  const keepSet = new Set([...KEEP_UPPER, ...keep.flatMap((k) => String(k || '').toUpperCase().split(/\s+/))]);
+  const out = text.split(/(\s+)/).map((w) => {
+    if (/\d/.test(w) || keepSet.has(w.replace(/[^\p{L}\p{N}]/gu, ''))) return w;
+    const lower = w.toLocaleLowerCase('vi');
+    return PROPER_NOUNS[lower] || lower;
+  }).join('');
+  return out.replace(/^(\P{L}*)(\p{L})/u, (_, lead, first) => lead + first.toLocaleUpperCase('vi'));
+}
