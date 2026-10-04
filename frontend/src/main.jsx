@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import { PinyinProvider } from './context/PinyinContext.jsx';
 import { TypographyProvider } from './context/TypographyContext.jsx';
 import './styles/global.css';
+import './styles/home.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

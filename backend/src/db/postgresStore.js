@@ -26,7 +26,7 @@ const COLLECTIONS = [
   'images', 'slides', 'slideProgress', 'songs', 'videos', 'examPapers',
   'progress', 'flashcardStatus', 'activityLogs', 'instructors',
   'enrollments', 'orders', 'migrations',
-  'htmlPages', 'lessonDocuments', 'settings'
+  'htmlPages', 'lessonDocuments', 'settings', 'consultations'
 ];
 const COLLECTION_SET = new Set(COLLECTIONS);
 

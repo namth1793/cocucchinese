@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, X, Type } from 'lucide-react';
+import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, X, Type, House, Inbox } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/client';
 import { COURSE_CATEGORIES, LEVEL_TYPE_OPTIONS } from '../../constants/courseCategories';
@@ -150,6 +150,16 @@ export default function AdminLayout() {
             </NavLink>
           )}
           {user.role === 'admin' && (
+            <NavLink to="/admin/consultations" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+              Đăng ký tư vấn
+            </NavLink>
+          )}
+          {user.role === 'admin' && (
+            <NavLink to="/admin/homepage" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+              Nội dung trang chủ
+            </NavLink>
+          )}
+          {user.role === 'admin' && (
             <NavLink to="/admin/typography" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               Font chữ &amp; hiển thị
             </NavLink>
@@ -200,6 +210,16 @@ export default function AdminLayout() {
           {user.role === 'admin' && (
             <NavLink to="/admin/users" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
               <ShieldCheck size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Người dùng
+            </NavLink>
+          )}
+          {user.role === 'admin' && (
+            <NavLink to="/admin/consultations" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+              <Inbox size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Tư vấn
+            </NavLink>
+          )}
+          {user.role === 'admin' && (
+            <NavLink to="/admin/homepage" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+              <House size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Trang chủ
             </NavLink>
           )}
           {user.role === 'admin' && (

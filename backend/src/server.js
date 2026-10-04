@@ -15,6 +15,8 @@ const storage = require('./storage');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+// Railway/Netlify đứng trước 1 lớp proxy - cần để rate limit tính theo IP thật của khách thay vì IP proxy.
+app.set('trust proxy', 1);
 
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
@@ -71,6 +73,8 @@ app.use('/api/html-pages', require('./routes/htmlPages'));
 app.use('/api/lesson-documents', require('./routes/lessonDocuments'));
 app.use('/api/media', require('./routes/media'));
 app.use('/api/settings', require('./routes/settings'));
+app.use('/api/homepage', require('./routes/homepage'));
+app.use('/api/consultations', require('./routes/consultations'));
 
 app.get('/api/health', (req, res) => res.json({ ok: true, db: db.mode, storage: storage.mode }));
 

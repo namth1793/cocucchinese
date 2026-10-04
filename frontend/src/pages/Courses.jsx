@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { BookOpen, Clock } from 'lucide-react';
 import api from '../api/client';
 import { formatVnd } from '../constants/enrollment';
@@ -9,6 +9,11 @@ import CourseCover from '../components/CourseCover';
 export default function Courses() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [params] = useSearchParams();
+  // Từ khoá từ ô tìm kiếm trên header trang công khai.
+  const q = (params.get('q') || '').trim();
+  const norm = (t) => String(t || '').normalize('NFD').replace(/\p{M}/gu, '').replace(/đ/gi, 'd').toLowerCase();
+  const shown = q ? courses.filter((c) => norm(`${c.name} ${c.code} ${c.description}`).includes(norm(q))) : courses;
 
   useEffect(() => {
     api.get('/courses').then((res) => setCourses(res.data)).finally(() => setLoading(false));
@@ -21,9 +26,15 @@ export default function Courses() {
         <p>Lộ trình rõ ràng theo từng cấp độ. Đăng ký, thanh toán và được cấp quyền học ngay bằng email của bạn.</p>
       </div>
 
+      {q && (
+        <p className="empty-state" style={{ textAlign: 'left' }}>
+          Kết quả tìm kiếm cho "<b>{q}</b>": {shown.length} khoá học · <Link to="/courses">Xem tất cả</Link>
+        </p>
+      )}
+
       {loading && <p className="empty-state">Đang tải...</p>}
       <div className="pub-course-grid">
-        {courses.map((c, i) => (
+        {shown.map((c, i) => (
           <Link to={`/courses/${c.id}`} key={c.id} className="pub-course-card">
             <CourseCover course={c} colorIndex={i} />
             <span className="pub-course-body">
