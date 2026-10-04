@@ -77,7 +77,7 @@ const SCHEMA = obj({
     facebook: U, youtube: U, tiktok: U, zalo: U
   }),
   topbar: obj({ slogan: T(150) }),
-  hero: obj({ title1: T(40), title2: T(40), subtitle: T(80), promo: T(80), tagline: T(100), imageUrl: U }),
+  hero: obj({ title1: T(40), title2: T(40), subtitle: T(80), promo: T(220), tagline: T(100), imageUrl: U }),
   activity: obj({ caption: T(120), imageUrl: U }),
   quickLinks: list(3, obj({ label: T(40), url: U })),
   why: obj({

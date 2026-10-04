@@ -1,0 +1,13 @@
+Ảnh mặc định trang chủ - tất cả đều CC0 / public domain (tìm qua Openverse), được dùng tự do, không bắt buộc ghi nguồn.
+Đã thu nhỏ + nén lại. Admin upload ảnh riêng ở /admin/homepage sẽ thay cho ảnh mặc định tương ứng.
+
+hero.jpg            Chinese-lanterns-1394958.jpg - Wikimedia Commons (CC0)
+great-wall.jpg      "Free Great Wall China image" - rawpixel (CC0)
+palace.jpg          "Temple Beijing, China" (Tử Cấm Thành) - rawpixel (CC0)
+tea.jpg             "Traditional tea ceremony" - rawpixel (CC0)
+calligraphy.jpg     "Letter to Liang Zhongren" - The Met qua rawpixel (CC0)
+study.jpg           Sias_Library_-_Students_Studying_2017.jpg - Wikimedia Commons (CC0)
+lanterns-night.jpg  Celebration_Chinese_Lantern_Festival.jpg - Wikimedia Commons (CC0)
+knots.jpg           "Free hanging Chinese knots image" - rawpixel (CC0)
+roofs.jpg           "Free Asian temple roof image" - rawpixel (CC0)
+plum.jpg            "Plum blossom" - WordPress Photo Directory (CC0)

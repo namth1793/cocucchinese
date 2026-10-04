@@ -145,14 +145,14 @@ export default function AdminHomepage() {
 
       <Section title="Thông tin liên hệ & mạng xã hội" desc="Hiện ở thanh trên cùng, nút gọi, form đăng ký và chân trang" open>
         <div className="hpa-grid">
-          <Field label="Hotline" value={contact.hotline} onChange={set('contact', 'hotline')} placeholder="VD: 0912 345 678" />
+          <Field label="Hotline" value={contact.hotline} onChange={set('contact', 'hotline')} placeholder="VD: 0912 345 678" hint="Nút gọi điện rung ở góc dưới màn hình." />
           <Field label="Email" value={contact.email} onChange={set('contact', 'email')} />
           <Field label="Địa chỉ" value={contact.address} onChange={set('contact', 'address')} />
           <Field label="Giờ làm việc" value={contact.hours} onChange={set('contact', 'hours')} placeholder="VD: Thứ 2 – CN: 8:00 – 21:00" />
           <Field label="Link Facebook" value={contact.facebook} onChange={set('contact', 'facebook')} placeholder="https://facebook.com/..." />
           <Field label="Link YouTube" value={contact.youtube} onChange={set('contact', 'youtube')} placeholder="https://youtube.com/..." />
           <Field label="Link TikTok" value={contact.tiktok} onChange={set('contact', 'tiktok')} placeholder="https://tiktok.com/@..." />
-          <Field label="Link Zalo" value={contact.zalo} onChange={set('contact', 'zalo')} placeholder="https://zalo.me/..." hint="Nút chat tròn góc phải mở Zalo (hoặc Facebook nếu không có Zalo)." />
+          <Field label="Link Zalo" value={contact.zalo} onChange={set('contact', 'zalo')} placeholder="https://zalo.me/..." hint="Nút Zalo rung ở góc dưới màn hình. Để trống sẽ tự dùng zalo.me/<Hotline>." />
         </div>
       </Section>
 
@@ -165,11 +165,11 @@ export default function AdminHomepage() {
           <Field label="Nhãn ưu đãi (nền cam)" value={hero.promo} onChange={set('hero', 'promo')} hint="Để trống để ẩn." />
           <Field label="Dòng chữ dưới 3 chấm màu" value={hero.tagline} onChange={set('hero', 'tagline')} />
         </div>
-        <ImageField label="Ảnh lớn bên phải (để trống sẽ ghép bìa các khoá học)" value={hero.imageUrl} onChange={set('hero', 'imageUrl')} />
+        <ImageField label="Ảnh nền banner (để trống dùng ảnh đèn lồng mặc định)" value={hero.imageUrl} onChange={set('hero', 'imageUrl')} />
       </Section>
 
       <Section title="Ảnh hoạt động & 3 ô lối tắt">
-        <ImageField label="Ảnh hoạt động giảng dạy" value={activity.imageUrl} onChange={set('activity', 'imageUrl')} />
+        <ImageField label="Ảnh hoạt động giảng dạy (để trống dùng ảnh mặc định)" value={activity.imageUrl} onChange={set('activity', 'imageUrl')} />
         <Field label="Chú thích dưới ảnh" value={activity.caption} onChange={set('activity', 'caption')} />
         <ListEditor
           items={data.quickLinks} onChange={setList('quickLinks')} max={3}
@@ -255,7 +255,7 @@ export default function AdminHomepage() {
           <Field label="Dòng nổi bật (chữ vàng)" value={consult.highlight} onChange={set('consult', 'highlight')} />
         </div>
         <Field label="Mô tả" textarea value={consult.desc} onChange={set('consult', 'desc')} />
-        <ImageField label="Ảnh nền khung đỏ (tuỳ chọn)" value={consult.imageUrl} onChange={set('consult', 'imageUrl')} />
+        <ImageField label="Ảnh nền khung đỏ (để trống dùng ảnh mái ngói mặc định)" value={consult.imageUrl} onChange={set('consult', 'imageUrl')} />
       </Section>
 
       <Section title="Chân trang">

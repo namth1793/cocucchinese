@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
-  ChevronDown, ChevronRight, Clock, Mail, MapPin, Menu, MessageCircleMore, Phone, Search, SquarePen, CalendarCheck, X
+  ArrowUp, ChevronDown, ChevronRight, Clock, Mail, MapPin, Menu, Phone, Search, SquarePen, CalendarCheck, X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { SmartLink, softCase, telHref, usePublicSite } from '../utils/publicSite';
@@ -38,8 +38,72 @@ function buildNav(content, courses) {
     content?.testimonials?.length ? { label: 'Cảm nhận học viên', to: '#cam-nhan' } : null,
     content?.videos?.length ? { label: 'Video', to: '#video' } : null,
     content?.news?.length ? { label: 'Tin tức', to: '#tin-tuc' } : null,
+    { label: 'Văn hoá', to: '#van-hoa' },
     { label: 'Liên hệ', to: '#dang-ky' }
   ].filter(Boolean);
+}
+
+/** Link Zalo: ưu tiên link admin nhập, không có thì dựng từ hotline (zalo.me/09xx...). */
+function zaloLink(contact) {
+  if (contact.zalo) return contact.zalo;
+  const digits = String(contact.hotline || '').replace(/\D/g, '').replace(/^84(?=\d{9}$)/, '0');
+  return digits.length >= 9 ? `https://zalo.me/${digits}` : '';
+}
+
+/** Thanh tiến độ cuộn mảnh màu vàng + nút lên đầu trang. */
+function useScrollState() {
+  const [state, setState] = useState({ progress: 0, scrolled: false });
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setState({ progress: max > 0 ? Math.min(1, window.scrollY / max) : 0, scrolled: window.scrollY > 600 });
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(raf); };
+  }, []);
+  return state;
+}
+
+/**
+ * Nút Zalo + gọi điện nổi góc dưới bên trái, rung lắc theo nhịp kèm vòng sóng lan toả.
+ * Chưa nhập hotline/Zalo thì cả hai nút dẫn tới form đăng ký tư vấn.
+ */
+function FloatingContact({ contact }) {
+  const zalo = zaloLink(contact);
+  const phone = contact.hotline ? telHref(contact.hotline) : '';
+  return (
+    <div className="fc" role="complementary" aria-label="Liên hệ nhanh">
+      <SmartLink to={zalo || '#dang-ky'} className="fc-btn fc-zalo" aria-label="Chat Zalo">
+        <span className="fc-circle">
+          <span className="fc-wave" /><span className="fc-wave w2" />
+          <span className="fc-icon fc-zalo-text">Zalo</span>
+        </span>
+        <span className="fc-label">Chat Zalo</span>
+      </SmartLink>
+      {phone ? (
+        <a href={phone} className="fc-btn fc-phone" aria-label={`Gọi ${contact.hotline}`}>
+          <span className="fc-circle">
+            <span className="fc-wave" /><span className="fc-wave w2" />
+            <span className="fc-icon"><Phone size={22} fill="currentColor" strokeWidth={0} /></span>
+          </span>
+          <span className="fc-label fc-label-always">{contact.hotline}</span>
+        </a>
+      ) : (
+        <SmartLink to="#dang-ky" className="fc-btn fc-phone" aria-label="Đăng ký gọi lại">
+          <span className="fc-circle">
+            <span className="fc-wave" /><span className="fc-wave w2" />
+            <span className="fc-icon"><Phone size={22} fill="currentColor" strokeWidth={0} /></span>
+          </span>
+          <span className="fc-label">Yêu cầu gọi lại</span>
+        </SmartLink>
+      )}
+    </div>
+  );
 }
 
 /** Khung cho các trang công khai (trang chủ, danh sách khoá học, chi tiết, đơn đăng ký) - không cần đăng nhập. */
@@ -67,10 +131,11 @@ export default function PublicLayout() {
   };
 
   const isActive = (item) => (item.to === '/' ? isHome && !location.hash : location.pathname.startsWith(item.to) && item.to !== '/');
-  const chatHref = contact.zalo || contact.facebook || '';
+  const { progress, scrolled } = useScrollState();
 
   return (
     <div className="pub-shell site">
+      <span className="site-progress" style={{ transform: `scaleX(${progress})` }} aria-hidden="true" />
       <div className="site-topbar">
         <div className="site-wrap site-topbar-inner">
           <span className="site-topbar-slogan">{softCase(content?.topbar?.slogan, [brand])}</span>
@@ -159,6 +224,8 @@ export default function PublicLayout() {
       </main>
 
       <footer className="site-footer">
+        <span className="cn-fret" aria-hidden="true" />
+        <span className="site-footer-hanzi" aria-hidden="true">学无止境</span>
         <div className="site-wrap site-footer-grid">
           <div className="site-footer-brand">
             <img src="/logo.png" alt={brand} className="site-footer-logo" />
@@ -207,13 +274,13 @@ export default function PublicLayout() {
         </div>
       </footer>
 
-      <div className="site-float-bar">
-        {contact.hotline && (
-          <a href={telHref(contact.hotline)} className="site-float-btn site-float-phone"><Phone size={17} /> {contact.hotline}</a>
-        )}
-        <SmartLink to="#dang-ky" className="site-float-btn site-float-reg"><SquarePen size={17} /> Đăng ký tư vấn</SmartLink>
-      </div>
-      <SmartLink to={chatHref || '#dang-ky'} className="site-chat" aria-label="Nhắn tin tư vấn"><MessageCircleMore size={26} /></SmartLink>
+      <FloatingContact contact={contact} />
+      <button
+        type="button" className={`site-totop ${scrolled ? 'show' : ''}`} aria-label="Lên đầu trang"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      >
+        <ArrowUp size={20} />
+      </button>
     </div>
   );
 }
