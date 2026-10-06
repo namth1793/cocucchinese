@@ -18,12 +18,14 @@ async function publicCourse(level) {
     duration: level.duration || '',
     audience: level.audience || '',
     outcomes: Array.isArray(level.outcomes) ? level.outcomes : [],
-    lessonCount: lessons.length
+    lessonCount: lessons.length,
+    // Số bài học thử miễn phí thực có (khoá ít bài hơn FREE_LESSON_COUNT thì ít hơn); 0 nếu chưa mở bán.
+    freeLessons: isListed(level) ? Math.min(lessons.length, access.FREE_LESSON_COUNT) : 0
   };
 }
 
 // Khoá được bán = cấp độ đã đặt học phí (và không bị ẩn). Không cần đăng nhập.
-const isListed = (level) => typeof level.price === 'number' && level.price >= 0 && level.listed !== false;
+const isListed = access.isForSale;
 
 router.get('/', asyncHandler(async (req, res) => {
   const levels = (await db.all('levels')).filter(isListed).sort((a, b) => (a.order || 0) - (b.order || 0));
@@ -61,12 +63,13 @@ router.get('/mine/list', requireAuth, asyncHandler(async (req, res) => {
 }));
 
 // Chi tiết + lộ trình: chỉ tiêu đề/mô tả từng bài, không lộ từ vựng, bài tập, file...
+// free = bài học thử (vào học được ngay không cần đăng nhập).
 router.get('/:id', asyncHandler(async (req, res) => {
   const level = await db.find('levels', req.params.id);
   if (!level || !isListed(level)) return res.status(404).json({ error: 'Không tìm thấy khoá học' });
   const lessons = (await db.findWhere('lessons', (l) => l.levelId === level.id))
-    .sort((a, b) => (a.order || 0) - (b.order || 0))
-    .map((l) => ({ id: l.id, order: l.order, title: l.title, description: l.description || '' }));
+    .sort(access.lessonSort)
+    .map((l, i) => ({ id: l.id, order: l.order, title: l.title, description: l.description || '', free: i < access.FREE_LESSON_COUNT }));
   const lessonIds = new Set(lessons.map((l) => l.id));
   const [words, grammarPoints, sentences] = await Promise.all([
     db.findWhere('words', (w) => lessonIds.has(w.lessonId)),

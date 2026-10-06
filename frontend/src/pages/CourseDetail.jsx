@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { BookOpen, CheckCircle2, Clock, Layers3, ListChecks, ShoppingCart, Users } from 'lucide-react';
+import { BookOpen, CheckCircle2, ChevronRight, Clock, Gift, Layers3, ListChecks, Lock, ShoppingCart, Users } from 'lucide-react';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { formatVnd } from '../constants/enrollment';
@@ -87,6 +87,9 @@ export default function CourseDetail() {
   if (!course) return <p className="empty-state">Đang tải...</p>;
 
   const isStaff = user && (user.role === 'admin' || user.role === 'teacher');
+  const firstFree = course.roadmap.find((l) => l.free);
+  // Đã có quyền cả khoá (học viên đã mua / staff) thì mọi bài đều mở, không cần nhãn học thử.
+  const fullAccess = isStaff || owned;
 
   return (
     <div>
@@ -101,6 +104,17 @@ export default function CourseDetail() {
             {course.audience && <span><Users size={14} /> {course.audience}</span>}
           </div>
           {course.description && <p className="pub-detail-desc">{course.description}</p>}
+
+          {firstFree && !fullAccess && (
+            <div className="trial-callout">
+              <span className="trial-callout-icon"><Gift size={20} /></span>
+              <span className="trial-callout-text">
+                <b>Học thử miễn phí bài 1 và bài 2</b>
+                <span>Không cần đăng ký hay đăng nhập. Khoá học chính bắt đầu từ bài 3.</span>
+              </span>
+              <Link to={`/lessons/${firstFree.id}`} className="btn-primary">Học thử ngay</Link>
+            </div>
+          )}
 
           <div className="pub-stat-row">
             <div className="pub-stat"><Layers3 size={16} /><b>{course.stats.words}</b> từ vựng</div>
@@ -132,18 +146,36 @@ export default function CourseDetail() {
 
           <h2 className="pub-section-title">Lộ trình học</h2>
           <ol className="pub-roadmap">
-            {course.roadmap.map((l) => (
-              <li key={l.id}>
-                <span className="pub-roadmap-num">{String(l.order).padStart(2, '0')}</span>
-                <span>
-                  <span className="pub-roadmap-title">{l.title}</span>
-                  {l.description && <span className="pub-roadmap-desc">{l.description}</span>}
-                </span>
-              </li>
-            ))}
+            {course.roadmap.map((l) => {
+              const open = fullAccess || l.free;
+              const body = (
+                <>
+                  <span className="pub-roadmap-num">{String(l.order).padStart(2, '0')}</span>
+                  <span className="pub-roadmap-body">
+                    <span className="pub-roadmap-title">{l.title}</span>
+                    {l.description && <span className="pub-roadmap-desc">{l.description}</span>}
+                  </span>
+                  {!fullAccess && (l.free
+                    ? <span className="pub-roadmap-tag is-free">Học thử miễn phí</span>
+                    : <span className="pub-roadmap-tag"><Lock size={12} /> Khoá học</span>)}
+                  {open && <ChevronRight size={16} className="pub-roadmap-go" />}
+                </>
+              );
+              return (
+                <li key={l.id} className={open ? 'is-open' : ''}>
+                  {open ? <Link to={`/lessons/${l.id}`} className="pub-roadmap-link">{body}</Link> : body}
+                </li>
+              );
+            })}
           </ol>
           {course.roadmap.length === 0 && <p className="empty-state" style={{ textAlign: 'left' }}>Lộ trình đang được cập nhật.</p>}
-          <p className="pub-field-note">Nội dung chi tiết từng bài (từ vựng, bài tập, bài giảng...) chỉ hiển thị sau khi bạn được cấp quyền học.</p>
+          {!fullAccess && (
+            <p className="pub-field-note">
+              {firstFree
+                ? 'Bài 1 và bài 2 mở miễn phí cho mọi người. Từ bài 3, nội dung chi tiết (từ vựng, bài tập, bài giảng...) chỉ hiển thị sau khi bạn đăng ký và được cấp quyền học.'
+                : 'Nội dung chi tiết từng bài (từ vựng, bài tập, bài giảng...) chỉ hiển thị sau khi bạn được cấp quyền học.'}
+            </p>
+          )}
         </div>
 
         <aside>

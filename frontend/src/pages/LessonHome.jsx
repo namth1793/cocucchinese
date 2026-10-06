@@ -4,11 +4,13 @@ import { ChevronRight, Trophy } from 'lucide-react';
 import api from '../api/client';
 import ProgressBar from '../components/ProgressBar';
 import { resolveSections } from '../constants/lessonModules';
+import { useLessonAccess } from '../components/CourseGate';
 
 export default function LessonHome() {
   const { lessonId } = useParams();
   const [data, setData] = useState(null);
   const [summary, setSummary] = useState(null);
+  const trial = useLessonAccess()?.freeTrial;
 
   useEffect(() => {
     api.get(`/lessons/${lessonId}/full`).then((res) => setData(res.data));
@@ -25,9 +27,12 @@ export default function LessonHome() {
 
   return (
     <div>
-      <Link to={lesson ? `/levels/${lesson.levelId}` : '/'} className="top-back-link">← Danh sách bài học</Link>
+      {/* Học thử: chưa có quyền khoá nên quay về trang giới thiệu khoá học thay vì danh sách bài */}
+      <Link to={!lesson ? '/' : trial ? `/courses/${lesson.levelId}` : `/levels/${lesson.levelId}`} className="top-back-link">
+        {trial ? '← Về trang khoá học' : '← Danh sách bài học'}
+      </Link>
       <h1 className="page-title">{lesson ? lesson.title : '...'}</h1>
-      {summary && <ProgressBar percent={summary.overallPercent} label="Tiến độ tổng" />}
+      {summary && !summary.guest && <ProgressBar percent={summary.overallPercent} label="Tiến độ tổng" />}
 
       {lesson?.content && <div className="card lesson-intro">{lesson.content}</div>}
 

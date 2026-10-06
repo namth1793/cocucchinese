@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { BookOpen, Clock } from 'lucide-react';
+import { BookOpen, Clock, Gift } from 'lucide-react';
 import api from '../api/client';
 import { formatVnd } from '../constants/enrollment';
 import CourseCover from '../components/CourseCover';
@@ -44,6 +44,7 @@ export default function Courses() {
                 <span><BookOpen size={13} /> {c.lessonCount} bài học</span>
                 {c.duration && <span><Clock size={13} /> {c.duration}</span>}
               </span>
+              {c.freeLessons > 0 && <span className="pub-course-free"><Gift size={13} /> Học thử miễn phí {c.freeLessons} bài đầu</span>}
               <span className="pub-course-price">{formatVnd(c.price)}</span>
             </span>
           </Link>

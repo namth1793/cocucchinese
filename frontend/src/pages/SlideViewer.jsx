@@ -82,7 +82,7 @@ export default function SlideViewer() {
             />
           )}
           <div className="slide-watermark">
-            {user?.name} · {user?.email}<br />
+            {user ? `${user.name} · ${user.email}` : 'HSK 360 · Học thử miễn phí'}<br />
             {new Date().toLocaleString('vi-VN')}
           </div>
         </div>

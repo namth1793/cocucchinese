@@ -19,7 +19,8 @@ api.interceptors.response.use(
     return res;
   },
   (err) => {
-    if (err.response && err.response.status === 401 && window.location.pathname !== '/login') {
+    // Chỉ đá về trang đăng nhập khi phiên đang có bị từ chối - khách học thử không có token thì giữ nguyên trang.
+    if (err.response && err.response.status === 401 && localStorage.getItem('cocuc_token') && window.location.pathname !== '/login') {
       localStorage.removeItem('cocuc_token');
       localStorage.removeItem('cocuc_user');
       window.location.href = '/login';

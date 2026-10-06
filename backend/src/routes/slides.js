@@ -5,7 +5,7 @@ const axios = require('axios');
 const FormData = require('form-data');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
-const { requireAuth, requireRole, JWT_SECRET } = require('../middleware/auth');
+const { requireAuth, optionalAuth, requireRole, JWT_SECRET } = require('../middleware/auth');
 const { slideUpload, sourceFileUpload } = require('../middleware/upload');
 const storage = require('../storage');
 const access = require('../utils/access');
@@ -47,11 +47,13 @@ async function waitForCloudConvertJob(jobId, { intervalMs = 5000, maxWaitMs = 30
 
 // Danh sách bài giảng của 1 bài học - CHỈ trả về metadata, không lộ đường dẫn file gốc.
 // sourceFileName/sourceOriginalName/convertStatus cũng chỉ hiển thị cho giáo viên/admin (route staff).
-router.get('/', requireAuth, asyncHandler(async (req, res) => {
+router.get('/', optionalAuth, asyncHandler(async (req, res) => {
+  // Khách (bài học thử) chỉ được hỏi theo đúng 1 bài.
+  if (!req.user && !req.query.lessonId) return res.status(401).json({ error: 'Chưa đăng nhập' });
   let items = await db.all('slides');
   if (req.query.lessonId) items = items.filter((s) => s.lessonId === req.query.lessonId);
   if (!access.isStaff(req.user)) items = await access.filterAsync(items, (s) => access.canAccessLesson(req.user, s.lessonId));
-  const isStaff = req.user.role === 'admin' || req.user.role === 'teacher';
+  const isStaff = access.isStaff(req.user);
   res.json(items.map((s) => ({
     id: s.id, lessonId: s.lessonId, title: s.title, pageCount: s.pages.length, version: s.version,
     ...(isStaff ? { sourceOriginalName: s.sourceOriginalName || null, convertStatus: s.convertStatus || null } : {})
@@ -208,12 +210,14 @@ router.get('/:id/source', requireAuth, requireRole('admin', 'teacher'), asyncHan
   }
 }));
 
-// Cấp token ngắn hạn (5 phút), chỉ dùng được với tài khoản/phiên đăng nhập hiện tại
-router.get('/:id/token', requireAuth, asyncHandler(async (req, res) => {
+// Cấp token ngắn hạn (5 phút), chỉ dùng được với tài khoản/phiên đăng nhập hiện tại.
+// Khách học thử nhận token "guest" - lúc xem trang vẫn kiểm tra lại bài còn miễn phí.
+router.get('/:id/token', optionalAuth, asyncHandler(async (req, res) => {
   const slide = await db.find('slides', req.params.id);
   if (!slide) return res.status(404).json({ error: 'Không tìm thấy' });
   if (!(await access.canAccessLesson(req.user, slide.lessonId))) return access.deny(res);
-  const token = jwt.sign({ sub: req.user.id, slideId: slide.id, jti: req.jti }, JWT_SECRET, { expiresIn: '5m' });
+  const claims = req.user ? { sub: req.user.id, jti: req.jti } : { guest: true };
+  const token = jwt.sign({ ...claims, slideId: slide.id }, JWT_SECRET, { expiresIn: '5m' });
   res.json({ token, expiresIn: 300, pageCount: slide.pages.length, title: slide.title });
 }));
 
@@ -229,9 +233,11 @@ router.get('/:id/page/:n', asyncHandler(async (req, res) => {
     return res.status(401).json({ error: 'Token hết hạn hoặc không hợp lệ' });
   }
   if (payload.slideId !== req.params.id) return res.status(403).json({ error: 'Token không khớp tài liệu' });
-  const user = await db.find('users', payload.sub);
-  const session = user && (user.activeSessions || []).find((s) => s.jti === payload.jti);
-  if (!user || !session) return res.status(401).json({ error: 'Phiên đăng nhập không còn hiệu lực' });
+  const user = payload.guest ? null : await db.find('users', payload.sub);
+  if (!payload.guest) {
+    const session = user && (user.activeSessions || []).find((s) => s.jti === payload.jti);
+    if (!user || !session) return res.status(401).json({ error: 'Phiên đăng nhập không còn hiệu lực' });
+  }
 
   const slide = await db.find('slides', req.params.id);
   // Kiểm tra lại quyền tại thời điểm xem trang (token 5 phút có thể còn hạn sau khi quyền bị thu hồi).
@@ -241,7 +247,7 @@ router.get('/:id/page/:n', asyncHandler(async (req, res) => {
   const page = slide && slide.pages.find((p) => p.pageNum === parseInt(req.params.n, 10));
   if (!page) return res.status(404).json({ error: 'Không tìm thấy trang' });
 
-  await db.logActivity(user.id, 'view_slide', { slideId: slide.id, page: page.pageNum });
+  if (user) await db.logActivity(user.id, 'view_slide', { slideId: slide.id, page: page.pageNum });
 
   try {
     const sent = await storage.sendSlidePage(res, slide.id, page.fileName);
@@ -267,15 +273,17 @@ router.delete('/:id', requireAuth, requireRole('admin', 'teacher'), asyncHandler
   }
 }));
 
-router.post('/:id/progress', requireAuth, asyncHandler(async (req, res) => {
+router.post('/:id/progress', optionalAuth, asyncHandler(async (req, res) => {
   const { page, percent } = req.body;
   const slide = await db.find('slides', req.params.id);
   if (!slide) return res.status(404).json({ error: 'Không tìm thấy' });
   if (!(await access.canAccessLesson(req.user, slide.lessonId))) return access.deny(res);
+  if (!req.user) return res.json({ lastPage: page, percent, guest: true });
   res.json(await db.upsertSlideProgress(req.user.id, req.params.id, page, percent));
 }));
 
-router.get('/:id/my-progress', requireAuth, asyncHandler(async (req, res) => {
+router.get('/:id/my-progress', optionalAuth, asyncHandler(async (req, res) => {
+  if (!req.user) return res.json({ lastPage: 0, percent: 0 });
   const doc = (await db.findWhere('slideProgress', (d) => d.userId === req.user.id && d.slideId === req.params.id))[0];
   res.json(doc || { lastPage: 0, percent: 0 });
 }));

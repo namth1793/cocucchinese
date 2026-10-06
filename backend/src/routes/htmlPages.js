@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
-const { requireAuth, requireRole, JWT_SECRET } = require('../middleware/auth');
+const { requireAuth, optionalAuth, requireRole, JWT_SECRET } = require('../middleware/auth');
 const { sourceFileUpload } = require('../middleware/upload');
 const storage = require('../storage');
 const access = require('../utils/access');
@@ -39,7 +39,7 @@ async function storeFile(page, file) {
 }
 
 // Danh sách trang HTML của 1 bài học. Học viên: chỉ bài thuộc khoá đã được cấp quyền, chỉ trang đã xuất bản.
-router.get('/', requireAuth, asyncHandler(async (req, res) => {
+router.get('/', optionalAuth, asyncHandler(async (req, res) => {
   const { lessonId } = req.query;
   if (!lessonId) return res.status(400).json({ error: 'Thiếu lessonId' });
   if (!(await access.canAccessLesson(req.user, String(lessonId)))) return access.deny(res);
@@ -48,7 +48,7 @@ router.get('/', requireAuth, asyncHandler(async (req, res) => {
   res.json(items.sort(byOrder).map((p) => present(p, req.user)));
 }));
 
-router.get('/:id', requireAuth, asyncHandler(async (req, res) => {
+router.get('/:id', optionalAuth, asyncHandler(async (req, res) => {
   const page = await db.find('htmlPages', req.params.id);
   if (!page || (!access.isStaff(req.user) && page.published === false)) return res.status(404).json({ error: 'Không tìm thấy bài học HTML' });
   if (!(await access.canAccessLesson(req.user, page.lessonId))) return access.deny(res);
@@ -121,14 +121,16 @@ router.delete('/:id', requireAuth, staffOnly, asyncHandler(async (req, res) => {
 }));
 
 // Token ngắn hạn để nhúng trang vào iframe (iframe không gửi được header Authorization).
-router.get('/:id/token', requireAuth, asyncHandler(async (req, res) => {
+// Khách học thử nhận token "guest" - lúc xem vẫn kiểm tra lại bài còn miễn phí.
+router.get('/:id/token', optionalAuth, asyncHandler(async (req, res) => {
   const page = await db.find('htmlPages', req.params.id);
   if (!page || !page.fileKey || (!access.isStaff(req.user) && page.published === false)) {
     return res.status(404).json({ error: 'Bài học chưa có nội dung' });
   }
   if (!(await access.canAccessLesson(req.user, page.lessonId))) return access.deny(res);
   await access.markLessonLearning(req.user, page.lessonId);
-  const token = jwt.sign({ sub: req.user.id, htmlPageId: page.id, jti: req.jti }, JWT_SECRET, { expiresIn: '5m' });
+  const claims = req.user ? { sub: req.user.id, jti: req.jti } : { guest: true };
+  const token = jwt.sign({ ...claims, htmlPageId: page.id }, JWT_SECRET, { expiresIn: '5m' });
   res.json({ token, version: page.version });
 }));
 
@@ -140,14 +142,16 @@ router.get('/:id/view', asyncHandler(async (req, res) => {
     return res.status(401).send('Liên kết đã hết hạn, vui lòng tải lại trang.');
   }
   if (payload.htmlPageId !== req.params.id) return res.status(403).send('Liên kết không hợp lệ.');
-  const user = await db.find('users', payload.sub);
-  if (!user || !(user.activeSessions || []).some((s) => s.jti === payload.jti)) return res.status(401).send('Phiên đăng nhập không còn hiệu lực.');
+  const user = payload.guest ? null : await db.find('users', payload.sub);
+  if (!payload.guest && (!user || !(user.activeSessions || []).some((s) => s.jti === payload.jti))) {
+    return res.status(401).send('Phiên đăng nhập không còn hiệu lực.');
+  }
   const page = await db.find('htmlPages', req.params.id);
   if (!page || !page.fileKey) return res.status(404).send('Không tìm thấy bài học.');
   // Kiểm tra lại quyền tại thời điểm xem (token có thể còn hạn sau khi quyền bị thu hồi).
   if (!(await access.canAccessLesson(user, page.lessonId))) return res.status(403).send('Bạn chưa được cấp quyền truy cập khoá học này.');
 
-  await db.logActivity(user.id, 'view_html_page', { htmlPageId: page.id });
+  if (user) await db.logActivity(user.id, 'view_html_page', { htmlPageId: page.id });
   // File HTML tự chứa cần chạy script/style nội tuyến của chính nó: bỏ CSP mặc định của helmet,
   // chỉ giới hạn trang nào được nhúng nó vào iframe.
   const frontend = (process.env.FRONTEND_URL || '').split(',').map((s) => s.trim()).filter(Boolean);

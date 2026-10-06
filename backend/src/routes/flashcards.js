@@ -1,14 +1,14 @@
 const express = require('express');
 const db = require('../db');
-const { requireAuth } = require('../middleware/auth');
+const { optionalAuth } = require('../middleware/auth');
 const access = require('../utils/access');
 const asyncHandler = require('../utils/asyncHandler');
 
 const router = express.Router();
 
-router.get('/:lessonId', requireAuth, access.requireLessonAccess(), asyncHandler(async (req, res) => {
+router.get('/:lessonId', optionalAuth, access.requireLessonAccess(), asyncHandler(async (req, res) => {
   const words = await db.findWhere('words', (w) => w.lessonId === req.params.lessonId);
-  const statuses = await db.findWhere('flashcardStatus', (f) => f.userId === req.user.id);
+  const statuses = req.user ? await db.findWhere('flashcardStatus', (f) => f.userId === req.user.id) : [];
   const items = words.map((w) => {
     const st = statuses.find((s) => s.wordId === w.id);
     return { ...w, flashcardStatus: st ? st.status : null };
@@ -16,12 +16,14 @@ router.get('/:lessonId', requireAuth, access.requireLessonAccess(), asyncHandler
   res.json(items);
 }));
 
-router.post('/:wordId/status', requireAuth, asyncHandler(async (req, res) => {
+router.post('/:wordId/status', optionalAuth, asyncHandler(async (req, res) => {
   const { status } = req.body;
   if (!['known', 'half', 'unknown'].includes(status)) return res.status(400).json({ error: 'Trạng thái không hợp lệ' });
   const word = await db.find('words', req.params.wordId);
   if (!word) return res.status(404).json({ error: 'Không tìm thấy từ' });
   if (!(await access.canAccessLesson(req.user, word.lessonId))) return access.deny(res);
+  // Khách học thử: trạng thái chỉ giữ trên màn hình, không lưu.
+  if (!req.user) return res.json({ wordId: word.id, status, guest: true });
   const doc = await db.upsertFlashcard(req.user.id, req.params.wordId, status);
 
   const prog = await db.getOrCreateProgress(req.user.id, word.lessonId);

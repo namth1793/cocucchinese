@@ -1,6 +1,6 @@
 const express = require('express');
 const db = require('../db');
-const { requireAuth } = require('../middleware/auth');
+const { requireAuth, optionalAuth } = require('../middleware/auth');
 const access = require('../utils/access');
 const asyncHandler = require('../utils/asyncHandler');
 
@@ -74,8 +74,11 @@ router.delete('/review/:itemId', requireAuth, asyncHandler(async (req, res) => {
   res.json({ success: true });
 }));
 
-router.get('/:lessonId/summary', requireAuth, access.requireLessonAccess(), asyncHandler(async (req, res) => {
-  const prog = await db.getOrCreateProgress(req.user.id, req.params.lessonId);
+/** Tiến độ rỗng cho khách học thử bài miễn phí - không tạo bản ghi progress. */
+const guestProgress = (lessonId) => ({ lessonId, modules: {}, wrongItems: [], guest: true });
+
+router.get('/:lessonId/summary', optionalAuth, access.requireLessonAccess(), asyncHandler(async (req, res) => {
+  const prog = req.user ? await db.getOrCreateProgress(req.user.id, req.params.lessonId) : guestProgress(req.params.lessonId);
   const scores = {};
   Object.keys(prog.modules || {}).forEach((key) => { scores[key] = moduleScore(prog.modules[key]); });
   const numeric = Object.values(scores).filter((v) => typeof v === 'number');
@@ -85,18 +88,21 @@ router.get('/:lessonId/summary', requireAuth, access.requireLessonAccess(), asyn
     scores,
     overallPercent,
     wrongWordsCount: (prog.wrongItems || []).filter((w) => w.itemType === 'word').length,
-    wrongSentencesCount: (prog.wrongItems || []).filter((w) => w.itemType === 'sentence').length
+    wrongSentencesCount: (prog.wrongItems || []).filter((w) => w.itemType === 'sentence').length,
+    guest: !req.user
   });
 }));
 
-router.post('/:lessonId/complete-module', requireAuth, access.requireLessonAccess(), asyncHandler(async (req, res) => {
+router.post('/:lessonId/complete-module', optionalAuth, access.requireLessonAccess(), asyncHandler(async (req, res) => {
   const { module: moduleName } = req.body;
+  if (!req.user) return res.json(guestProgress(req.params.lessonId));
   const prog = await db.getOrCreateProgress(req.user.id, req.params.lessonId);
   const modules = { ...prog.modules, [moduleName]: { completed: true } };
   res.json(await db.update('progress', prog.id, { modules }));
 }));
 
-router.get('/:lessonId', requireAuth, access.requireLessonAccess(), asyncHandler(async (req, res) => {
+router.get('/:lessonId', optionalAuth, access.requireLessonAccess(), asyncHandler(async (req, res) => {
+  if (!req.user) return res.json(guestProgress(req.params.lessonId));
   res.json(await db.getOrCreateProgress(req.user.id, req.params.lessonId));
 }));
 

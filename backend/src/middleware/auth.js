@@ -8,7 +8,24 @@ async function requireAuth(req, res, next) {
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
   if (!token) return res.status(401).json({ error: 'Chưa đăng nhập' });
+  return authenticate(token, req, res, next);
+}
 
+/**
+ * Cho cả khách chưa đăng nhập đi qua (req.user = null) - dùng cho route đọc nội dung bài
+ * học thử miễn phí. Có gửi token thì xác thực y như requireAuth (token hỏng vẫn trả 401).
+ */
+async function optionalAuth(req, res, next) {
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+  if (!token) {
+    req.user = null;
+    return next();
+  }
+  return authenticate(token, req, res, next);
+}
+
+async function authenticate(token, req, res, next) {
   let payload;
   try {
     payload = jwt.verify(token, JWT_SECRET);
@@ -43,4 +60,4 @@ function requireRole(...roles) {
   };
 }
 
-module.exports = { requireAuth, requireRole, JWT_SECRET };
+module.exports = { requireAuth, optionalAuth, requireRole, JWT_SECRET };

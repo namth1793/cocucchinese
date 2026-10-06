@@ -43,11 +43,15 @@ router.get('/:id', requireAuth, asyncHandler(async (req, res) => {
 }));
 
 router.post('/', requireAuth, requireRole('admin'), asyncHandler(async (req, res) => {
-  res.status(201).json(await db.insert('levels', withPlacement(req.body)));
+  const item = await db.insert('levels', withPlacement(req.body));
+  access.invalidateFreeLessons();
+  res.status(201).json(item);
 }));
 
 router.put('/:id', requireAuth, requireRole('admin'), asyncHandler(async (req, res) => {
   const item = await db.update('levels', req.params.id, withPlacement(req.body));
+  // Đổi học phí/ẩn khoá làm thay đổi bài học thử.
+  access.invalidateFreeLessons();
   if (!item) return res.status(404).json({ error: 'Không tìm thấy' });
   res.json(item);
 }));
@@ -81,6 +85,7 @@ router.delete('/:id/cover', requireAuth, requireRole('admin'), asyncHandler(asyn
 
 router.delete('/:id', requireAuth, requireRole('admin'), asyncHandler(async (req, res) => {
   const ok = await db.remove('levels', req.params.id);
+  access.invalidateFreeLessons();
   if (!ok) return res.status(404).json({ error: 'Không tìm thấy' });
   res.json({ success: true });
 }));

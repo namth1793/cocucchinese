@@ -66,6 +66,12 @@ function RootShell() {
   return user ? <Layout /> : <PublicLayout />;
 }
 
+/** Khung trang học: học viên đăng nhập dùng khung học tập, khách học thử dùng khung trang công khai. */
+function LessonShell() {
+  const { user } = useAuth();
+  return user ? <Layout /> : <PublicLayout />;
+}
+
 function RootIndex() {
   const { user } = useAuth();
   return user ? <RoleHome /> : <Home />;
@@ -87,19 +93,13 @@ export default function App() {
         <Route index element={<RootIndex />} />
       </Route>
 
-      <Route element={<RequireAuth />}>
-        <Route path="/exam/:paperId" element={<ExamViewer />} />
-        {/* Bài học HTML xem toàn màn hình (ngoài khung Layout), vẫn qua cổng kiểm tra quyền khoá học */}
+      {/* Trang học: bài học thử (bài 1-2 mỗi khoá) mở cho cả khách - quyền thật do backend kiểm tra */}
+      <Route element={<LessonGate banner={false} />}>
+        {/* Bài học HTML xem toàn màn hình (ngoài khung Layout) */}
+        <Route path="/lessons/:lessonId/html/:pageId" element={<HtmlLessonViewer />} />
+      </Route>
+      <Route element={<LessonShell />}>
         <Route element={<LessonGate />}>
-          <Route path="/lessons/:lessonId/html/:pageId" element={<HtmlLessonViewer />} />
-        </Route>
-        <Route element={<Layout />}>
-          <Route path="/review" element={<Review />} />
-          <Route path="/instructors" element={<Instructors />} />
-          <Route element={<LevelGate />}>
-            <Route path="/levels/:levelId" element={<LevelLessons />} />
-          </Route>
-          <Route element={<LessonGate />}>
           <Route path="/lessons/:lessonId" element={<LessonHome />} />
           <Route path="/lessons/:lessonId/ppt" element={<SlideViewer />} />
           <Route path="/lessons/:lessonId/vocab" element={<Vocabulary />} />
@@ -125,6 +125,16 @@ export default function App() {
           <Route path="/lessons/:lessonId/result" element={<LessonResult />} />
           <Route path="/lessons/:lessonId/html" element={<HtmlLessonList />} />
           <Route path="/lessons/:lessonId/docs" element={<LessonDocuments />} />
+        </Route>
+      </Route>
+
+      <Route element={<RequireAuth />}>
+        <Route path="/exam/:paperId" element={<ExamViewer />} />
+        <Route element={<Layout />}>
+          <Route path="/review" element={<Review />} />
+          <Route path="/instructors" element={<Instructors />} />
+          <Route element={<LevelGate />}>
+            <Route path="/levels/:levelId" element={<LevelLessons />} />
           </Route>
         </Route>
 

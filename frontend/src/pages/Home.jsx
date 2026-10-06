@@ -79,7 +79,9 @@ function CourseTile({ course, index }) {
         {course.coverUrl
           ? <img src={assetUrl(course.coverUrl)} alt="" loading="lazy" className="hp-course-bg" />
           : <span className="hp-course-bg hp-course-bg-empty" aria-hidden="true">{course.code}</span>}
-        <span className={`hp-course-badge ${course.forSale ? '' : 'soon'}`}>{course.forSale ? 'Đang mở đăng ký' : 'Sắp mở'}</span>
+        <span className={`hp-course-badge ${course.forSale ? '' : 'soon'}`}>
+          {!course.forSale ? 'Sắp mở' : course.freeLessons > 0 ? `Học thử ${course.freeLessons} bài miễn phí` : 'Đang mở đăng ký'}
+        </span>
         <span className="hp-course-shine" aria-hidden="true" />
       </span>
       <span className="hp-course-text">

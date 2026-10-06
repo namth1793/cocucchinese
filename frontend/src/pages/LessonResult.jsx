@@ -84,10 +84,14 @@ export default function LessonResult() {
         </div>
       </div>
 
-      <Link to="/review" className="btn-primary btn-block" style={{ display: 'flex', marginTop: 16 }}>
-        <RotateCcw size={17} />
-        Đi tới Ôn tập
-      </Link>
+      {summary.guest ? (
+        <p className="empty-state">Tiến độ học thử không được lưu. Đăng ký khoá học để lưu kết quả và ôn lại các từ, câu làm sai.</p>
+      ) : (
+        <Link to="/review" className="btn-primary btn-block" style={{ display: 'flex', marginTop: 16 }}>
+          <RotateCcw size={17} />
+          Đi tới Ôn tập
+        </Link>
+      )}
     </div>
   );
 }
