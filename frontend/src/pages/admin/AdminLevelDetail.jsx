@@ -5,62 +5,7 @@ import api from '../../api/client';
 import AdminLessons from './AdminLessons';
 import AdminExamPapers from './AdminExamPapers';
 import { LEVEL_TYPE_OPTIONS } from '../../constants/courseCategories';
-import CourseCover from '../../components/CourseCover';
-
-/** Upload/đổi/xoá ảnh bìa - lưu ngay khi chọn file (không cần bấm "Lưu thay đổi" của form). */
-function CoverEditor({ level, onChanged }) {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-
-  const upload = async (e) => {
-    const file = e.target.files && e.target.files[0];
-    e.target.value = '';
-    if (!file) return;
-    if (!file.type.startsWith('image/')) { setError('Vui lòng chọn file ảnh (JPG, PNG, WEBP).'); return; }
-    if (file.size > 15 * 1024 * 1024) { setError('Ảnh quá lớn (tối đa 15MB).'); return; }
-    setError('');
-    setBusy(true);
-    try {
-      const body = new FormData();
-      body.append('file', file);
-      const res = await api.post(`/levels/${level.id}/cover`, body);
-      onChanged(res.data);
-    } catch (err) {
-      setError(err?.response?.data?.error || 'Tải ảnh lên thất bại, vui lòng thử lại.');
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const remove = async () => {
-    if (!window.confirm('Xoá ảnh bìa của cấp độ này?')) return;
-    setBusy(true);
-    try {
-      const res = await api.delete(`/levels/${level.id}/cover`);
-      onChanged(res.data);
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <div className="form-field">
-      <label>Ảnh bìa (dạng bìa sách, hiện ở trang chủ và danh sách khoá học)</label>
-      {error && <div className="form-error">{error}</div>}
-      <div className="cover-editor">
-        <CourseCover course={level} className="cover-thumb" />
-        <div className="cover-editor-actions">
-          <label className={`btn-secondary cover-upload-btn ${busy ? 'disabled' : ''}`}>
-            {busy ? 'Đang tải...' : (level.coverUrl ? 'Đổi ảnh bìa' : 'Tải ảnh bìa lên')}
-            <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={upload} disabled={busy} hidden />
-          </label>
-          {level.coverUrl && <button type="button" className="btn-danger" onClick={remove} disabled={busy}>Xoá ảnh</button>}
-          <span style={{ fontSize: 12, color: 'var(--muted)' }}>JPG/PNG/WEBP, tối đa 15MB. Nên dùng ảnh bìa dọc (tỉ lệ ~4:5).</span>
-        </div>
-      </div>
-    </div>
-  );
-}
+import CoverEditor from '../../components/CoverEditor';
 
 function EditLevelForm({ level, onSaved, onCancel, onCoverChanged }) {
   const [form, setForm] = useState({
@@ -91,7 +36,7 @@ function EditLevelForm({ level, onSaved, onCancel, onCoverChanged }) {
   return (
     <form className="admin-form" onSubmit={submit} style={{ marginBottom: 18 }}>
       {error && <div className="form-error">{error}</div>}
-      <CoverEditor level={level} onChanged={onCoverChanged} />
+      <CoverEditor level={level} onChanged={onCoverChanged} label="Ảnh bìa (dạng bìa sách, hiện ở trang chủ và danh sách khoá học)" />
       <div className="form-field">
         <label>Mã cấp độ (VD: HSK1, CONVO-BASIC)</label>
         <input type="text" value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} required />

@@ -30,6 +30,12 @@ export function setHomepageContent(content) {
   listeners.forEach((fn) => fn(cache));
 }
 
+/** Gọi sau khi admin đổi dữ liệu khoá học (VD: ảnh bìa) để trang công khai tải lại danh mục. */
+export function refreshPublicSite() {
+  pending = null;
+  return fetchSite();
+}
+
 export function usePublicSite() {
   const [site, setSite] = useState(cache);
   useEffect(() => {

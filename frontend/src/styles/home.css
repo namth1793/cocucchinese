@@ -939,6 +939,15 @@ a.hp-course:hover .hp-course-name { color: var(--s-red); }
 .hpa-item-tools button { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); display: grid; place-items: center; color: var(--ink-soft); }
 .hpa-item-tools button:disabled { opacity: .35; }
 .hpa-item-tools button.danger:hover { background: var(--wrong-soft); color: var(--wrong); }
+.hpa-covers { display: grid; gap: 12px; margin-top: 14px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .hpa-covers { grid-template-columns: 1fr 1fr; } }
+.hpa-cover { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; background: var(--bg); }
+.hpa-cover.is-hidden { opacity: .7; }
+.hpa-cover .form-field { margin: 10px 0 8px; }
+.hpa-cover .cover-thumb { width: 92px; }
+.hpa-cover-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+.hpa-cover-tags { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; }
+.hpa-tag { font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--bg-alt); border: 1px solid var(--line); color: var(--ink-soft); }
 .hpa-savebar {
   position: sticky; bottom: 0; z-index: 5; display: flex; align-items: center; justify-content: flex-end; gap: 12px; flex-wrap: wrap;
   padding: 12px 16px; margin-top: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); box-shadow: var(--shadow-md);

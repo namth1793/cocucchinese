@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowDown, ArrowUp, Check, ExternalLink, ImagePlus, Plus, Trash2 } from 'lucide-react';
 import api from '../../api/client';
 import { assetUrl } from '../../utils/assetUrl';
-import { setHomepageContent } from '../../utils/publicSite';
+import { refreshPublicSite, setHomepageContent } from '../../utils/publicSite';
+import CoverEditor from '../../components/CoverEditor';
 
 function Field({ label, hint, value, onChange, textarea = false, placeholder }) {
   return (
@@ -84,6 +86,52 @@ function ListEditor({ items, onChange, fields, blank, itemTitle, addLabel, max }
       {items.length < max && (
         <button type="button" className="btn-secondary" onClick={() => onChange([...items, { ...blank }])}><Plus size={15} /> {addLabel}</button>
       )}
+    </div>
+  );
+}
+
+/**
+ * Ảnh bìa sách của các khoá học hiện trên trang chủ: 3 cuốn đầu có bìa nằm trong khung cửa trăng ở banner,
+ * 8 khoá đầu thành thẻ khoá học. Thứ tự giống hệt Home.jsx (khoá đang bán xếp trước). Đổi ảnh lưu ngay.
+ */
+function CoverManager() {
+  const [list, setList] = useState(null);
+
+  useEffect(() => {
+    api.get('/courses/catalog').then((r) => setList(r.data.courses || [])).catch(() => setList([]));
+  }, []);
+
+  const courses = useMemo(() => (list ? [...list.filter((c) => c.forSale), ...list.filter((c) => !c.forSale)] : []), [list]);
+  const bannerIds = useMemo(() => courses.filter((c) => c.coverUrl).slice(0, 3).map((c) => c.id), [courses]);
+
+  if (!list) return <p className="hpa-hint" style={{ marginTop: 14 }}>Đang tải danh sách khoá học...</p>;
+  if (!courses.length) return <p className="hpa-hint" style={{ marginTop: 14 }}>Chưa có khoá học nào hiện trên trang chủ.</p>;
+
+  const onChanged = (level) => {
+    setList((l) => l.map((c) => (c.id === level.id ? { ...c, coverUrl: level.coverUrl || null } : c)));
+    refreshPublicSite();
+  };
+
+  return (
+    <div className="hpa-covers">
+      {courses.map((c, i) => {
+        const tags = [];
+        if (bannerIds.includes(c.id)) tags.push('Khung banner');
+        if (i < 8) tags.push(`Thẻ khoá học #${i + 1}`);
+        return (
+          <div key={c.id} className={`hpa-cover ${tags.length ? '' : 'is-hidden'}`}>
+            <div className="hpa-cover-head">
+              <b>{c.name}</b>
+              <span className="hpa-hint">{c.code}{c.forSale ? '' : ' · Sắp mở'}</span>
+              <span className="hpa-cover-tags">
+                {tags.length ? tags.map((t) => <span key={t} className="hpa-tag">{t}</span>) : <span className="hpa-hint">Chưa hiện trên trang chủ</span>}
+              </span>
+            </div>
+            <CoverEditor level={c} onChanged={onChanged} colorIndex={i} />
+            <Link to={`/admin/levels/${c.id}`} className="hpa-hint">Sửa thông tin khoá học</Link>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -195,6 +243,13 @@ export default function AdminHomepage() {
       <Section title="Khoá học" desc="Thẻ khoá học lấy tự động từ các cấp độ (khoá đang bán xếp trước, tối đa 8)">
         <Field label="Tiêu đề" value={courses.title} onChange={set('courses', 'title')} />
         <Field label="Mô tả (chữ đỏ nghiêng)" textarea value={courses.desc} onChange={set('courses', 'desc')} />
+      </Section>
+
+      <Section
+        title="Ảnh bìa sách"
+        desc="Bìa các khoá học ở khung cửa trăng (banner, 3 cuốn đầu có ảnh) và thẻ khoá học. Đổi/xoá ảnh lưu ngay, không cần bấm Lưu thay đổi"
+      >
+        <CoverManager />
       </Section>
 
       <Section title={`Tin tức & bài viết (${data.news.length})`}>
