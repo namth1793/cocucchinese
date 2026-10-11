@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, X, Type, House, Inbox } from 'lucide-react';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, X, Type, House, Inbox, CircleHelp } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/client';
 import { COURSE_CATEGORIES, LEVEL_TYPE_OPTIONS } from '../../constants/courseCategories';
 import Logo from '../../components/Logo';
+import GuidePopup, { getHiddenGuides } from '../../components/GuidePopup';
+import { guideKeyFor } from '../../constants/adminGuides';
 
 const EMPTY_LEVEL_FORM = { code: '', name: '', type: 'HSK', order: 1 };
 
@@ -123,6 +125,15 @@ export default function AdminLayout() {
 
   const doLogout = async () => { await logout(); navigate('/login'); };
 
+  // Mỗi khi vào một mục (hoặc đổi tab trong trình soạn bài) tự mở hướng dẫn của mục đó,
+  // trừ khi người dùng đã chọn "Không tự mở lại ở mục này".
+  const location = useLocation();
+  const guideKey = guideKeyFor(location.pathname, location.search);
+  const [openGuide, setOpenGuide] = useState(null);
+  useEffect(() => {
+    setOpenGuide(guideKey && !getHiddenGuides().has(guideKey) ? guideKey : null);
+  }, [guideKey]);
+
   return (
     <div className="app-shell">
       <aside className="sidebar admin-sidebar">
@@ -184,6 +195,11 @@ export default function AdminLayout() {
         <header className="navbar">
           <Link to="/admin" className="navbar-mobile-only"><Logo size="sm" /></Link>
           <div className="navbar-actions">
+            {guideKey && (
+              <button type="button" className="guide-trigger" onClick={() => setOpenGuide(guideKey)} title="Xem hướng dẫn cho mục này">
+                <CircleHelp size={16} /> <span>Hướng dẫn</span>
+              </button>
+            )}
             <span className="navbar-user-chip">
               <span className="navbar-avatar">{initial}</span>
               <span className="navbar-user">{user.name}</span>
@@ -232,6 +248,7 @@ export default function AdminLayout() {
         <main className="app-main">
           <Outlet />
         </main>
+        {openGuide && <GuidePopup guideKey={openGuide} onClose={() => setOpenGuide(null)} />}
       </div>
     </div>
   );
