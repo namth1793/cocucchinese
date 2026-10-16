@@ -50,4 +50,24 @@ router.post('/logout', requireAuth, asyncHandler(async (req, res) => {
 
 router.get('/me', requireAuth, (req, res) => res.json(req.user));
 
+// Người dùng tự đổi mật khẩu (mọi vai trò). Giữ phiên hiện tại, đăng xuất các thiết bị khác.
+router.post('/change-password', requireAuth, asyncHandler(async (req, res) => {
+  const currentPassword = String(req.body.currentPassword || '');
+  const newPassword = String(req.body.newPassword || '');
+  const user = await db.find('users', req.user.id);
+  if (!user || !bcrypt.compareSync(currentPassword, user.passwordHash)) {
+    return res.status(400).json({ error: 'Mật khẩu hiện tại không đúng' });
+  }
+  if (newPassword.length < 6 || newPassword.length > 128) {
+    return res.status(400).json({ error: 'Mật khẩu mới phải từ 6 đến 128 ký tự' });
+  }
+  if (newPassword === currentPassword) {
+    return res.status(400).json({ error: 'Mật khẩu mới phải khác mật khẩu hiện tại' });
+  }
+  const sessions = (user.activeSessions || []).filter((s) => s.jti === req.jti);
+  await db.update('users', user.id, { passwordHash: bcrypt.hashSync(newPassword, 10), activeSessions: sessions });
+  await db.logActivity(user.id, 'change_password', { ip: req.ip });
+  res.json({ success: true });
+}));
+
 module.exports = router;

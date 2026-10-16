@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, X, Type, House, Inbox, CircleHelp } from 'lucide-react';
+import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, X, Type, House, Inbox, CircleHelp, KeyRound } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/client';
 import { COURSE_CATEGORIES, LEVEL_TYPE_OPTIONS } from '../../constants/courseCategories';
@@ -185,6 +185,7 @@ export default function AdminLayout() {
               <span className="sidebar-user-role">{user.role === 'admin' ? 'Quản trị viên' : 'Giáo viên'}</span>
             </div>
           </div>
+          <Link to="/admin/password" className="sidebar-logout">Đổi mật khẩu</Link>
           <button type="button" className="sidebar-logout" onClick={doLogout}>
             Đăng xuất
           </button>
@@ -204,6 +205,9 @@ export default function AdminLayout() {
               <span className="navbar-avatar">{initial}</span>
               <span className="navbar-user">{user.name}</span>
             </span>
+            <Link to="/admin/password" className="navbar-logout navbar-mobile-only" aria-label="Đổi mật khẩu" title="Đổi mật khẩu">
+              <KeyRound size={15} />
+            </Link>
             <button type="button" className="navbar-logout navbar-mobile-only" aria-label="Đăng xuất" onClick={doLogout}>
               <LogOut size={15} />
             </button>

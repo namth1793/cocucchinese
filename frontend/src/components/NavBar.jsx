@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, ShieldCheck, UserRound } from 'lucide-react';
+import { KeyRound, LogOut, ShieldCheck, UserRound } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import PinyinToggle from './PinyinToggle';
 import Logo from './Logo';
@@ -39,6 +39,14 @@ export default function NavBar() {
             <span className="navbar-avatar">{initial}</span>
             <span className="navbar-user">{user.name}</span>
           </span>
+          <Link
+            to={user.role === 'student' ? '/account/password' : '/admin/password'}
+            className="navbar-logout"
+            aria-label="Đổi mật khẩu"
+            title="Đổi mật khẩu"
+          >
+            <KeyRound size={15} />
+          </Link>
           <button
             type="button"
             className="navbar-logout"

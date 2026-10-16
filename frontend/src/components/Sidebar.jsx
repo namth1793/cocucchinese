@@ -1,6 +1,6 @@
 import { ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { COURSE_CATEGORIES } from '../constants/courseCategories';
@@ -141,6 +141,7 @@ export default function Sidebar() {
             </span>
           </div>
         </div>
+        <Link to={user.role === 'student' ? '/account/password' : '/admin/password'} className="sidebar-logout">Đổi mật khẩu</Link>
         <button type="button" className="sidebar-logout" onClick={async () => { await logout(); navigate('/login'); }}>
           Đăng xuất
         </button>

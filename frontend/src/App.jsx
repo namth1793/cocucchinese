@@ -52,6 +52,7 @@ import AdminHomepage from './pages/admin/AdminHomepage';
 import AdminConsultations from './pages/admin/AdminConsultations';
 import HtmlLessonViewer, { HtmlLessonList } from './pages/HtmlLesson';
 import LessonDocuments from './pages/LessonDocuments';
+import ChangePassword from './pages/ChangePassword';
 
 /** Admin/giáo viên đăng nhập vào thẳng trang quản trị, không thấy dashboard học sinh. */
 function RoleHome() {
@@ -133,6 +134,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/review" element={<Review />} />
           <Route path="/instructors" element={<Instructors />} />
+          <Route path="/account/password" element={<ChangePassword />} />
           <Route element={<LevelGate />}>
             <Route path="/levels/:levelId" element={<LevelLessons />} />
           </Route>
@@ -151,6 +153,7 @@ export default function App() {
             <Route path="typography" element={<AdminTypography />} />
             <Route path="homepage" element={<AdminHomepage />} />
             <Route path="consultations" element={<AdminConsultations />} />
+            <Route path="password" element={<ChangePassword />} />
           </Route>
         </Route>
       </Route>

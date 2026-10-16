@@ -432,6 +432,10 @@ input, select, textarea { font-family: inherit; }
   color: var(--wrong); background: var(--wrong-soft); border-radius: var(--radius-sm);
   padding: 9px 12px; font-size: 13px; margin-bottom: 10px; font-weight: 600;
 }
+.form-success {
+  color: var(--correct); background: var(--correct-soft); border-radius: var(--radius-sm);
+  padding: 9px 12px; font-size: 13px; margin-bottom: 10px; font-weight: 600;
+}
 
 /* ---------- Auth pages (toàn màn hình, không viền thẻ) ---------- */
 
