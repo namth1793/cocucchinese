@@ -6,6 +6,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { SmartLink, softCase, telHref, usePublicSite } from '../utils/publicSite';
 import SocialIcon, { SOCIAL_KEYS } from './SocialIcon';
+import { COURSE_CATEGORIES } from '../constants/courseCategories';
 
 function Socials({ contact, className }) {
   const items = SOCIAL_KEYS.filter((s) => contact?.[s.key]);
@@ -21,19 +22,33 @@ function Socials({ contact, className }) {
   );
 }
 
+/**
+ * Mọi khoá đang hiện công khai (catalog), chia theo danh mục giống sidebar. Khoá chưa có học phí
+ * vẫn hiện kèm nhãn "Sắp mở" và dẫn về /courses vì trang chi tiết chỉ mở cho khoá đang bán.
+ */
+function courseGroups(courses) {
+  const known = new Set(COURSE_CATEGORIES.map((c) => c.key));
+  const toItem = (c) => ({ id: c.id, label: c.name, to: c.forSale ? `/courses/${c.id}` : '/courses', soon: !c.forSale });
+  const groups = COURSE_CATEGORIES.map((cat) => {
+    const groupOrder = (cat.groups || []).map((g) => g.key);
+    const rank = (c) => { const i = groupOrder.indexOf(c.group); return i < 0 ? groupOrder.length : i; };
+    const items = (courses || []).filter((c) => c.category === cat.key)
+      .map((c, i) => ({ c, i }))
+      .sort((a, b) => rank(a.c) - rank(b.c) || a.i - b.i)
+      .map(({ c }) => toItem(c));
+    return { key: cat.key, label: cat.label, items };
+  });
+  const others = (courses || []).filter((c) => !known.has(c.category)).map(toItem);
+  groups.push({ key: 'other', label: 'Khoá học khác', items: others });
+  return groups.filter((g) => g.items.length);
+}
+
 /** Danh sách mục menu - mục nào trang chủ chưa có nội dung (giảng viên, video...) thì ẩn luôn. */
 function buildNav(content, courses) {
-  const forSale = (courses || []).filter((c) => c.forSale);
   return [
     { label: 'Trang chủ', to: '/' },
     { label: 'Giới thiệu', to: '#gioi-thieu' },
-    {
-      label: 'Khoá học', to: '/courses',
-      children: [
-        ...forSale.map((c) => ({ label: c.name, to: `/courses/${c.id}` })),
-        { label: 'Tất cả khoá học', to: '/courses' }
-      ]
-    },
+    { label: 'Khoá học', to: '/courses', groups: courseGroups(courses) },
     content?.teachers?.length ? { label: 'Giảng viên', to: '#giang-vien' } : null,
     content?.testimonials?.length ? { label: 'Cảm nhận học viên', to: '#cam-nhan' } : null,
     content?.videos?.length ? { label: 'Video', to: '#video' } : null,
@@ -172,14 +187,26 @@ export default function PublicLayout() {
         <div className="site-wrap">
           <ul className="site-menu">
             {nav.map((item) => (
-              <li key={item.label} className={item.children ? 'has-sub' : ''}>
+              <li key={item.label} className={item.groups ? 'has-sub' : ''}>
                 <SmartLink to={item.to} className={isActive(item) ? 'active' : ''}>
-                  {item.label}{item.children && <ChevronDown size={14} />}
+                  {item.label}{item.groups && <ChevronDown size={14} />}
                 </SmartLink>
-                {item.children && (
-                  <ul className="site-submenu">
-                    {item.children.map((c) => <li key={c.to + c.label}><SmartLink to={c.to}>{c.label}</SmartLink></li>)}
-                  </ul>
+                {item.groups && (
+                  <div className="site-submenu site-mega">
+                    <div className="site-mega-cols">
+                      {item.groups.map((g) => (
+                        <div key={g.key} className="site-mega-col">
+                          <span className="site-mega-title">{g.label}</span>
+                          <ul>
+                            {g.items.map((c) => (
+                              <li key={c.id}><Link to={c.to}>{c.label}{c.soon && <em className="site-soon">Sắp mở</em>}</Link></li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                    <Link to="/courses" className="site-mega-all">Tất cả khoá học <ChevronRight size={14} /></Link>
+                  </div>
                 )}
               </li>
             ))}
@@ -202,13 +229,18 @@ export default function PublicLayout() {
             {nav.map((item) => (
               <li key={item.label}>
                 <SmartLink to={item.to} onClick={() => setDrawer(false)}>{item.label}</SmartLink>
-                {item.children && (
-                  <ul>
-                    {item.children.map((c) => (
-                      <li key={c.to + c.label}><SmartLink to={c.to} onClick={() => setDrawer(false)}>{c.label}</SmartLink></li>
-                    ))}
-                  </ul>
-                )}
+                {item.groups && item.groups.map((g) => (
+                  <div key={g.key} className="site-drawer-group">
+                    <span className="site-mega-title">{g.label}</span>
+                    <ul>
+                      {g.items.map((c) => (
+                        <li key={c.id}>
+                          <Link to={c.to} onClick={() => setDrawer(false)}>{c.label}{c.soon && <em className="site-soon">Sắp mở</em>}</Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </li>
             ))}
             <li>

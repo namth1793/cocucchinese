@@ -8,7 +8,9 @@ import api from '../api/client';
  */
 let cache = null;
 let pending = null;
+let fetchedAt = 0;
 const listeners = new Set();
+const STALE_MS = 30000;
 
 function fetchSite() {
   if (!pending) {
@@ -17,6 +19,7 @@ function fetchSite() {
       api.get('/courses/catalog').then((r) => r.data).catch(() => ({ courses: [], stats: {} }))
     ]).then(([content, catalog]) => {
       cache = { content, catalog };
+      fetchedAt = Date.now();
       listeners.forEach((fn) => fn(cache));
       return cache;
     });
@@ -34,6 +37,22 @@ export function setHomepageContent(content) {
 export function refreshPublicSite() {
   pending = null;
   return fetchSite();
+}
+
+// Mọi lần ghi thành công vào khoá học/bài học (thêm, sửa, ẩn, xoá, đổi bìa...) đều làm danh mục
+// công khai đổi theo (menu Khoá học, trang chủ, footer) -> tải lại ngay, không cần F5.
+api.interceptors.response.use((res) => {
+  const method = (res.config?.method || 'get').toLowerCase();
+  const url = res.config?.url || '';
+  if (method !== 'get' && /^\/?(levels|lessons)(\/|$|\?)/.test(url)) refreshPublicSite();
+  return res;
+});
+
+// Quay lại tab sau một lúc (admin sửa ở tab khác / admin khác sửa) -> lấy danh mục mới.
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && listeners.size && Date.now() - fetchedAt > STALE_MS) refreshPublicSite();
+  });
 }
 
 export function usePublicSite() {

@@ -10,7 +10,7 @@ const GROUPS = [
     keys: ['lesson-layout', 'lesson-html', 'lesson-words', 'lesson-characters', 'lesson-dialogues', 'lesson-grammar',
       'lesson-sentences', 'lesson-speaking', 'lesson-fill', 'lesson-slides', 'lesson-videos', 'lesson-songs', 'lesson-docs']
   },
-  { label: 'Khác', keys: ['instructors', 'students', 'users', 'consultations', 'homepage', 'typography'] }
+  { label: 'Khác', keys: ['instructors', 'library', 'students', 'users', 'consultations', 'homepage', 'typography'] }
 ];
 
 const ADMIN_ONLY = ['students', 'users', 'consultations', 'homepage', 'typography'];

@@ -49,7 +49,7 @@ export default function Login() {
                   <label>Mật khẩu</label>
                   <button type="button" className="auth-forgot-link" onClick={() => setShowForgotNote((v) => !v)}>Quên mật khẩu?</button>
                 </div>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
               {showForgotNote && (
                 <p className="auth-forgot-note">Vui lòng liên hệ quản trị viên để được cấp lại mật khẩu. Chỉ email đã được cấp quyền khoá học mới đăng nhập được.</p>

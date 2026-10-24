@@ -9,6 +9,9 @@ const asyncHandler = require('../utils/asyncHandler');
 
 const router = express.Router();
 const MAX_DEVICES = 2;
+// TẠM THỜI: tài khoản admin đăng nhập chỉ bằng email, không cần mật khẩu (theo yêu cầu chủ site).
+// Bật lại kiểm tra mật khẩu: đặt biến môi trường ADMIN_PASSWORDLESS=0 rồi khởi động lại backend.
+const ADMIN_PASSWORDLESS = process.env.ADMIN_PASSWORDLESS !== '0';
 
 // Không có đăng ký tự do: tài khoản học viên chỉ được tạo khi admin xác nhận thanh toán
 // (routes/orders.js) hoặc cấp quyền thủ công (routes/enrollments.js).
@@ -26,7 +29,8 @@ router.post('/login', asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const wanted = access.normalizeEmail(email);
   const user = (await db.findWhere('users', (u) => access.normalizeEmail(u.email) === wanted))[0];
-  if (!user || !bcrypt.compareSync(String(password || ''), user.passwordHash)) {
+  const passwordless = ADMIN_PASSWORDLESS && user?.role === 'admin';
+  if (!user || (!passwordless && !bcrypt.compareSync(String(password || ''), user.passwordHash))) {
     return res.status(401).json({ error: 'Sai email hoặc mật khẩu' });
   }
   if (user.status === 'locked') return res.status(403).json({ error: 'Tài khoản đã bị khóa' });
@@ -37,7 +41,7 @@ router.post('/login', asyncHandler(async (req, res) => {
     });
   }
   const token = await issueSession(user, req);
-  await db.logActivity(user.id, 'login', { ip: req.ip });
+  await db.logActivity(user.id, 'login', { ip: req.ip, passwordless });
   res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
 }));
 

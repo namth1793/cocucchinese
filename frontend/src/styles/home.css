@@ -124,6 +124,25 @@
 .site-menu > li:hover .site-submenu, .site-menu > li:focus-within .site-submenu { opacity: 1; visibility: visible; transform: translateY(0); }
 .site-submenu a { display: block; padding: 10px 20px; color: var(--s-ink); font-size: 14.5px; transition: background .15s, color .15s, padding .2s; }
 .site-submenu a:hover { background: var(--s-paper); color: var(--s-red); padding-left: 26px; }
+/* Menu Khoá học: nhiều cột theo danh mục, đủ mọi khoá */
+.site-submenu.site-mega { min-width: 0; width: max-content; max-width: min(860px, calc(100vw - 40px)); padding: 18px 8px 0; }
+.site-mega-cols { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: 4px 8px; }
+.site-mega-col ul { list-style: none; margin: 0; padding: 0; }
+.site-mega-title {
+  display: block; padding: 0 12px 8px; margin-bottom: 4px; border-bottom: 1px solid var(--s-line);
+  font-family: var(--f-display); font-size: 15px; font-weight: 600; color: var(--s-red);
+}
+.site-mega .site-mega-col a { display: flex; align-items: center; gap: 8px; padding: 7px 12px; font-size: 14px; }
+.site-mega .site-mega-col a:hover { padding-left: 16px; }
+.site-soon {
+  font-style: normal; font-family: var(--f-mono, monospace); font-size: 10.5px; letter-spacing: .02em; white-space: nowrap;
+  color: var(--s-muted); border: 1px solid var(--s-line); border-radius: 999px; padding: 1px 7px; margin-left: auto;
+}
+.site-mega a.site-mega-all {
+  display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin: 10px -8px 0; padding: 11px 20px;
+  border-top: 1px solid var(--s-line); background: var(--s-paper); color: var(--s-red); font-weight: 600; font-size: 14px;
+}
+.site-mega a.site-mega-all:hover { padding-left: 20px; }
 @media (min-width: 900px) { .site-nav { display: block; } }
 
 /* ---------- Menu điện thoại ---------- */
@@ -144,6 +163,10 @@
 .site-drawer-panel > ul > li > a { display: block; padding: 14px 0; font-family: var(--f-display); font-size: 19px; font-weight: 500; color: var(--s-ink); border-bottom: 1px solid var(--s-line); }
 .site-drawer-panel > ul > li > a:hover { color: var(--s-red); }
 .site-drawer-panel ul ul a { display: block; padding: 9px 0 9px 14px; color: var(--s-muted); font-size: 14px; border-bottom: 1px dashed var(--s-line); }
+.site-drawer-group { margin-top: 12px; }
+.site-drawer-group .site-mega-title { padding: 0 0 6px 14px; margin: 0; font-size: 14px; }
+.site-drawer-group ul a { display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 0 8px 14px; color: var(--s-muted); font-size: 14px; border-bottom: 1px dashed var(--s-line); }
+.site-drawer-group ul a:hover { color: var(--s-red); }
 
 /* ---------- Footer ---------- */
 .site-footer {

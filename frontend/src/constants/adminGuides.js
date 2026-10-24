@@ -286,6 +286,20 @@ export const ADMIN_GUIDES = {
     done: 'Tài khoản đã được quản lý xong.'
   },
 
+  library: {
+    title: 'Kho tài liệu',
+    intro: 'Nơi cất file sách dùng chung cho đội ngũ (giáo trình, sách bài tập, đề thi, audio kèm sách). Học viên không thấy mục này.',
+    steps: [
+      { target: '.lib-drop', title: 'Chọn file sách', body: 'Bấm **Chọn file sách** hoặc kéo thả file vào khung. Nhận PDF, EPUB, MOBI, Word, PowerPoint, Excel, ZIP/RAR, audio — tối đa **500MB**.' },
+      { target: field('Tên sách'), title: 'Thông tin sách', body: 'Ô **Tên sách** tự điền theo tên file, sửa lại cho dễ tìm. Thêm **Tác giả / NXB** và **Ghi chú** nếu cần.' },
+      { target: field('Danh mục'), title: 'Xếp danh mục', body: 'Gõ **Danh mục** (VD: HSK, YCT, Giao tiếp). Danh mục đã dùng sẽ hiện gợi ý để gõ thống nhất.' },
+      { target: 'button::+ Tải lên kho', title: 'Tải lên', body: 'Bấm **+ Tải lên kho** và chờ thanh tiến độ chạy hết. Sách mới hiện ở đầu bảng.' },
+      { target: '.lib-filter', title: 'Tìm sách', body: 'Gõ tên sách/tác giả vào ô tìm, hoặc chọn **danh mục** để lọc.' },
+      { target: '.lib-actions', title: 'Mở, sửa, xoá', needs: 'Bảng chỉ hiện khi kho đã có tài liệu.', body: 'Bấm **Mở** để xem/tải file, nút **bút chì** để sửa thông tin, **thùng rác** để xoá khỏi kho.' }
+    ],
+    done: 'Kho tài liệu đã sẵn sàng.'
+  },
+
   consultations: {
     title: 'Đăng ký tư vấn',
     intro: 'Danh sách khách để lại thông tin ở form "Đăng ký tư vấn" trên trang chủ.',

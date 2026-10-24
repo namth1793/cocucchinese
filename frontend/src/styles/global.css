@@ -416,7 +416,7 @@ input, select, textarea { font-family: inherit; }
 
 .form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
 .form-field label { font-size: 13px; color: var(--ink-soft); font-weight: 700; }
-.form-field input, .form-field select, .form-field textarea {
+.form-field input, .form-field select, .form-field textarea, .lib-filter input, .lib-filter select, .lib-edit input {
   padding: 11px 13px;
   border: 1.5px solid var(--line-strong);
   border-radius: var(--radius-sm);
@@ -425,7 +425,7 @@ input, select, textarea { font-family: inherit; }
   color: var(--ink);
   transition: border-color .15s ease, box-shadow .15s ease;
 }
-.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus, .lib-filter input:focus, .lib-filter select:focus, .lib-edit input:focus {
   outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft);
 }
 .form-error {
@@ -1794,3 +1794,28 @@ td.sort-cell button + button { margin-left: 4px; }
 .guide-card b { color: var(--ink); font-size: 14.5px; }
 .guide-card span { font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; }
 .guide-card small { font-size: 12px; font-weight: 700; color: var(--primary); }
+
+/* ---------- Kho tài liệu (admin) ---------- */
+.lib-upload { grid-template-columns: minmax(0, 1fr); }
+.lib-upload .admin-form-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 599px) { .lib-upload .admin-form-row { grid-template-columns: minmax(0, 1fr); } }
+.lib-drop {
+  display: flex; align-items: center; gap: 14px; padding: 18px 20px; cursor: pointer; color: var(--ink-soft);
+  border: 2px dashed var(--line-strong); border-radius: var(--radius-md); background: var(--bg); transition: border-color .15s, background .15s;
+}
+.lib-drop:hover, .lib-drop.has-file { border-color: var(--primary); background: var(--primary-soft); color: var(--ink); }
+.lib-drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.lib-drop b { color: var(--ink); }
+.lib-drop small { color: var(--ink-faint); }
+.lib-drop span { overflow-wrap: anywhere; line-height: 1.5; }
+.lib-progress { position: relative; height: 26px; border-radius: 999px; background: var(--bg-alt); overflow: hidden; }
+.lib-progress span { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--primary), var(--gold-light)); transition: width .2s; }
+.lib-progress em { position: relative; display: block; text-align: center; line-height: 26px; font-style: normal; font-size: 12.5px; font-weight: 700; color: var(--ink); }
+.lib-filter { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.lib-filter input { flex: 1 1 240px; }
+.lib-filter select { flex: 0 1 240px; }
+.lib-muted { color: var(--ink-soft); }
+.lib-ext { display: inline-block; padding: 1px 7px; border-radius: 6px; background: var(--bg-alt); border: 1px solid var(--line); font-size: 11px; font-weight: 700; letter-spacing: .03em; }
+.lib-actions { white-space: nowrap; text-align: right; }
+.lib-actions button { display: inline-flex; align-items: center; gap: 4px; margin-left: 6px; }
+.lib-edit { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; align-items: center; }

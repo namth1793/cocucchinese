@@ -50,6 +50,7 @@ import AdminGuide from './pages/admin/AdminGuide';
 import AdminTypography from './pages/admin/AdminTypography';
 import AdminHomepage from './pages/admin/AdminHomepage';
 import AdminConsultations from './pages/admin/AdminConsultations';
+import AdminLibrary from './pages/admin/AdminLibrary';
 import HtmlLessonViewer, { HtmlLessonList } from './pages/HtmlLesson';
 import LessonDocuments from './pages/LessonDocuments';
 import ChangePassword from './pages/ChangePassword';
@@ -153,6 +154,7 @@ export default function App() {
             <Route path="typography" element={<AdminTypography />} />
             <Route path="homepage" element={<AdminHomepage />} />
             <Route path="consultations" element={<AdminConsultations />} />
+            <Route path="library" element={<AdminLibrary />} />
             <Route path="password" element={<ChangePassword />} />
           </Route>
         </Route>

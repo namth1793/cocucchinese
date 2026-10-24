@@ -72,6 +72,7 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/html-pages', require('./routes/htmlPages'));
 app.use('/api/lesson-documents', require('./routes/lessonDocuments'));
 app.use('/api/media', require('./routes/media'));
+app.use('/api/library', require('./routes/library'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/homepage', require('./routes/homepage'));
 app.use('/api/consultations', require('./routes/consultations'));

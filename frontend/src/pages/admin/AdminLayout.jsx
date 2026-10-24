@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, X, Type, House, Inbox, CircleHelp, KeyRound } from 'lucide-react';
+import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, X, Type, House, Inbox, CircleHelp, KeyRound, Library } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/client';
 import { COURSE_CATEGORIES, LEVEL_TYPE_OPTIONS } from '../../constants/courseCategories';
@@ -150,6 +150,9 @@ export default function AdminLayout() {
           <NavLink to="/admin/instructors" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             Giảng viên
           </NavLink>
+          <NavLink to="/admin/library" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+            Kho tài liệu
+          </NavLink>
           {user.role === 'admin' && (
             <NavLink to="/admin/students" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               Học viên &amp; thanh toán
@@ -221,6 +224,9 @@ export default function AdminLayout() {
           </NavLink>
           <NavLink to="/admin/instructors" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
             <GraduationCap size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Giảng viên
+          </NavLink>
+          <NavLink to="/admin/library" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+            <Library size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Kho tài liệu
           </NavLink>
           {user.role === 'admin' && (
             <NavLink to="/admin/students" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
