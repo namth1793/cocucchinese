@@ -22,11 +22,21 @@ const ACTIVE_STATUSES = [ENROLLMENT_STATUS.PURCHASED, ENROLLMENT_STATUS.LEARNING
 /** Số bài đầu mỗi khoá được học thử miễn phí; khoá trả phí bắt đầu từ bài kế tiếp. */
 const FREE_LESSON_COUNT = 2;
 
+/**
+ * Mở toàn bộ: mọi bài của mọi khoá (không bị ẩn) học được miễn phí, kể cả khách chưa đăng
+ * nhập, không cần mua/cấp quyền. Mặc định bật; đặt env OPEN_ACCESS=0 để quay lại mô hình
+ * bán khoá học (học thử FREE_LESSON_COUNT bài đầu + cấp quyền theo email).
+ */
+const OPEN_ACCESS = process.env.OPEN_ACCESS !== '0';
+
 const isStaff = (user) => !!user && (user.role === 'admin' || user.role === 'teacher');
 const normalizeEmail = (email) => String(email || '').trim().toLowerCase();
 
 /** Khoá đang mở bán = cấp độ đã đặt học phí và không bị ẩn (cùng điều kiện với trang /courses). */
 const isForSale = (level) => !!level && typeof level.price === 'number' && level.price >= 0 && level.listed !== false;
+
+/** Khoá xem/học được công khai: đang mở bán, hoặc mọi khoá không bị ẩn khi OPEN_ACCESS. */
+const isOpenCourse = (level) => (OPEN_ACCESS ? !!level && level.listed !== false : isForSale(level));
 
 /** Thứ tự bài trong khoá - dùng chung cho lộ trình công khai và việc xác định bài học thử. */
 const lessonSort = (a, b) => (a.order ?? 0) - (b.order ?? 0) || String(a.createdAt).localeCompare(String(b.createdAt));
@@ -62,23 +72,24 @@ async function activeEnrollments(userId) {
 }
 
 async function hasAnyAccess(user) {
-  return isStaff(user) || (await activeEnrollments(user.id)).length > 0;
+  return OPEN_ACCESS || isStaff(user) || (await activeEnrollments(user.id)).length > 0;
 }
 
 /** null = không giới hạn (staff); ngược lại là Set các levelId được phép xem (khách: rỗng). */
 async function allowedLevelIds(user) {
-  if (isStaff(user)) return null;
+  if (OPEN_ACCESS || isStaff(user)) return null;
   if (!user) return new Set();
   return new Set((await activeEnrollments(user.id)).map((e) => e.levelId));
 }
 
 async function canAccessLevel(user, levelId) {
+  if (OPEN_ACCESS) return true;
   const allowed = await allowedLevelIds(user);
   return allowed === null || allowed.has(levelId);
 }
 
 async function canAccessLesson(user, lessonId) {
-  if (isStaff(user)) return true;
+  if (OPEN_ACCESS || isStaff(user)) return true;
   if (await isFreeLesson(lessonId)) return true;
   if (!user) return false;
   const lesson = await db.find('lessons', lessonId);
@@ -174,7 +185,7 @@ async function courseProgressPercent(userId, levelId) {
 }
 
 module.exports = {
-  ENROLLMENT_STATUS, ACTIVE_STATUSES, FREE_LESSON_COUNT, isStaff, normalizeEmail, isForSale, lessonSort,
+  ENROLLMENT_STATUS, ACTIVE_STATUSES, FREE_LESSON_COUNT, OPEN_ACCESS, isStaff, normalizeEmail, isForSale, isOpenCourse, lessonSort,
   freeLessonIds, isFreeLesson, invalidateFreeLessons,
   activeEnrollments, hasAnyAccess, allowedLevelIds, allowedLessonIds,
   canAccessLevel, canAccessLesson, canAccessItem, itemLevelId,

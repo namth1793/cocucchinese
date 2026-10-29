@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Clock, MapPin, Phone, Play, Trophy, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Clock, Download, MapPin, Phone, Play, Trophy, X } from 'lucide-react';
 import api from '../api/client';
 import { assetUrl } from '../utils/assetUrl';
 import { COURSE_CATEGORIES } from '../constants/courseCategories';
@@ -71,6 +71,8 @@ function MoonGate({ courses }) {
   );
 }
 
+const isWorkbook = (course) => /^sách bài tập/i.test(String(course.name || '').trim());
+
 function CourseTile({ course, index }) {
   const subtitle = [course.group || CATEGORY_LABEL[course.category], `${course.lessonCount} bài học`].filter(Boolean).join(' · ');
   const inner = (
@@ -80,7 +82,7 @@ function CourseTile({ course, index }) {
           ? <img src={assetUrl(course.coverUrl)} alt="" loading="lazy" className="hp-course-bg" />
           : <span className="hp-course-bg hp-course-bg-empty" aria-hidden="true">{course.code}</span>}
         <span className={`hp-course-badge ${course.forSale ? '' : 'soon'}`}>
-          {!course.forSale ? 'Sắp mở' : course.freeLessons > 0 ? `Học thử ${course.freeLessons} bài miễn phí` : 'Đang mở đăng ký'}
+          {!course.forSale ? 'Sắp mở' : course.openAccess ? 'Học miễn phí' : course.freeLessons > 0 ? `Học thử ${course.freeLessons} bài miễn phí` : 'Đang mở đăng ký'}
         </span>
         <span className="hp-course-shine" aria-hidden="true" />
       </span>
@@ -95,6 +97,44 @@ function CourseTile({ course, index }) {
   return course.forSale
     ? <Link to={`/courses/${course.id}`} {...props}>{inner}</Link>
     : <div {...props}>{inner}</div>;
+}
+
+function fileSizeLabel(bytes) {
+  if (!bytes) return '';
+  return bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
+
+/** Thẻ sách ở mục Kho tài liệu: bìa + tên + giới thiệu (mở rộng được) + nút tải qua API (đếm lượt tải). */
+function LibraryCard({ book, index }) {
+  const [open, setOpen] = useState(false);
+  const long = (book.description || '').length > 220;
+  const meta = [book.author, book.category].filter(Boolean).join(' · ');
+  const fileInfo = book.external ? '' : [book.fileType, fileSizeLabel(book.size)].filter(Boolean).join(' · ');
+  return (
+    <article className="hp-book" data-reveal="fade-up" style={{ '--d': `${(index % 2) * 110}ms` }}>
+      <CourseCover course={{ name: book.title, code: '书', coverUrl: book.coverUrl }} colorIndex={index} className="hp-book-cover" />
+      <div className="hp-book-body">
+        <h3 className="hp-book-title">{book.title}</h3>
+        {meta && <p className="hp-book-meta">{meta}</p>}
+        {book.description && (
+          <>
+            <p className={`hp-book-desc ${open ? 'is-open' : ''}`}>{book.description}</p>
+            {long && (
+              <button type="button" className="hp-book-more" onClick={() => setOpen((v) => !v)}>
+                {open ? 'Thu gọn' : 'Xem thêm'}
+              </button>
+            )}
+          </>
+        )}
+        <div className="hp-book-actions">
+          <a className="hp-btn hp-btn-solid hp-book-dl" href={`${api.defaults.baseURL}/library/${book.id}/download`} target="_blank" rel="noopener noreferrer">
+            <Download size={17} /> Tải sách về
+          </a>
+          {fileInfo && <span className="hp-book-file">{fileInfo}</span>}
+        </div>
+      </div>
+    </article>
+  );
 }
 
 function VideoModal({ id, onClose }) {
@@ -191,7 +231,7 @@ function ConsultForm() {
 
 /** Trang chủ công khai cho khách - học viên đăng nhập sẽ vào thẳng Dashboard thay vì trang này. */
 export default function Home() {
-  const { content, catalog } = usePublicSite();
+  const { content, catalog, library } = usePublicSite();
   const location = useLocation();
   const [video, setVideo] = useState('');
 
@@ -199,6 +239,10 @@ export default function Home() {
     const list = catalog?.courses || [];
     return [...list.filter((c) => c.forSale), ...list.filter((c) => !c.forSale)];
   }, [catalog]);
+  // Sách bài tập (khoá có tên bắt đầu "Sách bài tập") hiện thành hàng riêng, luôn đủ, không chiếm 8 ô khoá chính.
+  const workbooks = useMemo(() => courses.filter(isWorkbook)
+    .sort((a, b) => a.name.localeCompare(b.name, 'vi', { numeric: true })), [courses]);
+  const mainCourses = useMemo(() => courses.filter((c) => !isWorkbook(c)), [courses]);
 
   useReveal([content, catalog]);
   useParallax([content, catalog]);
@@ -355,8 +399,16 @@ export default function Home() {
             {content.courses.desc && <p className="hp-head-desc" data-reveal="fade-up" style={{ '--d': '120ms' }}>{content.courses.desc}</p>}
           </div>
           <div className="hp-course-grid">
-            {courses.slice(0, 8).map((c, i) => <CourseTile key={c.id} course={c} index={i} />)}
+            {mainCourses.slice(0, 8).map((c, i) => <CourseTile key={c.id} course={c} index={i} />)}
           </div>
+          {workbooks.length > 0 && (
+            <>
+              <h3 className="hp-course-subhead" data-reveal="fade-up">Sách bài tập</h3>
+              <div className="hp-course-grid">
+                {workbooks.map((c, i) => <CourseTile key={c.id} course={c} index={i} />)}
+              </div>
+            </>
+          )}
           {catalog && courses.length === 0 && <p className="empty-state">Chưa có khoá học nào.</p>}
           <div className="hp-center" data-reveal="fade-up">
             <SmartLink to="#dang-ky" className="hp-btn hp-btn-gold">Nhận tư vấn lộ trình miễn phí <ArrowRight size={18} /></SmartLink>
@@ -364,6 +416,24 @@ export default function Home() {
         </div>
         <span className="cn-fret cn-fret-bottom" aria-hidden="true" />
       </section>
+
+      {/* ---------- Kho tài liệu (sách admin cho hiện công khai) ---------- */}
+      {library?.length > 0 && (
+        <section className="hp-library" id="kho-tai-lieu">
+          <div className="site-wrap">
+            <div className="hp-head">
+              <Eyebrow hanzi="书库">Kho tài liệu</Eyebrow>
+              <h2 className="hp-title" data-reveal="fade-up">Sách & tài liệu <em>tải miễn phí</em></h2>
+              <p className="hp-head-desc" data-reveal="fade-up" style={{ '--d': '120ms' }}>
+                Giáo trình, sách bài tập và tài liệu ôn luyện do trung tâm chọn lọc - xem giới thiệu và tải về để học mọi lúc.
+              </p>
+            </div>
+            <div className="hp-library-grid">
+              {library.map((b, i) => <LibraryCard key={b.id} book={b} index={i} />)}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ---------- Văn hoá ---------- */}
       <section className="hp-culture" id="van-hoa">

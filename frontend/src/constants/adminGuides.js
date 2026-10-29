@@ -288,14 +288,18 @@ export const ADMIN_GUIDES = {
 
   library: {
     title: 'Kho tài liệu',
-    intro: 'Nơi cất file sách dùng chung cho đội ngũ (giáo trình, sách bài tập, đề thi, audio kèm sách). Học viên không thấy mục này.',
+    intro: 'Nơi cất file sách (giáo trình, sách bài tập, đề thi, audio kèm sách). Sách được tick "Hiện trên trang chủ" sẽ hiện ở mục Kho tài liệu của trang chủ để học viên xem giới thiệu và tải về.',
     steps: [
-      { target: '.lib-drop', title: 'Chọn file sách', body: 'Bấm **Chọn file sách** hoặc kéo thả file vào khung. Nhận PDF, EPUB, MOBI, Word, PowerPoint, Excel, ZIP/RAR, audio — tối đa **500MB**.' },
-      { target: field('Tên sách'), title: 'Thông tin sách', body: 'Ô **Tên sách** tự điền theo tên file, sửa lại cho dễ tìm. Thêm **Tác giả / NXB** và **Ghi chú** nếu cần.' },
+      { target: '.lib-drop', title: 'Chọn file sách', body: 'Bấm **Chọn file sách** hoặc kéo thả file vào khung. Nhận PDF, EPUB, MOBI, Word, PowerPoint, Excel, ZIP/RAR, audio — tối đa **500MB**. Sách quá nặng có thể bỏ trống ô này và nhập **Link tải sách** (VD: Google Drive).' },
+      { target: '.lib-cover-pick', title: 'Ảnh bìa', body: 'Bấm **+ Ảnh bìa** để chọn ảnh bìa sách (JPG/PNG, dọc ~4:5, tối đa 15MB). Ảnh này hiện trên trang chủ.' },
+      { target: field('Tên sách'), title: 'Thông tin sách', body: 'Ô **Tên sách** tự điền theo tên file, sửa lại cho dễ đọc. Thêm **Tác giả / NXB** nếu có.' },
+      { target: field('Giới thiệu sách'), title: 'Giới thiệu sách', body: 'Viết tổng quan về sách: nội dung chính, dành cho ai, có gì bên trong. Phần này hiện trên trang chủ, dài thì học viên bấm **Xem thêm**.' },
+      { target: field('Link tải sách (không bắt buộc)'), title: 'Link tải sách', body: 'Chỉ cần khi **không** tải file lên. Nếu đã có file, học viên tải đúng file đó.' },
       { target: field('Danh mục'), title: 'Xếp danh mục', body: 'Gõ **Danh mục** (VD: HSK, YCT, Giao tiếp). Danh mục đã dùng sẽ hiện gợi ý để gõ thống nhất.' },
-      { target: 'button::+ Tải lên kho', title: 'Tải lên', body: 'Bấm **+ Tải lên kho** và chờ thanh tiến độ chạy hết. Sách mới hiện ở đầu bảng.' },
+      { target: '.lib-check', title: 'Hiện trên trang chủ', body: 'Tick ô này để sách hiện ở mục **Kho tài liệu** trên trang chủ kèm nút **Tải sách về**. Bỏ tick = chỉ đội ngũ thấy.' },
+      { target: 'button::+ Thêm vào kho', title: 'Lưu sách', body: 'Bấm **+ Thêm vào kho** và chờ thanh tiến độ chạy hết. Sách mới hiện ở đầu bảng.' },
       { target: '.lib-filter', title: 'Tìm sách', body: 'Gõ tên sách/tác giả vào ô tìm, hoặc chọn **danh mục** để lọc.' },
-      { target: '.lib-actions', title: 'Mở, sửa, xoá', needs: 'Bảng chỉ hiện khi kho đã có tài liệu.', body: 'Bấm **Mở** để xem/tải file, nút **bút chì** để sửa thông tin, **thùng rác** để xoá khỏi kho.' }
+      { target: '.lib-actions', title: 'Mở, sửa, xoá', needs: 'Bảng chỉ hiện khi kho đã có tài liệu.', body: 'Bấm **Mở** để xem/tải file, nút **bút chì** để đổi ảnh bìa, sửa giới thiệu, link tải hoặc bật/tắt hiện trên trang chủ; **thùng rác** để xoá khỏi kho.' }
     ],
     done: 'Kho tài liệu đã sẵn sàng.'
   },

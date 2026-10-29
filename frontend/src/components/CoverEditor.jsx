@@ -6,7 +6,9 @@ import CourseCover from './CourseCover';
  * Upload/đổi/xoá ảnh bìa cấp độ - lưu ngay khi chọn file (không cần bấm "Lưu thay đổi" của form).
  * Dùng ở trang sửa cấp độ và mục "Ảnh bìa sách" của /admin/homepage.
  */
-export default function CoverEditor({ level, onChanged, label, colorIndex = 0 }) {
+export default function CoverEditor({ level, onChanged, label, colorIndex = 0, endpoint }) {
+  // endpoint: API ảnh bìa (mặc định của cấp độ); Kho tài liệu truyền `/library/<id>/cover`.
+  const url = endpoint || `/levels/${level.id}/cover`;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -21,7 +23,7 @@ export default function CoverEditor({ level, onChanged, label, colorIndex = 0 })
     try {
       const body = new FormData();
       body.append('file', file);
-      const res = await api.post(`/levels/${level.id}/cover`, body);
+      const res = await api.post(url, body);
       onChanged(res.data);
     } catch (err) {
       setError(err?.response?.data?.error || 'Tải ảnh lên thất bại, vui lòng thử lại.');
@@ -35,7 +37,7 @@ export default function CoverEditor({ level, onChanged, label, colorIndex = 0 })
     setBusy(true);
     setError('');
     try {
-      const res = await api.delete(`/levels/${level.id}/cover`);
+      const res = await api.delete(url);
       onChanged(res.data);
     } catch (err) {
       setError(err?.response?.data?.error || 'Xoá ảnh thất bại, vui lòng thử lại.');

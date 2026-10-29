@@ -44,8 +44,12 @@ export default function Courses() {
                 <span><BookOpen size={13} /> {c.lessonCount} bài học</span>
                 {c.duration && <span><Clock size={13} /> {c.duration}</span>}
               </span>
-              {c.freeLessons > 0 && <span className="pub-course-free"><Gift size={13} /> Học thử miễn phí {c.freeLessons} bài đầu</span>}
-              <span className="pub-course-price">{formatVnd(c.price)}</span>
+              {c.openAccess
+                ? <span className="pub-course-free"><Gift size={13} /> Miễn phí toàn bộ bài học</span>
+                : <>
+                  {c.freeLessons > 0 && <span className="pub-course-free"><Gift size={13} /> Học thử miễn phí {c.freeLessons} bài đầu</span>}
+                  <span className="pub-course-price">{formatVnd(c.price)}</span>
+                </>}
             </span>
           </Link>
         ))}

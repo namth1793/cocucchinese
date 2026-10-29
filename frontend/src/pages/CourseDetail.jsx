@@ -88,8 +88,8 @@ export default function CourseDetail() {
 
   const isStaff = user && (user.role === 'admin' || user.role === 'teacher');
   const firstFree = course.roadmap.find((l) => l.free);
-  // Đã có quyền cả khoá (học viên đã mua / staff) thì mọi bài đều mở, không cần nhãn học thử.
-  const fullAccess = isStaff || owned;
+  // Đã có quyền cả khoá (học viên đã mua / staff / khoá mở toàn bộ) thì mọi bài đều mở, không cần nhãn học thử.
+  const fullAccess = isStaff || owned || course.openAccess;
 
   return (
     <div>
@@ -104,6 +104,17 @@ export default function CourseDetail() {
             {course.audience && <span><Users size={14} /> {course.audience}</span>}
           </div>
           {course.description && <p className="pub-detail-desc">{course.description}</p>}
+
+          {course.openAccess && !isStaff && firstFree && (
+            <div className="trial-callout">
+              <span className="trial-callout-icon"><Gift size={20} /></span>
+              <span className="trial-callout-text">
+                <b>Miễn phí toàn bộ {course.lessonCount} bài học</b>
+                <span>Không cần đăng ký hay đăng nhập, vào học ngay.</span>
+              </span>
+              <Link to={`/lessons/${firstFree.id}`} className="btn-primary">Học ngay</Link>
+            </div>
+          )}
 
           {firstFree && !fullAccess && (
             <div className="trial-callout">
@@ -123,7 +134,7 @@ export default function CourseDetail() {
           </div>
 
           {/* Điện thoại: form đăng ký nằm cuối trang (sau lộ trình) nên đưa giá + nút nhảy tới form lên đầu */}
-          {!isStaff && !owned && (
+          {!fullAccess && (
             <div className="pub-mobile-buy">
               <span className="pub-mobile-buy-price">{formatVnd(course.price)}</span>
               <button
@@ -184,6 +195,11 @@ export default function CourseDetail() {
             <div className="card pub-order-card">
               <div className="pub-order-price">{formatVnd(course.price)}</div>
               <Link to={`/admin/levels/${course.id}`} className="btn-secondary btn-block">Mở trong trang quản trị</Link>
+            </div>
+          ) : course.openAccess ? (
+            <div className="card pub-order-card">
+              <div className="pub-order-price" style={{ fontSize: 18 }}>Khoá học miễn phí</div>
+              {firstFree && <Link to={`/lessons/${firstFree.id}`} className="btn-primary btn-block">Vào học ngay</Link>}
             </div>
           ) : owned ? (
             <div className="card pub-order-card">

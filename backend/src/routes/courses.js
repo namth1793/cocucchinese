@@ -19,8 +19,11 @@ async function publicCourse(level) {
     audience: level.audience || '',
     outcomes: Array.isArray(level.outcomes) ? level.outcomes : [],
     lessonCount: lessons.length,
+    // Mở toàn bộ (OPEN_ACCESS): mọi bài miễn phí, frontend ẩn giá/form đăng ký.
+    openAccess: access.OPEN_ACCESS,
     // Số bài học thử miễn phí thực có (khoá ít bài hơn FREE_LESSON_COUNT thì ít hơn); 0 nếu chưa mở bán.
-    freeLessons: isListed(level) ? Math.min(lessons.length, access.FREE_LESSON_COUNT) : 0
+    freeLessons: access.OPEN_ACCESS ? lessons.length
+      : isListed(level) ? Math.min(lessons.length, access.FREE_LESSON_COUNT) : 0
   };
 }
 
@@ -28,7 +31,7 @@ async function publicCourse(level) {
 const isListed = access.isForSale;
 
 router.get('/', asyncHandler(async (req, res) => {
-  const levels = (await db.all('levels')).filter(isListed).sort((a, b) => (a.order || 0) - (b.order || 0));
+  const levels = (await db.all('levels')).filter(access.isOpenCourse).sort((a, b) => (a.order || 0) - (b.order || 0));
   const items = await Promise.all(levels.map(publicCourse));
   res.json(items);
 }));
@@ -38,7 +41,7 @@ router.get('/', asyncHandler(async (req, res) => {
 router.get('/catalog', asyncHandler(async (req, res) => {
   const levels = (await db.all('levels')).filter((l) => l.listed !== false)
     .sort((a, b) => (a.order || 0) - (b.order || 0));
-  const courses = await Promise.all(levels.map(async (l) => ({ ...(await publicCourse(l)), forSale: isListed(l) })));
+  const courses = await Promise.all(levels.map(async (l) => ({ ...(await publicCourse(l)), forSale: access.isOpenCourse(l) })));
   const [lessons, words, sentences] = await Promise.all([db.all('lessons'), db.all('words'), db.all('sentences')]);
   res.json({
     courses,
@@ -66,10 +69,10 @@ router.get('/mine/list', requireAuth, asyncHandler(async (req, res) => {
 // free = bài học thử (vào học được ngay không cần đăng nhập).
 router.get('/:id', asyncHandler(async (req, res) => {
   const level = await db.find('levels', req.params.id);
-  if (!level || !isListed(level)) return res.status(404).json({ error: 'Không tìm thấy khoá học' });
+  if (!level || !access.isOpenCourse(level)) return res.status(404).json({ error: 'Không tìm thấy khoá học' });
   const lessons = (await db.findWhere('lessons', (l) => l.levelId === level.id))
     .sort(access.lessonSort)
-    .map((l, i) => ({ id: l.id, order: l.order, title: l.title, description: l.description || '', free: i < access.FREE_LESSON_COUNT }));
+    .map((l, i) => ({ id: l.id, order: l.order, title: l.title, description: l.description || '', free: access.OPEN_ACCESS || i < access.FREE_LESSON_COUNT }));
   const lessonIds = new Set(lessons.map((l) => l.id));
   const [words, grammarPoints, sentences] = await Promise.all([
     db.findWhere('words', (w) => lessonIds.has(w.lessonId)),

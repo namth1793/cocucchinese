@@ -16,9 +16,10 @@ function fetchSite() {
   if (!pending) {
     pending = Promise.all([
       api.get('/homepage').then((r) => r.data).catch(() => null),
-      api.get('/courses/catalog').then((r) => r.data).catch(() => ({ courses: [], stats: {} }))
-    ]).then(([content, catalog]) => {
-      cache = { content, catalog };
+      api.get('/courses/catalog').then((r) => r.data).catch(() => ({ courses: [], stats: {} })),
+      api.get('/library/public').then((r) => r.data).catch(() => [])
+    ]).then(([content, catalog, library]) => {
+      cache = { content, catalog, library };
       fetchedAt = Date.now();
       listeners.forEach((fn) => fn(cache));
       return cache;
@@ -39,12 +40,12 @@ export function refreshPublicSite() {
   return fetchSite();
 }
 
-// Mọi lần ghi thành công vào khoá học/bài học (thêm, sửa, ẩn, xoá, đổi bìa...) đều làm danh mục
+// Mọi lần ghi thành công vào khoá học/bài học/kho tài liệu (thêm, sửa, ẩn, xoá, đổi bìa...) đều làm danh mục
 // công khai đổi theo (menu Khoá học, trang chủ, footer) -> tải lại ngay, không cần F5.
 api.interceptors.response.use((res) => {
   const method = (res.config?.method || 'get').toLowerCase();
   const url = res.config?.url || '';
-  if (method !== 'get' && /^\/?(levels|lessons)(\/|$|\?)/.test(url)) refreshPublicSite();
+  if (method !== 'get' && /^\/?(levels|lessons|library)(\/|$|\?)/.test(url)) refreshPublicSite();
   return res;
 });
 
@@ -62,7 +63,7 @@ export function usePublicSite() {
     if (!cache) fetchSite();
     return () => listeners.delete(setSite);
   }, []);
-  return site || { content: null, catalog: null };
+  return site || { content: null, catalog: null, library: [] };
 }
 
 export function scrollToId(id) {

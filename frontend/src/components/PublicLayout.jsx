@@ -44,7 +44,7 @@ function courseGroups(courses) {
 }
 
 /** Danh sách mục menu - mục nào trang chủ chưa có nội dung (giảng viên, video...) thì ẩn luôn. */
-function buildNav(content, courses) {
+function buildNav(content, courses, library) {
   return [
     { label: 'Trang chủ', to: '/' },
     { label: 'Giới thiệu', to: '#gioi-thieu' },
@@ -53,6 +53,7 @@ function buildNav(content, courses) {
     content?.testimonials?.length ? { label: 'Cảm nhận học viên', to: '#cam-nhan' } : null,
     content?.videos?.length ? { label: 'Video', to: '#video' } : null,
     content?.news?.length ? { label: 'Tin tức', to: '#tin-tuc' } : null,
+    library?.length ? { label: 'Kho tài liệu', to: '#kho-tai-lieu' } : null,
     { label: 'Văn hoá', to: '#van-hoa' },
     { label: 'Liên hệ', to: '#dang-ky' }
   ].filter(Boolean);
@@ -125,7 +126,7 @@ function FloatingContact({ contact, children }) {
 /** Khung cho các trang công khai (trang chủ, danh sách khoá học, chi tiết, đơn đăng ký) - không cần đăng nhập. */
 export default function PublicLayout() {
   const { user } = useAuth();
-  const { content, catalog } = usePublicSite();
+  const { content, catalog, library } = usePublicSite();
   const location = useLocation();
   const navigate = useNavigate();
   const [q, setQ] = useState('');
@@ -134,7 +135,7 @@ export default function PublicLayout() {
   const isStaff = user && (user.role === 'admin' || user.role === 'teacher');
   const contact = content?.contact || {};
   const brand = content?.why?.brandName || 'HSK 360';
-  const nav = buildNav(content, catalog?.courses);
+  const nav = buildNav(content, catalog?.courses, library);
   const allCourses = catalog?.courses || [];
   const footerCourses = [...allCourses.filter((c) => c.forSale), ...allCourses.filter((c) => !c.forSale)].slice(0, 6);
 

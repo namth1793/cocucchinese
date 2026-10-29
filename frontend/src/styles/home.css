@@ -607,6 +607,7 @@
 .hp-courses-band .hp-title { color: #fff; }
 .hp-courses-band .hp-head-desc { color: rgba(255, 255, 255, .78); }
 .hp-courses-band .empty-state { color: rgba(255, 255, 255, .8); }
+.hp-course-subhead { margin: 48px 0 22px; text-align: center; color: var(--s-gold-light); font-family: var(--f-display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; letter-spacing: .02em; }
 @media (max-width: 899px) { .hp-courses-lantern { display: none !important; } .hp-courses-band > .site-wrap { padding-top: 64px; padding-bottom: 64px; } }
 
 .hp-course-grid { display: grid; gap: 28px 24px; grid-template-columns: 1fr; }
@@ -645,6 +646,31 @@ a.hp-course:hover .hp-course-name { color: var(--s-red); }
 .hp-course-sub { color: var(--s-muted); font-size: 14px; }
 
 /* ---------- Văn hoá ---------- */
+/* Kho tài liệu */
+.hp-library { position: relative; padding: 80px 0 88px; background: var(--s-paper, #F7F3EC); }
+.hp-library .hp-title em { color: var(--s-red); }
+.hp-library-grid { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .hp-library-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.hp-book { display: flex; gap: 22px; align-items: flex-start; padding: 22px; background: #fff; border: 1px solid rgba(28, 25, 23, .08); border-top: 3px solid var(--s-red); border-radius: 4px; box-shadow: 0 18px 34px -26px rgba(56, 6, 4, .45); transition: translate .35s, box-shadow .35s; }
+.hp-book:hover { translate: 0 -4px; box-shadow: 0 26px 40px -24px rgba(56, 6, 4, .5); }
+.hp-book-cover { width: 132px; flex-shrink: 0; border-radius: 3px; box-shadow: 6px 8px 0 -2px rgba(217, 164, 65, .35), 0 10px 22px -10px rgba(0, 0, 0, .45); }
+.hp-book-cover.cover-fallback { font-family: var(--f-hanzi); font-size: 44px; }
+.hp-book-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.hp-book-title { margin: 0; font-family: var(--f-display); font-size: 21px; line-height: 1.25; color: var(--s-ink); }
+.hp-book-meta { margin: 0; font-family: var(--f-mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--s-muted); }
+.hp-book-desc { margin: 4px 0 0; font-size: 15px; line-height: 1.65; color: var(--s-ink); white-space: pre-line; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.hp-book-desc.is-open { display: block; -webkit-line-clamp: unset; }
+.hp-book-more { align-self: flex-start; padding: 0; border: 0; background: none; color: var(--s-red); font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.hp-book-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: auto; padding-top: 12px; }
+.hp-book-dl { padding: 11px 20px; font-size: 15px; }
+.hp-book-file { font-family: var(--f-mono); font-size: 12px; color: var(--s-muted); }
+@media (max-width: 599px) {
+  .hp-library { padding: 56px 0 60px; }
+  .hp-book { gap: 14px; padding: 16px; }
+  .hp-book-cover { width: 96px; }
+  .hp-book-title { font-size: 18px; }
+}
+
 .hp-culture { position: relative; padding: 80px 0 88px; background: #fff; }
 @media (min-width: 900px) { .hp-culture { padding: 112px 0 120px; } }
 .hp-culture-grid { display: grid; gap: 14px; grid-template-columns: repeat(2, 1fr); grid-auto-rows: 180px; grid-auto-flow: dense; }
