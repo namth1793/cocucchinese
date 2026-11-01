@@ -1834,3 +1834,10 @@ td.sort-cell button + button { margin-left: 4px; }
 .lib-badge.is-on { background: #dcfce7; color: #166534; }
 .lib-table tr.is-editing td { background: var(--primary-soft); }
 .lib-actions a.btn-secondary { display: inline-flex; align-items: center; gap: 4px; margin-left: 6px; text-decoration: none; }
+
+/* Quản trị: bài kiểm tra */
+.tests-level-field { max-width: 420px; margin-bottom: 12px; }
+.tests-group { margin-top: 22px; }
+.tests-group h3 { margin: 0; font-size: 15px; }
+.tests-group .html-page-list { margin-top: 8px; }
+.test-level-select { max-width: 220px; padding: 7px 8px; border: 1.5px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font-size: 13px; }

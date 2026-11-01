@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { BookOpen, ChevronRight, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, X, Type, House, Inbox, CircleHelp, KeyRound, Library } from 'lucide-react';
+import { BookOpen, CalendarCheck, ChevronRight, FileCheck2, GraduationCap, LogOut, Plus, ReceiptText, ShieldCheck, Trash2, X, Type, House, Inbox, CircleHelp, KeyRound, Library } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/client';
 import { COURSE_CATEGORIES, LEVEL_TYPE_OPTIONS } from '../../constants/courseCategories';
@@ -147,6 +147,12 @@ export default function AdminLayout() {
           <NavLink to="/admin/guide" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             Hướng dẫn sử dụng
           </NavLink>
+          <NavLink to="/admin/attendance" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+            Điểm danh học sinh
+          </NavLink>
+          <NavLink to="/admin/tests" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+            Bài kiểm tra
+          </NavLink>
           <NavLink to="/admin/instructors" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             Giảng viên
           </NavLink>
@@ -221,6 +227,12 @@ export default function AdminLayout() {
           <MobileLevelTabs />
           <NavLink to="/admin/guide" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
             <BookOpen size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Hướng dẫn
+          </NavLink>
+          <NavLink to="/admin/attendance" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+            <CalendarCheck size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Điểm danh
+          </NavLink>
+          <NavLink to="/admin/tests" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
+            <FileCheck2 size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Bài kiểm tra
           </NavLink>
           <NavLink to="/admin/instructors" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
             <GraduationCap size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Giảng viên

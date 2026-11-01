@@ -4,7 +4,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight, FileCode2, RotateCw } from 'lucid
 import api from '../api/client';
 import PageHeader from '../components/PageHeader';
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+export const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 /**
  * Khung iframe chỉ được cấp quyền chạy script/biểu mẫu. Chỉ khi file được phục vụ từ một
@@ -12,7 +12,7 @@ const API_BASE = import.meta.env.VITE_API_URL || '/api';
  * được localStorage của chính nó) - cùng origin thì không, tránh file HTML đọc được phiên
  * đăng nhập của học viên.
  */
-function sandboxFor(src) {
+export function sandboxFor(src) {
   const base = 'allow-scripts allow-forms allow-popups allow-modals allow-downloads';
   const origin = new URL(src, window.location.href).origin;
   return origin === window.location.origin ? base : `${base} allow-same-origin`;

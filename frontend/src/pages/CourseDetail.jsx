@@ -180,6 +180,29 @@ export default function CourseDetail() {
             })}
           </ol>
           {course.roadmap.length === 0 && <p className="empty-state" style={{ textAlign: 'left' }}>Lộ trình đang được cập nhật.</p>}
+          {course.tests?.length > 0 && (
+            <>
+              <h2 className="pub-section-title">Bài kiểm tra</h2>
+              <ol className="pub-roadmap">
+                {course.tests.map((t, i) => {
+                  const body = (
+                    <>
+                      <span className="pub-roadmap-num">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="pub-roadmap-body"><span className="pub-roadmap-title">{t.title}</span></span>
+                      {fullAccess
+                        ? <ChevronRight size={16} className="pub-roadmap-go" />
+                        : <span className="pub-roadmap-tag"><Lock size={12} /> Khoá học</span>}
+                    </>
+                  );
+                  return (
+                    <li key={t.id} className={fullAccess ? 'is-open' : ''}>
+                      {fullAccess ? <Link to={`/tests/${t.id}`} className="pub-roadmap-link">{body}</Link> : body}
+                    </li>
+                  );
+                })}
+              </ol>
+            </>
+          )}
           {!fullAccess && (
             <p className="pub-field-note">
               {firstFree

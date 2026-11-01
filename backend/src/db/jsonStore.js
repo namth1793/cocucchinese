@@ -20,7 +20,7 @@ const COLLECTIONS = [
   'images', 'slides', 'slideProgress', 'songs', 'videos', 'examPapers',
   'progress', 'flashcardStatus', 'activityLogs', 'instructors',
   'enrollments', 'orders', 'migrations',
-  'htmlPages', 'lessonDocuments', 'settings', 'consultations', 'libraryBooks'
+  'htmlPages', 'lessonDocuments', 'settings', 'consultations', 'libraryBooks', 'courseTests'
 ];
 
 function emptyDb() {

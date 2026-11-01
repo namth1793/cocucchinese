@@ -286,6 +286,19 @@ export const ADMIN_GUIDES = {
     done: 'Tài khoản đã được quản lý xong.'
   },
 
+  tests: {
+    title: 'Bài kiểm tra',
+    intro: 'Tải file bài kiểm tra .html lên rồi chọn khoá học. Bài kiểm tra hiện ở trang của khoá học đó, học viên bấm vào để làm toàn màn hình.',
+    steps: [
+      { target: '.tests-level-field', title: 'Chọn khoá học', body: 'Chọn khoá học sẽ hiển thị bài kiểm tra. Phải chọn khoá trước khi tải file.' },
+      { target: '.drop-zone', title: 'Tải file HTML', body: 'Bấm hoặc kéo thả file **.html** vào khung, tối đa **500MB** mỗi file. Chọn nhiều file cùng lúc thì mỗi file thành 1 bài kiểm tra, tên bài lấy theo tên file.' },
+      { target: '.html-page-title', title: 'Đổi tên bài', needs: 'Danh sách chỉ hiện khi đã có bài kiểm tra.', body: 'Bấm vào tên để sửa, bấm ra ngoài là tự lưu. Mũi tên lên/xuống bên trái đổi thứ tự bài trong khoá.' },
+      { target: '.test-level-select', title: 'Chuyển khoá học', needs: 'Danh sách chỉ hiện khi đã có bài kiểm tra.', body: 'Chọn khoá khác ở ô này để chuyển bài kiểm tra sang khoá đó, thay đổi lưu ngay.' },
+      { target: '.html-page-actions', title: 'Xem thử, thay file, ẩn, xoá', needs: 'Danh sách chỉ hiện khi đã có bài kiểm tra.', body: 'Bấm **Xem thử** để xem như học viên, **Thay file** để cập nhật nội dung, nút **con mắt** để ẩn/hiện với học viên, **thùng rác** để xoá vĩnh viễn.' }
+    ],
+    done: 'Bài kiểm tra đã sẵn sàng cho học viên.'
+  },
+
   library: {
     title: 'Kho tài liệu',
     intro: 'Nơi cất file sách (giáo trình, sách bài tập, đề thi, audio kèm sách). Sách được tick "Hiện trên trang chủ" sẽ hiện ở mục Kho tài liệu của trang chủ để học viên xem giới thiệu và tải về.',

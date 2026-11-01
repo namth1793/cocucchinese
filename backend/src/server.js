@@ -70,6 +70,8 @@ app.use('/api/videos', require('./routes/videos'));
 app.use('/api/instructors', require('./routes/instructors'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/html-pages', require('./routes/htmlPages'));
+app.use('/api/classroom', require('./routes/classroom'));
+app.use('/api/course-tests', require('./routes/courseTests'));
 app.use('/api/lesson-documents', require('./routes/lessonDocuments'));
 app.use('/api/media', require('./routes/media'));
 app.use('/api/library', require('./routes/library'));

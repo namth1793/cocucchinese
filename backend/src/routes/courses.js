@@ -74,14 +74,16 @@ router.get('/:id', asyncHandler(async (req, res) => {
     .sort(access.lessonSort)
     .map((l, i) => ({ id: l.id, order: l.order, title: l.title, description: l.description || '', free: access.OPEN_ACCESS || i < access.FREE_LESSON_COUNT }));
   const lessonIds = new Set(lessons.map((l) => l.id));
-  const [words, grammarPoints, sentences] = await Promise.all([
+  const [words, grammarPoints, sentences, tests] = await Promise.all([
     db.findWhere('words', (w) => lessonIds.has(w.lessonId)),
     db.findWhere('grammarPoints', (g) => lessonIds.has(g.lessonId)),
-    db.findWhere('sentences', (s) => lessonIds.has(s.lessonId))
+    db.findWhere('sentences', (s) => lessonIds.has(s.lessonId)),
+    db.findWhere('courseTests', (t) => t.levelId === level.id && t.fileKey && t.published !== false)
   ]);
   res.json({
     ...(await publicCourse(level)),
     roadmap: lessons,
+    tests: tests.sort(access.lessonSort).map((t) => ({ id: t.id, title: t.title })),
     stats: { words: words.length, grammarPoints: grammarPoints.length, sentences: sentences.length }
   });
 }));

@@ -51,6 +51,9 @@ import AdminTypography from './pages/admin/AdminTypography';
 import AdminHomepage from './pages/admin/AdminHomepage';
 import AdminConsultations from './pages/admin/AdminConsultations';
 import AdminLibrary from './pages/admin/AdminLibrary';
+import AdminTests from './pages/admin/AdminTests';
+import AdminClassroom from './pages/admin/AdminClassroom';
+import TestViewer from './pages/TestViewer';
 import HtmlLessonViewer, { HtmlLessonList } from './pages/HtmlLesson';
 import LessonDocuments from './pages/LessonDocuments';
 import ChangePassword from './pages/ChangePassword';
@@ -96,6 +99,7 @@ export default function App() {
       </Route>
 
       {/* Trang học: bài học thử (bài 1-2 mỗi khoá) mở cho cả khách - quyền thật do backend kiểm tra */}
+      <Route path="/tests/:testId" element={<TestViewer />} />
       <Route element={<LessonGate banner={false} />}>
         {/* Bài học HTML xem toàn màn hình (ngoài khung Layout) */}
         <Route path="/lessons/:lessonId/html/:pageId" element={<HtmlLessonViewer />} />
@@ -142,11 +146,13 @@ export default function App() {
         </Route>
 
         <Route element={<RequireStaff />}>
+          <Route path="/admin/attendance" element={<AdminClassroom />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminHome />} />
             <Route path="levels" element={<AdminLevels />} />
             <Route path="levels/:levelId" element={<AdminLevelDetail />} />
             <Route path="levels/:levelId/lessons/:lessonId" element={<AdminLessonEditor />} />
+            <Route path="tests" element={<AdminTests />} />
             <Route path="instructors" element={<AdminInstructors />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="students" element={<AdminStudents />} />

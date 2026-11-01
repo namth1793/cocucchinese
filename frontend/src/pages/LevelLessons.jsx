@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { FileText, ExternalLink } from 'lucide-react';
+import { FileCheck2, FileText, ExternalLink } from 'lucide-react';
 import api from '../api/client';
 import ProgressBar from '../components/ProgressBar';
 
@@ -10,8 +10,10 @@ export default function LevelLessons() {
   const [lessons, setLessons] = useState([]);
   const [summaries, setSummaries] = useState({});
   const [examGroups, setExamGroups] = useState([]);
+  const [tests, setTests] = useState([]);
 
   useEffect(() => {
+    api.get('/course-tests', { params: { levelId } }).then((res) => setTests(res.data.filter((t) => t.published))).catch(() => setTests([]));
     api.get(`/levels/${levelId}`).then((res) => setLevel(res.data));
     api.get('/lessons', { params: { levelId } }).then(async (res) => {
       const sorted = [...res.data].sort((a, b) => a.order - b.order);
@@ -82,7 +84,18 @@ export default function LevelLessons() {
           </div>
         </Link>
       ))}
-      {lessons.length === 0 && examGroups.length === 0 && <p className="empty-state">Chưa có bài học trong cấp độ này.</p>}
+      {tests.length > 0 && (
+        <>
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: 8 }}><FileCheck2 size={19} /> Bài kiểm tra</h2>
+          {tests.map((t, i) => (
+            <Link to={`/tests/${t.id}`} key={t.id} className="lesson-row">
+              <span className="lesson-row-num">{String(i + 1).padStart(2, '0')}</span>
+              <div className="lesson-row-main"><div className="lesson-row-title">{t.title}</div></div>
+            </Link>
+          ))}
+        </>
+      )}
+      {lessons.length === 0 && examGroups.length === 0 && tests.length === 0 && <p className="empty-state">Chưa có bài học trong cấp độ này.</p>}
     </div>
   );
 }
