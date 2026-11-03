@@ -3,6 +3,7 @@ const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
 const access = require('../utils/access');
 const asyncHandler = require('../utils/asyncHandler');
+const { isWorkbook, workbookParentId } = require('../utils/workbooks');
 
 const router = express.Router();
 
@@ -31,7 +32,8 @@ async function publicCourse(level) {
 const isListed = access.isForSale;
 
 router.get('/', asyncHandler(async (req, res) => {
-  const levels = (await db.all('levels')).filter(access.isOpenCourse).sort((a, b) => (a.order || 0) - (b.order || 0));
+  const all = await db.all('levels');
+  const levels = all.filter((l) => access.isOpenCourse(l) && !isWorkbook(l, all)).sort((a, b) => (a.order || 0) - (b.order || 0));
   const items = await Promise.all(levels.map(publicCourse));
   res.json(items);
 }));
@@ -39,7 +41,9 @@ router.get('/', asyncHandler(async (req, res) => {
 // Danh mục cho trang chủ công khai: mọi cấp độ không bị ẩn (kể cả chưa đặt học phí -
 // hiện "Sắp mở", không có link đăng ký) + số liệu tổng. Chỉ thông tin giới thiệu, không lộ nội dung.
 router.get('/catalog', asyncHandler(async (req, res) => {
-  const levels = (await db.all('levels')).filter((l) => l.listed !== false)
+  // Sách bài tập nằm trong khoá chính (mục "Sách bài tập"), không hiện thành khoá riêng.
+  const all = await db.all('levels');
+  const levels = all.filter((l) => l.listed !== false && !isWorkbook(l, all))
     .sort((a, b) => (a.order || 0) - (b.order || 0));
   const courses = await Promise.all(levels.map(async (l) => ({ ...(await publicCourse(l)), forSale: access.isOpenCourse(l) })));
   const [lessons, words, sentences] = await Promise.all([db.all('lessons'), db.all('words'), db.all('sentences')]);
@@ -70,9 +74,15 @@ router.get('/mine/list', requireAuth, asyncHandler(async (req, res) => {
 router.get('/:id', asyncHandler(async (req, res) => {
   const level = await db.find('levels', req.params.id);
   if (!level || !access.isOpenCourse(level)) return res.status(404).json({ error: 'Không tìm thấy khoá học' });
-  const lessons = (await db.findWhere('lessons', (l) => l.levelId === level.id))
+  const roadmapOf = async (levelId) => (await db.findWhere('lessons', (l) => l.levelId === levelId))
     .sort(access.lessonSort)
     .map((l, i) => ({ id: l.id, order: l.order, title: l.title, description: l.description || '', free: access.OPEN_ACCESS || i < access.FREE_LESSON_COUNT }));
+  const lessons = await roadmapOf(level.id);
+  const allLevels = await db.all('levels');
+  const workbooks = await Promise.all(allLevels
+    .filter((l) => l.listed !== false && workbookParentId(l, allLevels) === level.id)
+    .sort((a, b) => (a.order || 0) - (b.order || 0))
+    .map(async (l) => ({ id: l.id, code: l.code, name: l.name, lessons: await roadmapOf(l.id) })));
   const lessonIds = new Set(lessons.map((l) => l.id));
   const [words, grammarPoints, sentences, tests] = await Promise.all([
     db.findWhere('words', (w) => lessonIds.has(w.lessonId)),
@@ -83,6 +93,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
   res.json({
     ...(await publicCourse(level)),
     roadmap: lessons,
+    workbooks,
     tests: tests.sort(access.lessonSort).map((t) => ({ id: t.id, title: t.title })),
     stats: { words: words.length, grammarPoints: grammarPoints.length, sentences: sentences.length }
   });

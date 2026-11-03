@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowUp, ExternalLink, Eye, EyeOff, FileCheck2, Trash2, Upload } from 'lucide-react';
+import { ArrowDown, ArrowUp, Copy, ExternalLink, Eye, EyeOff, FileCheck2, Shuffle, Trash2, Upload } from 'lucide-react';
 import api from '../../api/client';
 
 const formatSize = (bytes) => {
@@ -91,6 +91,108 @@ function TestRow({ test, index, total, levels, onMove, onChanged, onError }) {
   );
 }
 
+const randomCode = (level) => {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const tail = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  const prefix = String(level?.code || '').toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 12);
+  return prefix ? `${prefix}-${tail}` : tail;
+};
+
+/** Mã code: học sinh nhập đúng mã của khoá thì mới làm được bài kiểm tra của khoá đó. */
+function TestCodes({ levels }) {
+  const [codes, setCodes] = useState(null);
+  const [form, setForm] = useState({ levelId: '', code: '', note: '' });
+  const [error, setError] = useState('');
+  const levelOf = (id) => levels.find((lv) => lv.id === id);
+
+  const load = () => api.get('/course-tests/codes').then((res) => setCodes(res.data)).catch(() => setCodes([]));
+  useEffect(() => { load(); }, []);
+
+  const create = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      await api.post('/course-tests/codes', form);
+      setForm({ ...form, code: '', note: '' });
+      load();
+    } catch (err) {
+      setError(err?.response?.data?.error || 'Không tạo được mã, vui lòng thử lại.');
+    }
+  };
+
+  const toggle = async (c) => { await api.put(`/course-tests/codes/${c.id}`, { active: !c.active }); load(); };
+  const remove = async (c) => {
+    if (!window.confirm(`Xoá mã "${c.code}"? Học sinh đã nhập mã này sẽ phải nhập mã mới.`)) return;
+    await api.delete(`/course-tests/codes/${c.id}`);
+    load();
+  };
+  const copy = (c) => navigator.clipboard?.writeText(c.code);
+
+  return (
+    <section className="test-codes">
+      <h2>Mã code làm bài kiểm tra</h2>
+      <p className="page-sub">
+        Học sinh vào khoá học, mở mục <b>Bài kiểm tra</b> và nhập mã thì mới làm được bài. Mỗi mã dùng cho mọi bài kiểm tra
+        của 1 khoá. Tắt hoặc xoá mã thì học sinh đã nhập mã đó cũng không vào được nữa.
+      </p>
+      <form className="admin-form test-code-create" onSubmit={create}>
+        <div className="admin-form-row">
+          <div className="form-field">
+            <label>Khoá học của mã</label>
+            <select value={form.levelId} onChange={(e) => setForm({ ...form, levelId: e.target.value })} required>
+              <option value="">Chọn khoá học</option>
+              {levels.map((lv) => <option key={lv.id} value={lv.id}>{levelLabel(lv)}</option>)}
+            </select>
+          </div>
+          <div className="form-field">
+            <label>Mã code</label>
+            <div className="test-code-input">
+              <input
+                value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
+                placeholder="VD: HSK1-2026" maxLength={32} required spellCheck={false}
+              />
+              <button type="button" className="btn-secondary" title="Tạo mã ngẫu nhiên" onClick={() => setForm({ ...form, code: randomCode(levelOf(form.levelId)) })}>
+                <Shuffle size={14} /> Ngẫu nhiên
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="form-field">
+          <label>Ghi chú (không bắt buộc)</label>
+          <input value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} maxLength={200} placeholder="VD: Lớp HSK1 tối T2-T4" />
+        </div>
+        {error && <div className="form-error">{error}</div>}
+        <div><button type="submit" className="btn-primary">+ Thêm mã</button></div>
+      </form>
+
+      {codes?.length === 0 && <p className="empty-state">Chưa có mã code nào. Khi chưa có mã, học sinh không làm được bài kiểm tra.</p>}
+      {codes?.length > 0 && (
+        <div style={{ overflowX: 'auto' }}>
+          <table className="admin-table test-code-table">
+            <thead><tr><th>Mã</th><th>Khoá học</th><th>Ghi chú</th><th>Lượt nhập</th><th>Trạng thái</th><th /></tr></thead>
+            <tbody>
+              {codes.map((c) => (
+                <tr key={c.id} className={c.active ? '' : 'is-off'}>
+                  <td><code className="test-code-value">{c.code}</code></td>
+                  <td>{levelOf(c.levelId) ? levelLabel(levelOf(c.levelId)) : <i>Khoá đã xoá</i>}</td>
+                  <td>{c.note}</td>
+                  <td>{c.uses}</td>
+                  <td>{c.active ? <span className="lib-badge is-on">Đang dùng</span> : <span className="lib-badge">Đã tắt</span>}</td>
+                  <td className="lib-actions">
+                    <button type="button" className="btn-secondary" onClick={() => copy(c)} title="Sao chép mã"><Copy size={14} /></button>
+                    <button type="button" className="btn-secondary" onClick={() => toggle(c)} title={c.active ? 'Tắt mã' : 'Bật lại mã'}>{c.active ? <EyeOff size={14} /> : <Eye size={14} />}</button>
+                    <button type="button" className="btn-danger" onClick={() => remove(c)} title="Xoá mã"><Trash2 size={14} /></button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
 /** Bài kiểm tra: admin tải file HTML lên, chọn khoá học; bài hiện trong trang của khoá đó. */
 export default function AdminTests() {
   const [tests, setTests] = useState(null);
@@ -148,7 +250,7 @@ export default function AdminTests() {
       <h2 style={{ marginTop: 0 }}>Bài kiểm tra</h2>
       <p className="page-sub">
         Tải file bài kiểm tra dạng <b>.html</b> (tự chứa câu hỏi, chấm điểm trong 1 file) rồi chọn khoá học. Bài kiểm tra hiện ở
-        trang của khoá học đó, học viên bấm vào để làm toàn màn hình.
+        mục <b>Bài kiểm tra</b> trong trang khoá học đó; học sinh phải nhập <b>mã code</b> (tạo ở cuối trang) mới làm được.
       </p>
 
       <div className="form-field tests-level-field">
@@ -193,6 +295,8 @@ export default function AdminTests() {
           </div>
         </section>
       ))}
+
+      <TestCodes levels={levels} />
     </div>
   );
 }

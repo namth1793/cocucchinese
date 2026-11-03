@@ -50,6 +50,7 @@ export const ADMIN_GUIDES = {
       { target: 'button::Sửa thông tin cấp độ', title: 'Mở form sửa khoá học', body: 'Bấm **Sửa thông tin cấp độ**. Các bước tiếp theo khoanh vào từng ô trong form vừa mở.' },
       { target: '.cover-editor', title: 'Đổi ảnh bìa', body: 'Chọn file JPG/PNG/WEBP (tối đa 15MB). Ảnh **lưu ngay** khi chọn xong. **Xoá ảnh** để quay về khung màu mặc định.' },
       { target: field('Học phí'), title: 'Đặt học phí', body: 'Nhập **Học phí (VNĐ)**. Để trống = không bán, khoá hiện "Sắp mở".', tip: 'Khoá đang bán tự mở 2 bài đầu cho học thử miễn phí.' },
+      { target: field('Là sách bài tập của khoá'), title: 'Sách bài tập', body: 'Nếu cấp độ này là sách bài tập, chọn **khoá chính** của nó: các bài sẽ hiện ở mục **Sách bài tập** trong trang khoá chính. Cấp độ có mã dạng **HSK1-SBT** tự nhận là sách bài tập của **HSK1**.' },
       { target: field('Hiển thị công khai'), title: 'Ẩn / hiện khoá', body: 'Bỏ chọn ô này để tạm ẩn khoá khỏi trang đăng ký mà không cần xoá học phí.' },
       { target: field('Kết quả đạt được'), title: 'Giới thiệu khoá học', body: 'Điền **Thời lượng**, **Đối tượng phù hợp**, **Giới thiệu khoá học** và **Kết quả đạt được** (mỗi dòng một ý) — hiện ở trang chi tiết khoá học.' },
       { target: 'form.admin-form .admin-actions', title: 'Lưu thông tin khoá', body: 'Bấm **Lưu thay đổi**. Trang khoá học công khai cập nhật ngay.' },
@@ -288,13 +289,15 @@ export const ADMIN_GUIDES = {
 
   tests: {
     title: 'Bài kiểm tra',
-    intro: 'Tải file bài kiểm tra .html lên rồi chọn khoá học. Bài kiểm tra hiện ở trang của khoá học đó, học viên bấm vào để làm toàn màn hình.',
+    intro: 'Tải file bài kiểm tra .html lên rồi chọn khoá học. Bài kiểm tra hiện ở mục Bài kiểm tra trong trang khoá học; học sinh phải nhập mã code (tạo ở cuối trang) mới làm được.',
     steps: [
       { target: '.tests-level-field', title: 'Chọn khoá học', body: 'Chọn khoá học sẽ hiển thị bài kiểm tra. Phải chọn khoá trước khi tải file.' },
       { target: '.drop-zone', title: 'Tải file HTML', body: 'Bấm hoặc kéo thả file **.html** vào khung, tối đa **500MB** mỗi file. Chọn nhiều file cùng lúc thì mỗi file thành 1 bài kiểm tra, tên bài lấy theo tên file.' },
       { target: '.html-page-title', title: 'Đổi tên bài', needs: 'Danh sách chỉ hiện khi đã có bài kiểm tra.', body: 'Bấm vào tên để sửa, bấm ra ngoài là tự lưu. Mũi tên lên/xuống bên trái đổi thứ tự bài trong khoá.' },
       { target: '.test-level-select', title: 'Chuyển khoá học', needs: 'Danh sách chỉ hiện khi đã có bài kiểm tra.', body: 'Chọn khoá khác ở ô này để chuyển bài kiểm tra sang khoá đó, thay đổi lưu ngay.' },
-      { target: '.html-page-actions', title: 'Xem thử, thay file, ẩn, xoá', needs: 'Danh sách chỉ hiện khi đã có bài kiểm tra.', body: 'Bấm **Xem thử** để xem như học viên, **Thay file** để cập nhật nội dung, nút **con mắt** để ẩn/hiện với học viên, **thùng rác** để xoá vĩnh viễn.' }
+      { target: '.html-page-actions', title: 'Xem thử, thay file, ẩn, xoá', needs: 'Danh sách chỉ hiện khi đã có bài kiểm tra.', body: 'Bấm **Xem thử** để xem như học viên, **Thay file** để cập nhật nội dung, nút **con mắt** để ẩn/hiện với học viên, **thùng rác** để xoá vĩnh viễn.' },
+      { target: '.test-code-create', title: 'Tạo mã code', body: 'Chọn **Khoá học của mã**, gõ mã hoặc bấm **Ngẫu nhiên**, thêm ghi chú (VD: tên lớp) rồi bấm **+ Thêm mã**. Gửi mã này cho học sinh: nhập đúng mã thì làm được mọi bài kiểm tra của khoá.' },
+      { target: '.test-code-table', title: 'Quản lý mã', needs: 'Bảng chỉ hiện khi đã có mã code.', body: 'Cột **Lượt nhập** cho biết mã đã được nhập bao nhiêu lần. Nút **con mắt** tắt/bật mã, **thùng rác** xoá mã — học sinh đã nhập mã bị tắt/xoá sẽ phải nhập mã mới.' }
     ],
     done: 'Bài kiểm tra đã sẵn sàng cho học viên.'
   },

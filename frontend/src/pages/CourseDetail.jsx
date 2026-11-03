@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { BookOpen, CheckCircle2, ChevronRight, Clock, Gift, Layers3, ListChecks, Lock, ShoppingCart, Users } from 'lucide-react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { BookOpen, CheckCircle2, ChevronRight, Clock, FileCheck2, Gift, Layers3, ListChecks, Lock, NotebookPen, ShoppingCart, Users } from 'lucide-react';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { formatVnd } from '../constants/enrollment';
 import CourseCover from '../components/CourseCover';
+import TestCodeForm from '../components/TestCodeForm';
+import { forgetTestUnlock, getTestUnlock } from '../utils/testUnlock';
 
 function OrderForm({ course }) {
   const { user } = useAuth();
@@ -63,12 +65,52 @@ function OrderForm({ course }) {
   );
 }
 
+const COURSE_TABS = [
+  { key: 'giao-trinh', label: 'Giáo trình', icon: BookOpen },
+  { key: 'sach-bai-tap', label: 'Sách bài tập', icon: NotebookPen },
+  { key: 'bai-kiem-tra', label: 'Bài kiểm tra', icon: FileCheck2 }
+];
+
+/** Danh sách bài (giáo trình hoặc sách bài tập): bài mở được thì bấm vào học ngay. */
+function Roadmap({ lessons, fullAccess }) {
+  return (
+    <ol className="pub-roadmap">
+      {lessons.map((l) => {
+        const open = fullAccess || l.free;
+        const body = (
+          <>
+            <span className="pub-roadmap-num">{String(l.order).padStart(2, '0')}</span>
+            <span className="pub-roadmap-body">
+              <span className="pub-roadmap-title">{l.title}</span>
+              {l.description && <span className="pub-roadmap-desc">{l.description}</span>}
+            </span>
+            {!fullAccess && (l.free
+              ? <span className="pub-roadmap-tag is-free">Học thử miễn phí</span>
+              : <span className="pub-roadmap-tag"><Lock size={12} /> Khoá học</span>)}
+            {open && <ChevronRight size={16} className="pub-roadmap-go" />}
+          </>
+        );
+        return (
+          <li key={l.id} className={open ? 'is-open' : ''}>
+            {open ? <Link to={`/lessons/${l.id}`} className="pub-roadmap-link">{body}</Link> : body}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 export default function CourseDetail() {
   const { courseId } = useParams();
   const { user } = useAuth();
   const [course, setCourse] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [owned, setOwned] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = COURSE_TABS.some((t) => t.key === searchParams.get('muc')) ? searchParams.get('muc') : 'giao-trinh';
+  const setTab = (key) => setSearchParams(key === 'giao-trinh' ? {} : { muc: key }, { replace: true });
+  const [unlocked, setUnlocked] = useState(false);
+  useEffect(() => setUnlocked(!!getTestUnlock(courseId)), [courseId]);
 
   useEffect(() => {
     setCourse(null);
@@ -90,6 +132,8 @@ export default function CourseDetail() {
   const firstFree = course.roadmap.find((l) => l.free);
   // Đã có quyền cả khoá (học viên đã mua / staff / khoá mở toàn bộ) thì mọi bài đều mở, không cần nhãn học thử.
   const fullAccess = isStaff || owned || course.openAccess;
+  const testsOpen = isStaff || unlocked;
+  const workbookLessons = (course.workbooks || []).reduce((n, wb) => n + wb.lessons.length, 0);
 
   return (
     <div>
@@ -155,52 +199,66 @@ export default function CourseDetail() {
             </>
           )}
 
-          <h2 className="pub-section-title">Lộ trình học</h2>
-          <ol className="pub-roadmap">
-            {course.roadmap.map((l) => {
-              const open = fullAccess || l.free;
-              const body = (
-                <>
-                  <span className="pub-roadmap-num">{String(l.order).padStart(2, '0')}</span>
-                  <span className="pub-roadmap-body">
-                    <span className="pub-roadmap-title">{l.title}</span>
-                    {l.description && <span className="pub-roadmap-desc">{l.description}</span>}
-                  </span>
-                  {!fullAccess && (l.free
-                    ? <span className="pub-roadmap-tag is-free">Học thử miễn phí</span>
-                    : <span className="pub-roadmap-tag"><Lock size={12} /> Khoá học</span>)}
-                  {open && <ChevronRight size={16} className="pub-roadmap-go" />}
-                </>
-              );
-              return (
-                <li key={l.id} className={open ? 'is-open' : ''}>
-                  {open ? <Link to={`/lessons/${l.id}`} className="pub-roadmap-link">{body}</Link> : body}
-                </li>
-              );
-            })}
-          </ol>
-          {course.roadmap.length === 0 && <p className="empty-state" style={{ textAlign: 'left' }}>Lộ trình đang được cập nhật.</p>}
-          {course.tests?.length > 0 && (
+          <div className="course-tabs" role="tablist">
+            {COURSE_TABS.map((t) => (
+              <button
+                key={t.key} type="button" role="tab" aria-selected={tab === t.key}
+                className={`course-tab ${tab === t.key ? 'active' : ''}`} onClick={() => setTab(t.key)}
+              >
+                <t.icon size={18} /> <span>{t.label}</span>
+                <small>{t.key === 'giao-trinh' ? `${course.roadmap.length} bài`
+                  : t.key === 'sach-bai-tap' ? `${workbookLessons} bài` : `${course.tests?.length || 0} bài`}</small>
+              </button>
+            ))}
+          </div>
+
+          {tab === 'giao-trinh' && (
             <>
-              <h2 className="pub-section-title">Bài kiểm tra</h2>
+              <Roadmap lessons={course.roadmap} fullAccess={fullAccess} />
+              {course.roadmap.length === 0 && <p className="empty-state" style={{ textAlign: 'left' }}>Lộ trình đang được cập nhật.</p>}
+            </>
+          )}
+
+          {tab === 'sach-bai-tap' && (
+            <>
+              {(course.workbooks || []).map((wb) => (
+                <div key={wb.id}>
+                  {course.workbooks.length > 1 && <h3 className="course-tab-sub">{wb.name}</h3>}
+                  <Roadmap lessons={wb.lessons} fullAccess={fullAccess} />
+                </div>
+              ))}
+              {workbookLessons === 0 && <p className="empty-state" style={{ textAlign: 'left' }}>Sách bài tập của khoá này đang được cập nhật.</p>}
+            </>
+          )}
+
+          {tab === 'bai-kiem-tra' && (
+            <>
+              {!testsOpen && course.tests?.length > 0 && <TestCodeForm levelId={course.id} onUnlocked={() => setUnlocked(true)} />}
               <ol className="pub-roadmap">
-                {course.tests.map((t, i) => {
+                {(course.tests || []).map((t, i) => {
                   const body = (
                     <>
                       <span className="pub-roadmap-num">{String(i + 1).padStart(2, '0')}</span>
                       <span className="pub-roadmap-body"><span className="pub-roadmap-title">{t.title}</span></span>
-                      {fullAccess
+                      {testsOpen
                         ? <ChevronRight size={16} className="pub-roadmap-go" />
-                        : <span className="pub-roadmap-tag"><Lock size={12} /> Khoá học</span>}
+                        : <span className="pub-roadmap-tag"><Lock size={12} /> Cần mã code</span>}
                     </>
                   );
                   return (
-                    <li key={t.id} className={fullAccess ? 'is-open' : ''}>
-                      {fullAccess ? <Link to={`/tests/${t.id}`} className="pub-roadmap-link">{body}</Link> : body}
+                    <li key={t.id} className={testsOpen ? 'is-open' : ''}>
+                      {testsOpen ? <Link to={`/tests/${t.id}`} className="pub-roadmap-link">{body}</Link> : body}
                     </li>
                   );
                 })}
               </ol>
+              {!course.tests?.length && <p className="empty-state" style={{ textAlign: 'left' }}>Khoá này chưa có bài kiểm tra.</p>}
+              {testsOpen && !isStaff && (
+                <p className="pub-field-note">
+                  Đã mở bằng mã code trên trình duyệt này.{' '}
+                  <button type="button" className="link-btn" onClick={() => { forgetTestUnlock(course.id); setUnlocked(false); }}>Nhập mã khác</button>
+                </p>
+              )}
             </>
           )}
           {!fullAccess && (

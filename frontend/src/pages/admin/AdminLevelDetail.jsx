@@ -7,8 +7,24 @@ import AdminExamPapers from './AdminExamPapers';
 import { LEVEL_TYPE_OPTIONS } from '../../constants/courseCategories';
 import CoverEditor from '../../components/CoverEditor';
 
+/** Cùng quy tắc với backend/src/utils/workbooks.js: chưa đặt thì "<MÃ>-SBT" là sách bài tập của khoá "<MÃ>". */
+function workbookOfValue(level, levels) {
+  if (typeof level.workbookOf === 'string') return level.workbookOf;
+  const m = /^(.+)-SBT$/i.exec(String(level.code || '').trim());
+  const parent = m && levels.find((l) => l.id !== level.id && String(l.code || '').trim().toUpperCase() === m[1].toUpperCase());
+  return parent ? parent.id : '';
+}
+
 function EditLevelForm({ level, onSaved, onCancel, onCoverChanged }) {
+  const [levels, setLevels] = useState([]);
+  useEffect(() => {
+    api.get('/levels').then((res) => {
+      setLevels([...res.data].sort((a, b) => (a.order || 0) - (b.order || 0)));
+      setForm((f) => ({ ...f, workbookOf: workbookOfValue(level, res.data) }));
+    });
+  }, [level]);
   const [form, setForm] = useState({
+    workbookOf: '',
     code: level.code, name: level.name, type: level.type, order: level.order ?? 1,
     price: typeof level.price === 'number' ? level.price : '',
     duration: level.duration || '', audience: level.audience || '', description: level.description || '',
@@ -61,6 +77,14 @@ function EditLevelForm({ level, onSaved, onCancel, onCoverChanged }) {
         <label>Học phí (VNĐ)</label>
         <input type="number" min="0" step="1000" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="Để trống = không bán / không hiện ở trang khoá học" />
         <span style={{ fontSize: 12, color: 'var(--muted)' }}>Chỉ khoá đã nhập học phí mới hiện ở trang công khai và cho phép đăng ký.</span>
+      </div>
+      <div className="form-field">
+        <label>Là sách bài tập của khoá</label>
+        <select value={form.workbookOf} onChange={(e) => setForm({ ...form, workbookOf: e.target.value })}>
+          <option value="">Không (là khoá học riêng)</option>
+          {levels.filter((lv) => lv.id !== level.id).map((lv) => <option key={lv.id} value={lv.id}>{lv.code} — {lv.name}</option>)}
+        </select>
+        <small className="lib-muted">Chọn khoá chính thì các bài của cấp độ này hiện ở mục <b>Sách bài tập</b> trong trang khoá đó, không hiện thành khoá riêng.</small>
       </div>
       <div className="form-field">
         <label className="check-label"><input type="checkbox" checked={form.listed} onChange={(e) => setForm({ ...form, listed: e.target.checked })} /> Hiển thị công khai (bỏ chọn để tạm ẩn khoá khỏi trang đăng ký)</label>

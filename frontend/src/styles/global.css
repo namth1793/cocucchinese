@@ -1841,3 +1841,44 @@ td.sort-cell button + button { margin-left: 4px; }
 .tests-group h3 { margin: 0; font-size: 15px; }
 .tests-group .html-page-list { margin-top: 8px; }
 .test-level-select { max-width: 220px; padding: 7px 8px; border: 1.5px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font-size: 13px; }
+
+/* Trang khoá học: 3 mục Giáo trình / Sách bài tập / Bài kiểm tra */
+.course-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 26px 0 16px; }
+.course-tab {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 8px; cursor: pointer;
+  border: 1.5px solid var(--line); border-radius: var(--radius-md); background: var(--surface); color: var(--ink);
+  font-weight: 700; font-size: 15px; transition: border-color .15s, background .15s;
+}
+.course-tab svg { color: var(--primary); }
+.course-tab small { font-size: 12px; font-weight: 600; color: var(--ink-soft); }
+.course-tab:hover { border-color: var(--primary); }
+.course-tab.active { border-color: var(--primary); background: var(--primary); color: #fff; }
+.course-tab.active svg, .course-tab.active small { color: #fff; }
+.course-tab-sub { margin: 18px 0 8px; font-size: 15px; }
+@media (max-width: 480px) { .course-tab { font-size: 13.5px; padding: 12px 4px; } }
+
+/* Nhập mã code bài kiểm tra */
+.test-code-form {
+  display: flex; gap: 12px; align-items: flex-start; padding: 16px; margin-bottom: 14px;
+  border: 1.5px dashed var(--primary); border-radius: var(--radius-md); background: var(--primary-soft);
+}
+.test-code-icon { flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; }
+.test-code-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.test-code-body > span { font-size: 13px; color: var(--ink-soft); }
+.test-code-row { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+.test-code-row input {
+  flex: 1; min-width: 160px; padding: 10px 12px; border: 1.5px solid var(--line); border-radius: var(--radius-sm);
+  font: 700 15px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .06em; background: #fff;
+}
+.test-code-row input:focus { outline: none; border-color: var(--primary); }
+.test-code-page { max-width: 560px; margin: 40px auto; padding: 0 16px; width: 100%; }
+.link-btn { border: 0; background: none; padding: 0; color: var(--primary); font: inherit; font-weight: 700; cursor: pointer; text-decoration: underline; }
+
+/* Quản trị: mã code */
+.test-codes { margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--line); }
+.test-codes h2 { margin: 0 0 4px; }
+.test-code-input { display: flex; gap: 6px; }
+.test-code-input input { flex: 1; min-width: 0; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .04em; }
+.test-code-input .btn-secondary { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.test-code-value { font-weight: 700; font-size: 14px; letter-spacing: .05em; }
+.test-code-table tr.is-off { opacity: .55; }

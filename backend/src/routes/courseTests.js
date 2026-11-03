@@ -1,4 +1,5 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
@@ -43,6 +44,76 @@ async function storeFile(test, file) {
   });
   if (test.fileKey) await storage.deleteHtmlPage(test.id, test.fileKey).catch((e) => console.error('Xoá file bài kiểm tra cũ lỗi:', e.message));
   return updated;
+}
+
+// ---------- Mã code làm bài kiểm tra ----------
+// Mỗi mã gắn với 1 khoá: học sinh nhập đúng mã thì mở được mọi bài kiểm tra của khoá đó.
+// Mở khoá trả về 1 token (lưu ở trình duyệt học sinh); token chỉ còn hiệu lực khi mã còn bật.
+const UNLOCK_TTL = '30d';
+const normalizeCode = (code) => String(code || '').trim().toUpperCase().replace(/\s+/g, '');
+const presentCode = (c) => ({
+  id: c.id, code: c.code, levelId: c.levelId, note: c.note || '', active: c.active !== false,
+  uses: c.uses || 0, createdAt: c.createdAt
+});
+
+router.get('/codes', requireAuth, staffOnly, asyncHandler(async (req, res) => {
+  const items = await db.all('testCodes');
+  res.json(items.sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt))).map(presentCode));
+}));
+
+router.post('/codes', requireAuth, staffOnly, asyncHandler(async (req, res) => {
+  const code = normalizeCode(req.body.code);
+  if (!/^[A-Z0-9_-]{4,32}$/.test(code)) return res.status(400).json({ error: 'Mã code gồm 4-32 ký tự chữ, số, gạch ngang (không dấu, không khoảng trắng).' });
+  if (!req.body.levelId || !(await db.find('levels', req.body.levelId))) return res.status(400).json({ error: 'Vui lòng chọn khoá học' });
+  if ((await db.findWhere('testCodes', (c) => c.code === code)).length) return res.status(400).json({ error: `Mã "${code}" đã tồn tại` });
+  const item = await db.insert('testCodes', {
+    code, levelId: req.body.levelId, note: String(req.body.note || '').trim().slice(0, 200), active: true, uses: 0
+  });
+  res.status(201).json(presentCode(item));
+}));
+
+router.put('/codes/:id', requireAuth, staffOnly, asyncHandler(async (req, res) => {
+  const item = await db.find('testCodes', req.params.id);
+  if (!item) return res.status(404).json({ error: 'Không tìm thấy mã' });
+  const patch = {};
+  if (typeof req.body.active === 'boolean') patch.active = req.body.active;
+  if (typeof req.body.note === 'string') patch.note = req.body.note.trim().slice(0, 200);
+  res.json(presentCode(await db.update('testCodes', item.id, patch)));
+}));
+
+router.delete('/codes/:id', requireAuth, staffOnly, asyncHandler(async (req, res) => {
+  if (!(await db.remove('testCodes', req.params.id))) return res.status(404).json({ error: 'Không tìm thấy mã' });
+  res.json({ success: true });
+}));
+
+const unlockLimit = rateLimit({ windowMs: 15 * 60 * 1000, max: 15, message: { error: 'Bạn nhập sai quá nhiều lần, vui lòng thử lại sau ít phút.' } });
+
+// Học sinh nhập mã. levelId (không bắt buộc) = khoá đang mở: mã của khoá khác thì báo sai khoá.
+router.post('/unlock', unlockLimit, asyncHandler(async (req, res) => {
+  const code = normalizeCode(req.body.code);
+  const item = code && (await db.findWhere('testCodes', (c) => c.code === code))[0];
+  if (!item || item.active === false) return res.status(400).json({ error: 'Mã code không đúng hoặc đã hết hiệu lực' });
+  const level = await db.find('levels', item.levelId);
+  if (!level) return res.status(400).json({ error: 'Mã code không đúng hoặc đã hết hiệu lực' });
+  if (req.body.levelId && req.body.levelId !== item.levelId) {
+    return res.status(400).json({ error: `Mã này dùng cho khoá "${level.name}", không phải khoá đang mở` });
+  }
+  await db.update('testCodes', item.id, { uses: (item.uses || 0) + 1, lastUsedAt: new Date().toISOString() });
+  const unlockToken = jwt.sign({ testUnlock: true, codeId: item.id, levelId: item.levelId }, JWT_SECRET, { expiresIn: UNLOCK_TTL });
+  res.json({ unlockToken, levelId: item.levelId, courseName: level.name });
+}));
+
+/** Header X-Test-Unlock hợp lệ cho khoá levelId (mã còn tồn tại và đang bật). */
+async function hasUnlock(req, levelId) {
+  let payload;
+  try {
+    payload = jwt.verify(String(req.get('x-test-unlock') || ''), JWT_SECRET);
+  } catch (e) {
+    return false;
+  }
+  if (!payload.testUnlock || payload.levelId !== levelId) return false;
+  const item = await db.find('testCodes', payload.codeId);
+  return !!item && item.active !== false && item.levelId === levelId;
 }
 
 // ?levelId= : bài kiểm tra của 1 khoá (học viên chỉ thấy bài đang hiện). Không có levelId: toàn bộ, chỉ staff.
@@ -135,6 +206,9 @@ router.get('/:id/token', optionalAuth, asyncHandler(async (req, res) => {
     return res.status(404).json({ error: 'Bài kiểm tra chưa có nội dung' });
   }
   if (!(await access.canAccessLevel(req.user, test.levelId))) return access.deny(res, { courseId: test.levelId });
+  if (!access.isStaff(req.user) && !(await hasUnlock(req, test.levelId))) {
+    return res.status(403).json({ error: 'Cần nhập mã code để làm bài kiểm tra', code: 'TEST_CODE_REQUIRED', levelId: test.levelId, title: test.title });
+  }
   await access.markLearning(req.user, test.levelId);
   const claims = req.user ? { sub: req.user.id, jti: req.jti } : { guest: true };
   const token = jwt.sign({ ...claims, courseTestId: test.id }, JWT_SECRET, { expiresIn: '5m' });

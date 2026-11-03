@@ -71,7 +71,6 @@ function MoonGate({ courses }) {
   );
 }
 
-const isWorkbook = (course) => /^sách bài tập/i.test(String(course.name || '').trim());
 
 function CourseTile({ course, index }) {
   const subtitle = [course.group || CATEGORY_LABEL[course.category], `${course.lessonCount} bài học`].filter(Boolean).join(' · ');
@@ -239,10 +238,6 @@ export default function Home() {
     const list = catalog?.courses || [];
     return [...list.filter((c) => c.forSale), ...list.filter((c) => !c.forSale)];
   }, [catalog]);
-  // Sách bài tập (khoá có tên bắt đầu "Sách bài tập") hiện thành hàng riêng, luôn đủ, không chiếm 8 ô khoá chính.
-  const workbooks = useMemo(() => courses.filter(isWorkbook)
-    .sort((a, b) => a.name.localeCompare(b.name, 'vi', { numeric: true })), [courses]);
-  const mainCourses = useMemo(() => courses.filter((c) => !isWorkbook(c)), [courses]);
 
   useReveal([content, catalog]);
   useParallax([content, catalog]);
@@ -399,16 +394,8 @@ export default function Home() {
             {content.courses.desc && <p className="hp-head-desc" data-reveal="fade-up" style={{ '--d': '120ms' }}>{content.courses.desc}</p>}
           </div>
           <div className="hp-course-grid">
-            {mainCourses.slice(0, 8).map((c, i) => <CourseTile key={c.id} course={c} index={i} />)}
+            {courses.slice(0, 8).map((c, i) => <CourseTile key={c.id} course={c} index={i} />)}
           </div>
-          {workbooks.length > 0 && (
-            <>
-              <h3 className="hp-course-subhead" data-reveal="fade-up">Sách bài tập</h3>
-              <div className="hp-course-grid">
-                {workbooks.map((c, i) => <CourseTile key={c.id} course={c} index={i} />)}
-              </div>
-            </>
-          )}
           {catalog && courses.length === 0 && <p className="empty-state">Chưa có khoá học nào.</p>}
           <div className="hp-center" data-reveal="fade-up">
             <SmartLink to="#dang-ky" className="hp-btn hp-btn-gold">Nhận tư vấn lộ trình miễn phí <ArrowRight size={18} /></SmartLink>
