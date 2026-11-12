@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { BookOpen, CheckCircle2, ChevronRight, Clock, FileCheck2, Gift, Layers3, ListChecks, Lock, NotebookPen, ShoppingCart, Users } from 'lucide-react';
+import { BookOpen, CheckCircle2, ChevronRight, ClipboardList, Clock, FileCheck2, Gift, Layers3, ListChecks, Lock, NotebookPen, ShoppingCart, Trophy, Users } from 'lucide-react';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { formatVnd } from '../constants/enrollment';
@@ -65,11 +65,24 @@ function OrderForm({ course }) {
   );
 }
 
+/** testKind: loại bài trong courseTests hiện ở tab đó (bài kiểm tra / đề thi mẫu / đề thi thật). */
 const COURSE_TABS = [
   { key: 'giao-trinh', label: 'Giáo trình', icon: BookOpen },
   { key: 'sach-bai-tap', label: 'Sách bài tập', icon: NotebookPen },
-  { key: 'bai-kiem-tra', label: 'Bài kiểm tra', icon: FileCheck2 }
+  { key: 'bai-kiem-tra', label: 'Bài kiểm tra', icon: FileCheck2, testKind: 'test' },
+  { key: 'de-thi-mau', label: 'Đề thi mẫu', icon: ClipboardList, testKind: 'sample' },
+  { key: 'de-thi-that', label: 'Đề thi thật', icon: Trophy, testKind: 'real' }
 ];
+
+/**
+ * Khoá luyện đề (examOnly): chỉ Đề thi mẫu + Đề thi thật. Khoá thường: Giáo trình, Sách bài tập,
+ * Bài kiểm tra; tab đề thi chỉ hiện khi khoá có đề loại đó.
+ */
+function tabsFor(course) {
+  const kinds = new Set((course.tests || []).map((t) => t.kind || 'test'));
+  if (course.examOnly) return COURSE_TABS.filter((t) => t.testKind === 'sample' || t.testKind === 'real');
+  return COURSE_TABS.filter((t) => !t.testKind || t.testKind === 'test' || kinds.has(t.testKind));
+}
 
 /** Danh sách bài (giáo trình hoặc sách bài tập): bài mở được thì bấm vào học ngay. */
 function Roadmap({ lessons, fullAccess }) {
@@ -107,8 +120,9 @@ export default function CourseDetail() {
   const [notFound, setNotFound] = useState(false);
   const [owned, setOwned] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const tab = COURSE_TABS.some((t) => t.key === searchParams.get('muc')) ? searchParams.get('muc') : 'giao-trinh';
-  const setTab = (key) => setSearchParams(key === 'giao-trinh' ? {} : { muc: key }, { replace: true });
+  const tabs = course ? tabsFor(course) : COURSE_TABS;
+  const tab = tabs.some((t) => t.key === searchParams.get('muc')) ? searchParams.get('muc') : tabs[0].key;
+  const setTab = (key) => setSearchParams(key === tabs[0].key ? {} : { muc: key }, { replace: true });
   const [unlocked, setUnlocked] = useState(false);
   useEffect(() => setUnlocked(!!getTestUnlock(courseId)), [courseId]);
 
@@ -134,6 +148,10 @@ export default function CourseDetail() {
   const fullAccess = isStaff || owned || course.openAccess;
   const testsOpen = isStaff || unlocked;
   const workbookLessons = (course.workbooks || []).reduce((n, wb) => n + wb.lessons.length, 0);
+  const activeTab = tabs.find((t) => t.key === tab);
+  const testsOf = (kind) => (course.tests || []).filter((t) => (t.kind || 'test') === kind);
+  const tabTests = activeTab?.testKind ? testsOf(activeTab.testKind) : [];
+  const examOnly = course.examOnly;
 
   return (
     <div>
@@ -143,13 +161,15 @@ export default function CourseDetail() {
           <span className="pub-detail-code">{course.code}</span>
           <h1 className="pub-detail-title">{course.name}</h1>
           <div className="pub-course-meta" style={{ marginBottom: 14 }}>
-            <span><BookOpen size={14} /> {course.lessonCount} bài học</span>
+            {examOnly
+              ? <span><ClipboardList size={14} /> {course.tests?.length || 0} đề thi</span>
+              : <span><BookOpen size={14} /> {course.lessonCount} bài học</span>}
             {course.duration && <span><Clock size={14} /> {course.duration}</span>}
             {course.audience && <span><Users size={14} /> {course.audience}</span>}
           </div>
           {course.description && <p className="pub-detail-desc">{course.description}</p>}
 
-          {course.openAccess && !isStaff && firstFree && (
+          {!examOnly && course.openAccess && !isStaff && firstFree && (
             <div className="trial-callout">
               <span className="trial-callout-icon"><Gift size={20} /></span>
               <span className="trial-callout-text">
@@ -160,7 +180,7 @@ export default function CourseDetail() {
             </div>
           )}
 
-          {firstFree && !fullAccess && (
+          {!examOnly && firstFree && !fullAccess && (
             <div className="trial-callout">
               <span className="trial-callout-icon"><Gift size={20} /></span>
               <span className="trial-callout-text">
@@ -171,11 +191,11 @@ export default function CourseDetail() {
             </div>
           )}
 
-          <div className="pub-stat-row">
+          {!examOnly && <div className="pub-stat-row">
             <div className="pub-stat"><Layers3 size={16} /><b>{course.stats.words}</b> từ vựng</div>
             <div className="pub-stat"><BookOpen size={16} /><b>{course.stats.grammarPoints}</b> điểm ngữ pháp</div>
             <div className="pub-stat"><ListChecks size={16} /><b>{course.stats.sentences}</b> câu ví dụ</div>
-          </div>
+          </div>}
 
           {/* Điện thoại: form đăng ký nằm cuối trang (sau lộ trình) nên đưa giá + nút nhảy tới form lên đầu */}
           {!fullAccess && (
@@ -199,15 +219,16 @@ export default function CourseDetail() {
             </>
           )}
 
-          <div className="course-tabs" role="tablist">
-            {COURSE_TABS.map((t) => (
+          <div className="course-tabs" role="tablist" style={{ gridTemplateColumns: `repeat(${tabs.length}, 1fr)` }}>
+            {tabs.map((t) => (
               <button
                 key={t.key} type="button" role="tab" aria-selected={tab === t.key}
                 className={`course-tab ${tab === t.key ? 'active' : ''}`} onClick={() => setTab(t.key)}
               >
                 <t.icon size={18} /> <span>{t.label}</span>
                 <small>{t.key === 'giao-trinh' ? `${course.roadmap.length} bài`
-                  : t.key === 'sach-bai-tap' ? `${workbookLessons} bài` : `${course.tests?.length || 0} bài`}</small>
+                  : t.key === 'sach-bai-tap' ? `${workbookLessons} bài`
+                    : `${testsOf(t.testKind).length} ${t.testKind === 'test' ? 'bài' : 'đề'}`}</small>
               </button>
             ))}
           </div>
@@ -231,11 +252,11 @@ export default function CourseDetail() {
             </>
           )}
 
-          {tab === 'bai-kiem-tra' && (
+          {activeTab?.testKind && (
             <>
-              {!testsOpen && course.tests?.length > 0 && <TestCodeForm levelId={course.id} onUnlocked={() => setUnlocked(true)} />}
+              {!testsOpen && tabTests.length > 0 && <TestCodeForm levelId={course.id} onUnlocked={() => setUnlocked(true)} />}
               <ol className="pub-roadmap">
-                {(course.tests || []).map((t, i) => {
+                {tabTests.map((t, i) => {
                   const body = (
                     <>
                       <span className="pub-roadmap-num">{String(i + 1).padStart(2, '0')}</span>
@@ -252,7 +273,7 @@ export default function CourseDetail() {
                   );
                 })}
               </ol>
-              {!course.tests?.length && <p className="empty-state" style={{ textAlign: 'left' }}>Khoá này chưa có bài kiểm tra.</p>}
+              {!tabTests.length && <p className="empty-state" style={{ textAlign: 'left' }}>Khoá này chưa có {activeTab.label.toLowerCase()}.</p>}
               {testsOpen && !isStaff && (
                 <p className="pub-field-note">
                   Đã mở bằng mã code trên trình duyệt này.{' '}
@@ -261,7 +282,7 @@ export default function CourseDetail() {
               )}
             </>
           )}
-          {!fullAccess && (
+          {!fullAccess && !examOnly && (
             <p className="pub-field-note">
               {firstFree
                 ? 'Bài 1 và bài 2 mở miễn phí cho mọi người. Từ bài 3, nội dung chi tiết (từ vựng, bài tập, bài giảng...) chỉ hiển thị sau khi bạn đăng ký và được cấp quyền học.'
@@ -280,7 +301,7 @@ export default function CourseDetail() {
           ) : course.openAccess ? (
             <div className="card pub-order-card">
               <div className="pub-order-price" style={{ fontSize: 18 }}>Khoá học miễn phí</div>
-              {firstFree && <Link to={`/lessons/${firstFree.id}`} className="btn-primary btn-block">Vào học ngay</Link>}
+              {!examOnly && firstFree && <Link to={`/lessons/${firstFree.id}`} className="btn-primary btn-block">Vào học ngay</Link>}
             </div>
           ) : owned ? (
             <div className="card pub-order-card">

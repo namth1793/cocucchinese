@@ -4,6 +4,7 @@ const { requireAuth } = require('../middleware/auth');
 const access = require('../utils/access');
 const asyncHandler = require('../utils/asyncHandler');
 const { isWorkbook, workbookParentId } = require('../utils/workbooks');
+const { testKind } = require('../utils/testKinds');
 
 const router = express.Router();
 
@@ -20,6 +21,8 @@ async function publicCourse(level) {
     audience: level.audience || '',
     outcomes: Array.isArray(level.outcomes) ? level.outcomes : [],
     lessonCount: lessons.length,
+    // Khoá luyện đề: trang khoá chỉ có mục Đề thi mẫu + Đề thi thật (không có Giáo trình/Sách bài tập).
+    examOnly: level.examOnly === true,
     // Mở toàn bộ (OPEN_ACCESS): mọi bài miễn phí, frontend ẩn giá/form đăng ký.
     openAccess: access.OPEN_ACCESS,
     // Số bài học thử miễn phí thực có (khoá ít bài hơn FREE_LESSON_COUNT thì ít hơn); 0 nếu chưa mở bán.
@@ -94,7 +97,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
     ...(await publicCourse(level)),
     roadmap: lessons,
     workbooks,
-    tests: tests.sort(access.lessonSort).map((t) => ({ id: t.id, title: t.title })),
+    tests: tests.sort(access.lessonSort).map((t) => ({ id: t.id, title: t.title, kind: testKind(t) })),
     stats: { words: words.length, grammarPoints: grammarPoints.length, sentences: sentences.length }
   });
 }));

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { FileCheck2, FileText, ExternalLink } from 'lucide-react';
 import api from '../api/client';
+import { TEST_KINDS } from '../constants/testKinds';
 import ProgressBar from '../components/ProgressBar';
 
 export default function LevelLessons() {
@@ -72,7 +73,7 @@ export default function LevelLessons() {
         </div>
       )}
 
-      {lessons.map((lesson) => (
+      {!level?.examOnly && lessons.map((lesson) => (
         <Link to={`/lessons/${lesson.id}`} key={lesson.id} className="lesson-row">
           <span className="lesson-row-num">{String(lesson.order).padStart(2, '0')}</span>
           <div className="lesson-row-main">
@@ -84,17 +85,21 @@ export default function LevelLessons() {
           </div>
         </Link>
       ))}
-      {tests.length > 0 && (
-        <>
-          <h2 style={{ display: 'flex', alignItems: 'center', gap: 8 }}><FileCheck2 size={19} /> Bài kiểm tra</h2>
-          {tests.map((t, i) => (
-            <Link to={`/tests/${t.id}`} key={t.id} className="lesson-row">
-              <span className="lesson-row-num">{String(i + 1).padStart(2, '0')}</span>
-              <div className="lesson-row-main"><div className="lesson-row-title">{t.title}</div></div>
-            </Link>
-          ))}
-        </>
-      )}
+      {TEST_KINDS.map((k) => {
+        const items = tests.filter((t) => (t.kind || 'test') === k.value);
+        if (!items.length) return null;
+        return (
+          <div key={k.value}>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: 8 }}><FileCheck2 size={19} /> {k.label}</h2>
+            {items.map((t, i) => (
+              <Link to={`/tests/${t.id}`} key={t.id} className="lesson-row">
+                <span className="lesson-row-num">{String(i + 1).padStart(2, '0')}</span>
+                <div className="lesson-row-main"><div className="lesson-row-title">{t.title}</div></div>
+              </Link>
+            ))}
+          </div>
+        );
+      })}
       {lessons.length === 0 && examGroups.length === 0 && tests.length === 0 && <p className="empty-state">Chưa có bài học trong cấp độ này.</p>}
     </div>
   );

@@ -5,12 +5,17 @@ import api from '../api/client';
 import ProgressBar from '../components/ProgressBar';
 import { resolveSections } from '../constants/lessonModules';
 import { useLessonAccess } from '../components/CourseGate';
+import { useAuth } from '../context/AuthContext';
 
 export default function LessonHome() {
   const { lessonId } = useParams();
   const [data, setData] = useState(null);
   const [summary, setSummary] = useState(null);
   const trial = useLessonAccess()?.freeTrial;
+  const { user } = useAuth();
+  // Khách chưa đăng nhập (học thử, hoặc khoá mở toàn bộ OPEN_ACCESS) không vào được /levels (cần đăng nhập)
+  // -> quay về trang giới thiệu khoá, nơi có đủ danh sách bài.
+  const toCoursePage = trial || !user;
 
   useEffect(() => {
     api.get(`/lessons/${lessonId}/full`).then((res) => setData(res.data));
@@ -27,9 +32,8 @@ export default function LessonHome() {
 
   return (
     <div>
-      {/* Học thử: chưa có quyền khoá nên quay về trang giới thiệu khoá học thay vì danh sách bài */}
-      <Link to={!lesson ? '/' : trial ? `/courses/${lesson.levelId}` : `/levels/${lesson.levelId}`} className="top-back-link">
-        {trial ? '← Về trang khoá học' : '← Danh sách bài học'}
+      <Link to={!lesson ? '/' : toCoursePage ? `/courses/${lesson.levelId}` : `/levels/${lesson.levelId}`} className="top-back-link">
+        {toCoursePage ? '← Về trang khoá học' : '← Danh sách bài học'}
       </Link>
       <h1 className="page-title">{lesson ? lesson.title : '...'}</h1>
       {summary && !summary.guest && <ProgressBar percent={summary.overallPercent} label="Tiến độ tổng" />}

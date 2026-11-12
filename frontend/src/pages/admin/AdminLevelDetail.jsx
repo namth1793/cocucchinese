@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Pencil } from 'lucide-react';
+import { ArrowLeft, ClipboardList, FileCheck2, NotebookPen, Pencil, Trophy } from 'lucide-react';
 import api from '../../api/client';
 import AdminLessons from './AdminLessons';
 import AdminExamPapers from './AdminExamPapers';
@@ -29,7 +29,8 @@ function EditLevelForm({ level, onSaved, onCancel, onCoverChanged }) {
     price: typeof level.price === 'number' ? level.price : '',
     duration: level.duration || '', audience: level.audience || '', description: level.description || '',
     outcomes: (level.outcomes || []).join('\n'),
-    listed: level.listed !== false
+    listed: level.listed !== false,
+    examOnly: level.examOnly === true
   });
   const [error, setError] = useState('');
 
@@ -87,6 +88,9 @@ function EditLevelForm({ level, onSaved, onCancel, onCoverChanged }) {
         <small className="lib-muted">Chọn khoá chính thì các bài của cấp độ này hiện ở mục <b>Sách bài tập</b> trong trang khoá đó, không hiện thành khoá riêng.</small>
       </div>
       <div className="form-field">
+        <label className="check-label"><input type="checkbox" checked={form.examOnly} onChange={(e) => setForm({ ...form, examOnly: e.target.checked })} /> Khoá luyện đề (trang khoá chỉ có mục Đề thi mẫu và Đề thi thật, không có Giáo trình / Sách bài tập)</label>
+      </div>
+      <div className="form-field">
         <label className="check-label"><input type="checkbox" checked={form.listed} onChange={(e) => setForm({ ...form, listed: e.target.checked })} /> Hiển thị công khai (bỏ chọn để tạm ẩn khoá khỏi trang đăng ký)</label>
       </div>
       <div className="form-field">
@@ -113,6 +117,29 @@ function EditLevelForm({ level, onSaved, onCancel, onCoverChanged }) {
   );
 }
 
+/**
+ * Lối tắt từ trang 1 khoá tới các phần nằm ở chỗ khác: sách bài tập (cấp độ riêng gắn vào khoá),
+ * bài kiểm tra / đề thi (trang /admin/tests, chọn sẵn khoá + loại).
+ */
+function LevelShortcuts({ level }) {
+  const [levels, setLevels] = useState([]);
+  useEffect(() => { api.get('/levels').then((res) => setLevels(res.data)); }, [level.id]);
+  const workbooks = levels.filter((lv) => lv.id !== level.id && workbookOfValue(lv, levels) === level.id);
+  const parent = levels.find((lv) => lv.id === workbookOfValue(level, levels));
+  const testLink = (kind) => `/admin/tests?levelId=${level.id}&kind=${kind}`;
+  return (
+    <div className="level-shortcuts">
+      {parent && <Link to={`/admin/levels/${parent.id}`} className="btn-secondary"><ArrowLeft size={14} /> Khoá chính: {parent.name}</Link>}
+      {!level.examOnly && workbooks.map((wb) => (
+        <Link key={wb.id} to={`/admin/levels/${wb.id}`} className="btn-secondary"><NotebookPen size={14} /> {wb.name}{wb.listed === false ? ' (đang ẩn)' : ''}</Link>
+      ))}
+      {!parent && !level.examOnly && <Link to={testLink('test')} className="btn-secondary"><FileCheck2 size={14} /> Bài kiểm tra</Link>}
+      {!parent && <Link to={testLink('sample')} className="btn-secondary"><ClipboardList size={14} /> Đề thi mẫu</Link>}
+      {!parent && <Link to={testLink('real')} className="btn-secondary"><Trophy size={14} /> Đề thi thật</Link>}
+    </div>
+  );
+}
+
 export default function AdminLevelDetail() {
   const { levelId } = useParams();
   const [level, setLevel] = useState(null);
@@ -136,6 +163,8 @@ export default function AdminLevelDetail() {
         </div>
       )}
       {!level && <h2 style={{ marginTop: 6, marginBottom: 2 }}>Đang tải...</h2>}
+
+      {level && !editing && <LevelShortcuts level={level} />}
 
       {level && editing ? (
         <EditLevelForm

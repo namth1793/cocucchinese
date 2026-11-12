@@ -33,6 +33,20 @@ export default function AdminUsers() {
     loadUsers();
   };
 
+  const approve = async (u) => {
+    await api.put(`/users/${u.id}/status`, { status: 'active' });
+    loadUsers();
+  };
+
+  const reject = async (u) => {
+    if (!window.confirm(`Từ chối và xoá đăng ký của ${u.email}?`)) return;
+    await api.delete(`/users/${u.id}/pending`);
+    loadUsers();
+  };
+
+  const pending = users.filter((u) => u.status === 'pending')
+    .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+
   const toggleStatus = async (u) => {
     await api.put(`/users/${u.id}/status`, { status: u.status === 'locked' ? 'active' : 'locked' });
     loadUsers();
@@ -43,12 +57,38 @@ export default function AdminUsers() {
       <h2 style={{ marginTop: 0 }}>Quản lý người dùng & nhật ký</h2>
 
       <div className="tabs">
-        <button type="button" className={`tab-btn ${tab === 'users' ? 'active' : ''}`} onClick={() => setTab('users')}>Người dùng</button>
+        <button type="button" className={`tab-btn ${tab === 'users' ? 'active' : ''}`} onClick={() => setTab('users')}>
+          Người dùng{pending.length > 0 && <span className="pending-count">{pending.length} chờ duyệt</span>}
+        </button>
         <button type="button" className={`tab-btn ${tab === 'logs' ? 'active' : ''}`} onClick={() => setTab('logs')}>Nhật ký hoạt động</button>
       </div>
 
       {tab === 'users' && (
         <>
+          {pending.length > 0 && (
+            <section className="card pending-users">
+              <h3 style={{ marginTop: 0 }}>Tài khoản chờ duyệt ({pending.length})</h3>
+              <p className="page-sub" style={{ marginTop: 0 }}>Học viên tự đăng ký ở trang đăng nhập. Chỉ đăng nhập được sau khi bạn bấm <b>Duyệt</b>.</p>
+              <table className="admin-table">
+                <thead><tr><th>Tên</th><th>Email</th><th>Điện thoại</th><th>Đăng ký lúc</th><th /></tr></thead>
+                <tbody>
+                  {pending.map((u) => (
+                    <tr key={u.id}>
+                      <td>{u.name}</td>
+                      <td>{u.email}</td>
+                      <td>{u.phone}</td>
+                      <td>{u.createdAt ? new Date(u.createdAt).toLocaleString('vi-VN') : ''}</td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
+                        <button type="button" className="btn-primary" onClick={() => approve(u)}>Duyệt</button>{' '}
+                        <button type="button" className="btn-danger" onClick={() => reject(u)}>Từ chối</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+          )}
+
           <form className="admin-form" onSubmit={createUser}>
             <h3 style={{ margin: 0 }}>Tạo tài khoản giáo viên/quản trị</h3>
             {error && <div className="form-error">{error}</div>}
@@ -74,7 +114,7 @@ export default function AdminUsers() {
               <tr><th>Tên</th><th>Email</th><th>Vai trò</th><th>Trạng thái</th><th>Thiết bị</th><th /></tr>
             </thead>
             <tbody>
-              {users.map((u) => (
+              {users.filter((u) => u.status !== 'pending').map((u) => (
                 <tr key={u.id}>
                   <td>{u.name}</td>
                   <td>{u.email}</td>

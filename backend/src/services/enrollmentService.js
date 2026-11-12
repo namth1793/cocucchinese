@@ -26,7 +26,13 @@ function randomPassword() {
  */
 async function ensureStudent({ name, email, passwordHash }) {
   const existing = await findUserByEmail(email);
-  if (existing) return { user: existing, created: false, tempPassword: null };
+  if (existing) {
+    // Tài khoản tự đăng ký đang chờ duyệt: admin cấp quyền khoá học cũng là duyệt luôn.
+    const user = existing.status === 'pending'
+      ? await db.update('users', existing.id, { status: 'active', approvedAt: new Date().toISOString() })
+      : existing;
+    return { user, created: false, tempPassword: null };
+  }
   let tempPassword = null;
   let hash = passwordHash;
   if (!hash) {

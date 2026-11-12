@@ -151,7 +151,7 @@ export default function AdminLayout() {
             Điểm danh học sinh
           </NavLink>
           <NavLink to="/admin/tests" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            Bài kiểm tra
+            Bài kiểm tra & đề thi
           </NavLink>
           <NavLink to="/admin/instructors" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             Giảng viên
@@ -232,7 +232,7 @@ export default function AdminLayout() {
             <CalendarCheck size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Điểm danh
           </NavLink>
           <NavLink to="/admin/tests" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
-            <FileCheck2 size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Bài kiểm tra
+            <FileCheck2 size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Kiểm tra & đề thi
           </NavLink>
           <NavLink to="/admin/instructors" className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}>
             <GraduationCap size={13} style={{ marginRight: 4, verticalAlign: -2 }} />Giảng viên

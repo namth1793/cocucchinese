@@ -288,10 +288,11 @@ export const ADMIN_GUIDES = {
   },
 
   tests: {
-    title: 'Bài kiểm tra',
-    intro: 'Tải file bài kiểm tra .html lên rồi chọn khoá học. Bài kiểm tra hiện ở mục Bài kiểm tra trong trang khoá học; học sinh phải nhập mã code (tạo ở cuối trang) mới làm được.',
+    title: 'Bài kiểm tra & đề thi',
+    intro: 'Tải file .html lên, chọn khoá học và loại (Bài kiểm tra / Đề thi mẫu / Đề thi thật). Mỗi loại hiện ở 1 mục riêng trong trang khoá học; học sinh phải nhập mã code của khoá (tạo ở cuối trang) mới làm được.',
     steps: [
       { target: '.tests-level-field', title: 'Chọn khoá học', body: 'Chọn khoá học sẽ hiển thị bài kiểm tra. Phải chọn khoá trước khi tải file.' },
+      { target: '.tests-kind-field', title: 'Chọn loại', body: '**Bài kiểm tra**, **Đề thi mẫu** hoặc **Đề thi thật** - quyết định file hiện ở mục nào trong trang khoá học. Đổi lại được ở ô loại trên từng dòng.' },
       { target: '.drop-zone', title: 'Tải file HTML', body: 'Bấm hoặc kéo thả file **.html** vào khung, tối đa **500MB** mỗi file. Chọn nhiều file cùng lúc thì mỗi file thành 1 bài kiểm tra, tên bài lấy theo tên file.' },
       { target: '.html-page-title', title: 'Đổi tên bài', needs: 'Danh sách chỉ hiện khi đã có bài kiểm tra.', body: 'Bấm vào tên để sửa, bấm ra ngoài là tự lưu. Mũi tên lên/xuống bên trái đổi thứ tự bài trong khoá.' },
       { target: '.test-level-select', title: 'Chuyển khoá học', needs: 'Danh sách chỉ hiện khi đã có bài kiểm tra.', body: 'Chọn khoá khác ở ô này để chuyển bài kiểm tra sang khoá đó, thay đổi lưu ngay.' },

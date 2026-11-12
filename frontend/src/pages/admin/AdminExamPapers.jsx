@@ -26,7 +26,7 @@ function ExamFileCell({ paper, onChanged }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
       {paper.url ? (
-        <a href={paper.url} target="_blank" rel="noreferrer" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+        <a href={`/exam/${paper.id}`} target="_blank" rel="noreferrer" className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
           <ExternalLink size={13} /> Xem thử
         </a>
       ) : (

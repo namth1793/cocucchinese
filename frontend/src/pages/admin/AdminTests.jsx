@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowDown, ArrowUp, Copy, ExternalLink, Eye, EyeOff, FileCheck2, Shuffle, Trash2, Upload } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import api from '../../api/client';
+import { TEST_KINDS, testKindOf } from '../../constants/testKinds';
 
 const formatSize = (bytes) => {
   if (!bytes) return '';
@@ -27,6 +29,11 @@ function TestRow({ test, index, total, levels, onMove, onChanged, onError }) {
 
   const togglePublished = async () => {
     await api.put(`/course-tests/${test.id}`, { published: !test.published });
+    onChanged();
+  };
+
+  const changeKind = async (e) => {
+    await api.put(`/course-tests/${test.id}`, { kind: e.target.value });
     onChanged();
   };
 
@@ -74,6 +81,9 @@ function TestRow({ test, index, total, levels, onMove, onChanged, onError }) {
           {!test.published && <b> · Đang ẩn với học viên</b>}
         </span>
       </div>
+      <select className="test-kind-select" value={test.kind || 'test'} onChange={changeKind} aria-label="Loại" title="Đổi loại (mục hiển thị trong trang khoá học)">
+        {TEST_KINDS.map((k) => <option key={k.value} value={k.value}>{k.label}</option>)}
+      </select>
       <select className="test-level-select" value={levels.some((lv) => lv.id === test.levelId) ? test.levelId : ''} onChange={changeLevel} aria-label="Chuyển sang khoá học khác" title="Chuyển sang khoá học khác">
         {!levels.some((lv) => lv.id === test.levelId) && <option value="" disabled>Chọn khoá học</option>}
         {levels.map((lv) => <option key={lv.id} value={lv.id}>{levelLabel(lv)}</option>)}
@@ -197,7 +207,10 @@ function TestCodes({ levels }) {
 export default function AdminTests() {
   const [tests, setTests] = useState(null);
   const [levels, setLevels] = useState([]);
-  const [levelId, setLevelId] = useState('');
+  const [searchParams] = useSearchParams();
+  // Mở từ trang quản trị của 1 khoá: ?levelId=...&kind=sample chọn sẵn khoá + loại.
+  const [levelId, setLevelId] = useState(searchParams.get('levelId') || '');
+  const [kind, setKind] = useState(testKindOf(searchParams.get('kind')).value);
   const [uploading, setUploading] = useState('');
   const [error, setError] = useState('');
   const [dragOver, setDragOver] = useState(false);
@@ -219,6 +232,7 @@ export default function AdminTests() {
       setUploading(`Đang tải ${i + 1}/${good.length}: ${good[i].name}`);
       const fd = new FormData();
       fd.append('levelId', levelId);
+      fd.append('kind', kind);
       fd.append('file', good[i]);
       try {
         // eslint-disable-next-line no-await-in-loop
@@ -241,16 +255,20 @@ export default function AdminTests() {
   };
 
   // Gom theo khoá học, khoá theo thứ tự sidebar; bài của khoá đã xoá nằm cuối để admin chuyển sang khoá khác.
-  const groups = levels.map((lv) => ({ key: lv.id, label: levelLabel(lv), items: (tests || []).filter((t) => t.levelId === lv.id) }));
+  const groups = levels.flatMap((lv) => TEST_KINDS.map((k) => ({
+    key: `${lv.id}-${k.value}`, label: `${levelLabel(lv)} · ${k.label}`,
+    items: (tests || []).filter((t) => t.levelId === lv.id && (t.kind || 'test') === k.value)
+  })));
   const orphans = (tests || []).filter((t) => !levels.some((lv) => lv.id === t.levelId));
   if (levels.length > 0 && orphans.length > 0) groups.push({ key: 'orphans', label: 'Khoá học đã xoá', items: orphans });
 
   return (
     <div className="tests-admin">
-      <h2 style={{ marginTop: 0 }}>Bài kiểm tra</h2>
+      <h2 style={{ marginTop: 0 }}>Bài kiểm tra & đề thi</h2>
       <p className="page-sub">
-        Tải file bài kiểm tra dạng <b>.html</b> (tự chứa câu hỏi, chấm điểm trong 1 file) rồi chọn khoá học. Bài kiểm tra hiện ở
-        mục <b>Bài kiểm tra</b> trong trang khoá học đó; học sinh phải nhập <b>mã code</b> (tạo ở cuối trang) mới làm được.
+        Tải file dạng <b>.html</b> (tự chứa câu hỏi, chấm điểm trong 1 file), chọn khoá học và loại. Mỗi loại hiện ở 1 mục riêng
+        trong trang khoá học: <b>Bài kiểm tra</b>, <b>Đề thi mẫu</b>, <b>Đề thi thật</b>. Học sinh phải nhập <b>mã code</b> của khoá
+        (tạo ở cuối trang) mới làm được.
       </p>
 
       <div className="form-field tests-level-field">
@@ -258,6 +276,12 @@ export default function AdminTests() {
         <select value={levelId} onChange={(e) => { setLevelId(e.target.value); setError(''); }}>
           <option value="">Chọn khoá học</option>
           {levels.map((lv) => <option key={lv.id} value={lv.id}>{levelLabel(lv)}</option>)}
+        </select>
+      </div>
+      <div className="form-field tests-level-field tests-kind-field">
+        <label>Loại (mục hiển thị trong trang khoá học)</label>
+        <select value={kind} onChange={(e) => setKind(e.target.value)}>
+          {TEST_KINDS.map((k) => <option key={k.value} value={k.value}>{k.label}</option>)}
         </select>
       </div>
 
@@ -275,7 +299,7 @@ export default function AdminTests() {
       >
         <Upload size={22} />
         <b>{uploading || 'Kéo thả file HTML vào đây hoặc bấm để chọn'}</b>
-        <span>Có thể chọn nhiều file cùng lúc - mỗi file thành 1 bài kiểm tra, tên bài lấy theo tên file (đổi lại được).</span>
+        <span>Có thể chọn nhiều file cùng lúc - mỗi file thành 1 bài/đề, tên lấy theo tên file (đổi lại được).</span>
         <input ref={fileRef} type="file" accept=".html,.htm,text/html" multiple hidden onChange={(e) => { uploadFiles(e.target.files); e.target.value = ''; }} />
       </div>
       {error && <div className="form-error" style={{ marginTop: 10 }}>{error}</div>}

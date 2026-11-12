@@ -35,7 +35,7 @@ async function authenticate(token, req, res, next) {
 
   try {
     const user = await db.find('users', payload.sub);
-    if (!user || user.status === 'locked') return res.status(401).json({ error: 'Tài khoản không hợp lệ' });
+    if (!user || user.status === 'locked' || user.status === 'pending') return res.status(401).json({ error: 'Tài khoản không hợp lệ' });
     // Học viên chỉ được dùng hệ thống khi email còn quyền truy cập ít nhất 1 khoá học
     // (quyền bị thu hồi thì phiên đang mở cũng mất hiệu lực ngay).
     if (!(await access.hasAnyAccess(user))) return res.status(401).json({ error: 'Email của bạn chưa được cấp quyền truy cập khoá học nào' });

@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/', requireAuth, requireRole('admin'), asyncHandler(async (req, res) => {
   const users = (await db.all('users')).map((u) => ({
-    id: u.id, name: u.name, email: u.email, role: u.role,
+    id: u.id, name: u.name, email: u.email, phone: u.phone || '', role: u.role,
     status: u.status, sessions: (u.activeSessions || []).length, createdAt: u.createdAt
   }));
   res.json(users);
@@ -28,14 +28,25 @@ router.post('/', requireAuth, requireRole('admin'), asyncHandler(async (req, res
   res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role });
 }));
 
+// Từ chối tài khoản tự đăng ký: xoá hẳn (chỉ áp dụng tài khoản đang chờ duyệt).
+router.delete('/:id/pending', requireAuth, requireRole('admin'), asyncHandler(async (req, res) => {
+  const user = await db.find('users', req.params.id);
+  if (!user || user.status !== 'pending') return res.status(404).json({ error: 'Không tìm thấy tài khoản chờ duyệt' });
+  await db.remove('users', user.id);
+  await db.logActivity(req.user.id, 'user_reject_registration', { email: user.email });
+  res.json({ success: true });
+}));
+
 router.put('/:id/status', requireAuth, requireRole('admin'), asyncHandler(async (req, res) => {
   const { status } = req.body;
+  // pending -> active = duyệt tài khoản tự đăng ký.
   if (!['active', 'locked'].includes(status)) return res.status(400).json({ error: 'Trạng thái không hợp lệ' });
   const patch = { status };
   if (status === 'locked') patch.activeSessions = [];
   const user = await db.update('users', req.params.id, patch);
   if (!user) return res.status(404).json({ error: 'Không tìm thấy' });
   await db.logActivity(req.user.id, 'user_status_change', { targetUser: req.params.id, status });
+  if (status === 'active') await db.update('users', user.id, { approvedAt: user.approvedAt || new Date().toISOString() });
   res.json({ id: user.id, name: user.name, email: user.email, role: user.role, status: user.status });
 }));
 

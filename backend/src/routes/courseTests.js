@@ -9,6 +9,7 @@ const { sourceFileUpload } = require('../middleware/upload');
 const storage = require('../storage');
 const access = require('../utils/access');
 const asyncHandler = require('../utils/asyncHandler');
+const { testKind, cleanKind } = require('../utils/testKinds');
 
 /**
  * Bài kiểm tra dạng file HTML tự chứa, gắn với 1 khoá học (level) thay vì 1 bài học.
@@ -24,7 +25,7 @@ const utf8Name = (file) => Buffer.from(file.originalname, 'latin1').toString('ut
 /** Học viên chỉ thấy metadata; tên file gốc chỉ dành cho staff. */
 function present(test, user) {
   const base = {
-    id: test.id, levelId: test.levelId, title: test.title, order: test.order ?? 0,
+    id: test.id, levelId: test.levelId, title: test.title, order: test.order ?? 0, kind: testKind(test),
     published: test.published !== false, version: test.version || 0,
     updatedAt: test.fileUpdatedAt || test.updatedAt || test.createdAt
   };
@@ -139,7 +140,7 @@ router.post('/', requireAuth, staffOnly, sourceFileUpload.single('file'), asyncH
   try {
     req.file.originalname = utf8Name(req.file);
     const test = await db.insert('courseTests', {
-      levelId,
+      levelId, kind: cleanKind(req.body.kind),
       title: (title || '').trim() || path.basename(req.file.originalname, path.extname(req.file.originalname)),
       order: await nextOrder(levelId), published: req.body.published !== 'false', version: 0
     });
@@ -182,6 +183,7 @@ router.put('/:id', requireAuth, staffOnly, asyncHandler(async (req, res) => {
   if (typeof req.body.title === 'string' && req.body.title.trim()) patch.title = req.body.title.trim();
   if (req.body.order !== undefined && req.body.order !== null && req.body.order !== '') patch.order = Number(req.body.order) || 0;
   if (typeof req.body.published === 'boolean') patch.published = req.body.published;
+  if (typeof req.body.kind === 'string') patch.kind = cleanKind(req.body.kind);
   if (req.body.levelId && req.body.levelId !== test.levelId) {
     if (!(await db.find('levels', req.body.levelId))) return res.status(400).json({ error: 'Khoá học không hợp lệ' });
     patch.levelId = req.body.levelId;
@@ -212,7 +214,7 @@ router.get('/:id/token', optionalAuth, asyncHandler(async (req, res) => {
   await access.markLearning(req.user, test.levelId);
   const claims = req.user ? { sub: req.user.id, jti: req.jti } : { guest: true };
   const token = jwt.sign({ ...claims, courseTestId: test.id }, JWT_SECRET, { expiresIn: '5m' });
-  res.json({ token, version: test.version, title: test.title, levelId: test.levelId });
+  res.json({ token, version: test.version, title: test.title, levelId: test.levelId, kind: testKind(test) });
 }));
 
 router.get('/:id/view', asyncHandler(async (req, res) => {

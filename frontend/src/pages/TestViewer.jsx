@@ -4,6 +4,7 @@ import { ArrowLeft, RotateCw } from 'lucide-react';
 import api from '../api/client';
 import { API_BASE, sandboxFor } from './HtmlLesson';
 import TestCodeForm from '../components/TestCodeForm';
+import { testKindOf } from '../constants/testKinds';
 import { forgetTestUnlock, getTestUnlock, testUnlockHeaders } from '../utils/testUnlock';
 
 /** Làm bài kiểm tra (file HTML của khoá học) toàn màn hình. */
@@ -59,7 +60,7 @@ export default function TestViewer() {
   return (
     <div className="html-viewer">
       <div className="html-viewer-bar">
-        <button type="button" className="html-viewer-back" onClick={() => navigate(test || needCode ? `/courses/${(test || needCode).levelId}?muc=bai-kiem-tra` : '/courses')}>
+        <button type="button" className="html-viewer-back" onClick={() => navigate(test || needCode ? `/courses/${(test || needCode).levelId}?muc=${testKindOf(test?.kind).tab}` : '/courses')}>
           <ArrowLeft size={16} /> <span>Về khoá học</span>
         </button>
         <div className="html-viewer-title">{test?.title || needCode?.title || ''}</div>
